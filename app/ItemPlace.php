@@ -9,7 +9,7 @@ class ItemPlace extends Model
     protected $fillable = [
 		'name'
 	];
-	protected $table = 'item_places';
+	protected $table = 'itemPlaces';
 
 	public function items()
 	{

@@ -9,7 +9,7 @@ class ItemType extends Model
     protected $fillable = [
 		'name', 'picture',
 	];
-	protected $table = 'item_types';
+	protected $table = 'itemTypes';
 
 	public function items()
 	{

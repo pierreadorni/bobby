@@ -50,8 +50,25 @@ Route::prefix('v1')->group(function () {
     Route::get('association/items/{asso_id}', function($asso_id){
         $items = Item::all()->where('association', $asso_id);
         foreach ($items as $item) {
-            $item->typeName = $item->itemtypes->name;
-            $item->placeName = $item->itemplaces->name;
+            if($item->type)
+                $item->typeName = $item->itemtypes->name;
+            if($item->place)
+                $item->placeName = $item->itemplaces->name;
+            switch ($item->status) {
+                case '1':
+                    $item->statusName = 'Visible';
+                    break;
+                case '2':
+                    $item->statusName = 'Visible et non empruntable';
+                    break;
+                case '3':
+                    $item->statusName = 'Invisible';
+                    break;
+
+                default:
+                    $item->statusName = 'Visible';
+                    break;
+            }
             $item->edit = null;
         }
         return $items;

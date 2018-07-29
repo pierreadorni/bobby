@@ -26,8 +26,8 @@ class ItemRequest extends FormRequest
         return [
             'name' =>  'string'.($this->isMethod('put')?'':'|required'),
             'quantity'  =>  'integer'.($this->isMethod('put')?'':'|required'),
-            'place'   => 'string'.($this->isMethod('put')?'':'|required'),
-            'status'   =>  ($this->isMethod('put')?'':'|required'),
+            'place'   => 'integer'.($this->isMethod('put')?'':'|required'),
+            'status'   =>  'integer'.($this->isMethod('put')?'':'|required'),
             'caution'   =>  'integer'.($this->isMethod('put')?'':'|required'),
             'type'   =>  'integer'.($this->isMethod('put')?'':'|required'),
             'association'   =>  'integer'.($this->isMethod('put')?'':'|required'),

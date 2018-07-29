@@ -1,0 +1,6 @@
+.sortorder:after {
+  content: '\0025B3';   // BLACK UP-POINTING TRIANGLE
+}
+.sortorder.reverse:after {
+  content: '\0025BD';   // BLACK DOWN-POINTING TRIANGLE
+}

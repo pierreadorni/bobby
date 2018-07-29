@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateItemPlacesTable extends Migration
+class CreateItemTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateItemPlacesTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_places', function (Blueprint $table) {
+        Schema::create('itemTypes', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
+            $table->string('picture')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateItemPlacesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item__places');
+        Schema::dropIfExists('itemTypes');
     }
 }

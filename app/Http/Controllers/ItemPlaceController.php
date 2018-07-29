@@ -18,7 +18,7 @@ class ItemPlaceController extends Controller
     public function index()
     {
         $item_places = ItemPlace::get();
-        return response()->json($item_types, 200);
+        return response()->json($item_places, 200);
     }
 
     /**

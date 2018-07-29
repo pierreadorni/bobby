@@ -66,6 +66,7 @@ class ItemController extends Controller
     public function update(ItemRequest $request, $id)
     {
         $item = Item::find($id);
+        //dd($item);
         if($item){
             $value = $item->update($request->input());
             if($value)

@@ -14,6 +14,7 @@ class CreateAssociationsTable extends Migration
     public function up()
     {
         Schema::create('associations', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->integer('parent_id')->unsigned()->nullable();

@@ -1,0 +1,56 @@
+<in-wrapper>
+  <br><br>
+  <div class = "row">
+    <div class="col-md-6 offset-md-3">
+      <table class="table table-hover table-striped col-md-12">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-6">
+                <h3>Gestion des localisations</h3>
+            </div>
+            <div class="form-group col-md-4">
+              <input ng-model="placeSearch" type="text" class="form-control search-list" placeholder="Rechercher une localisation...">
+            </div>
+            <div class="col-md-1 offset-md-1">
+              <a >
+                <img src="assets/img/add.png" width="30px" ng-click="add()">
+              </a>
+            </div>
+          </div>
+        </div>
+        <thead class="thead-dark">
+          <tr>
+              <th ng-click="sort()">
+                Nom  
+                <span class="sortorder" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-show="addNewPlace">
+            <td><input type="text" ng-model="newPlace.name" class="form-control" focus-me="focusInput"></td>
+            <td>
+              <img src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="save()">
+              <br>
+              <img src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+          <tr ng-repeat="place in places | toArray:false | filter:placeSearch | orderBy:propertyName:reverse">
+            <td>
+              <span ng-show="!place.edit">{{ place.name }}</span>
+              <input type="text" ng-model="place.name" ng-show="place.edit" class="form-control">
+            </td>
+            <td>
+              <img ng-show="!place.edit" src="assets/img/edit.png" height="22px" style="margin : 6px" ng-click="edit(place)">
+              <img ng-show="!place.edit" src="assets/img/delete.png" height="22px" ng-click="delete(place)" style="margin:6px">
+              <img ng-show="place.edit" src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="update(place)">
+              <br>
+              <img ng-show="place.edit" src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</in-wrapper>

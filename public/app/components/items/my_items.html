@@ -1,0 +1,123 @@
+<in-wrapper>
+  <br><br>
+  <div class = "row">
+    <div class="col-md-10 offset-md-1">
+      <table class="table table-hover table-striped col-md-12">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-5">
+                <h3>{{asso}} | Inventaire</h3>
+            </div>
+            <div class="form-group col-md-3 offset-md-1">
+              <input ng-model="itemSearch" type="text" class="form-control search-list" placeholder="Rechercher un item...">
+            </div>
+            <div class="col-md-1 offset-md-2">
+              <a >
+                <img src="assets/img/add.png" width="30px" ng-click="add()">
+              </a>
+            </div>
+          </div>
+        </div>
+        <thead class="thead-dark">
+          <tr>
+              <th ng-click="sortBy('name')">
+                Nom  
+                <span class="sortorder" ng-show="propertyName == 'name'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th ng-click="sortBy('categorieName')">
+                Catégorie  
+                <span class="sortorder" ng-show="propertyName == 'categorieName'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th ng-click="sortBy('quantity')">
+                Quantité  
+                <span class="sortorder" ng-show="propertyName == 'quantity'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th ng-click="sortBy('caution')">
+                Caution  
+                <span class="sortorder" ng-show="propertyName == 'caution'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th ng-click="sortBy('placeName')">
+                Localisation  
+                <span class="sortorder" ng-show="propertyName == 'placeName'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th ng-click="sortBy('statusName')">
+                Statut  
+                <span class="sortorder" ng-show="propertyName == 'statusName'" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-show="addNewItem">
+            <td><input type="text" ng-model="newItem.name" class="form-control" focus-me="focusInput"></td>
+            <td>
+              <select class="form-control" ng-model="newItem.type">
+                <option ng-repeat="type in types" value="{{type.id}}">
+                  {{type.name}}
+                </option>
+              </select>
+            </td>
+            <td><input type="text" ng-model="newItem.quantity" class="form-control"></td>
+            <td><input type="text" ng-model="newItem.caution" class="form-control"></td>
+            <td>
+              <select class="form-control" ng-model="newItem.place">
+                <option ng-repeat="place in places" value="{{place.id}}">
+                  {{place.name}}
+                </option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control" ng-model="newItem.status">
+                  <option value="1">Visible</option>
+                  <option value="2">Visible et non empruntable</option>
+                  <option value="3">Invisible</option>
+              </select>
+            </td>
+            <td>
+              <img src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="save()">
+              <br>
+              <img src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+          <tr ng-repeat="item in items | toArray:false | filter:itemSearch | orderBy:propertyName:reverse">
+            <td>
+              <span ng-show="!item.edit">{{ item.name }}</span>
+              <input type="text" ng-model="item.name" ng-show="item.edit" class="form-control">
+            </td>
+            <td>
+              <span ng-show="!item.edit">{{ item.typeName }}</span>
+              <select ng-show="item.edit" class="form-control" ng-options="type.name for type in types track by type.id" ng-model="item.typeSection"></select>
+            </td>
+            <td>
+              <span ng-show="!item.edit">{{ item.quantity }}</span>
+              <input type="text" ng-model="item.quantity" ng-show="item.edit" class="form-control">
+            </td>
+            <td>
+              <span ng-show="!item.edit">{{ item.caution }}</span>
+              <input type="text" ng-model="item.caution" ng-show="item.edit" class="form-control">
+            </td>
+            <td>
+              <span ng-show="!item.edit">{{ item.placeName }}</span>
+              <select ng-show="item.edit" class="form-control" ng-options="place.name for place in places track by place.id" ng-model="item.placeSection"></select>
+            </td>
+            <td>
+              <span ng-show="!item.edit">{{ item.statusName }}</span>
+              <select class="form-control" ng-model="item.status" ng-show="item.edit">
+                  <option value="1">Visible</option>
+                  <option value="2">Visible et non empruntable</option>
+                  <option value="3">Invisible</option>
+              </select>
+            </td>
+            <td>
+              <img ng-show="!item.edit" src="assets/img/edit.png" height="22px" style="margin : 6px" ng-click="edit(item)">
+              <img ng-show="!item.edit" src="assets/img/delete.png" height="22px" ng-click="delete(item)" style="margin:6px">
+              <img ng-show="item.edit" src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="update(item)">
+              <br>
+              <img ng-show="item.edit" src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</in-wrapper>

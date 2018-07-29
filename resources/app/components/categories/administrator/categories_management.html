@@ -1,0 +1,56 @@
+<in-wrapper>
+  <br><br>
+  <div class = "row">
+    <div class="col-md-6 offset-md-3">
+      <table class="table table-hover table-striped col-md-12">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-5">
+                <h3>Gestion des catégories</h3>
+            </div>
+            <div class="form-group col-md-4 offset-md-1">
+              <input ng-model="categorieSearch" type="text" class="form-control search-list" placeholder="Rechercher une catégorie...">
+            </div>
+            <div class="col-md-1 offset-md-1">
+              <a >
+                <img src="assets/img/add.png" width="30px" ng-click="add()">
+              </a>
+            </div>
+          </div>
+        </div>
+        <thead class="thead-dark">
+          <tr>
+              <th ng-click="sort()">
+                Nom  
+                <span class="sortorder" ng-class="{reverse: reverse}"></span>
+              </th>
+              <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-show="addNewCategorie">
+            <td><input type="text" ng-model="newCategorie.name" class="form-control" focus-me="focusInput"></td>
+            <td>
+              <img src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="save()">
+              <br>
+              <img src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+          <tr ng-repeat="categorie in categories | toArray:false | filter:categorieSearch | orderBy:propertyName:reverse">
+            <td>
+              <span ng-show="!categorie.edit">{{ categorie.name }}</span>
+              <input type="text" ng-model="categorie.name" ng-show="categorie.edit" class="form-control">
+            </td>
+            <td>
+              <img ng-show="!categorie.edit" src="assets/img/edit.png" height="22px" style="margin : 6px" ng-click="edit(categorie)">
+              <img ng-show="!categorie.edit" src="assets/img/delete.png" height="22px" ng-click="delete(categorie)" style="margin:6px">
+              <img ng-show="categorie.edit" src="assets/img/validate.png" height="22px" style="margin: 6px" ng-click="update(categorie)">
+              <br>
+              <img ng-show="categorie.edit" src="assets/img/cancel.png" height="22px" style="margin: 6px" ng-click="cancel()">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</in-wrapper>
