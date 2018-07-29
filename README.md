@@ -36,6 +36,13 @@ Générer la clé pour php artisan
 php artisan key:generate
 ```
 
+
+Gulp
+```
+gulp
+gulp watch
+```
+
 Lancer le serveur
 ```
 php artisan serve
