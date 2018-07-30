@@ -8,12 +8,17 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe) {
+  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    /*Initialisation des boutons de confirmation*/
+    $scope.addConfirmation = false;
+    $scope.updateConfirmation = false;
+    $scope.deleteConfirmation = false;
 
     //Pour afficher le formulaire d'ajout d'une nouvelle catégorie
     $scope.addNewPlace = false;
@@ -56,6 +61,10 @@ angular.module('bobbyApp')
     $scope.update = function($place){
       $http.put('http://localhost:8000/api/v1/itemplaces/'+ $place.id, $place).then(function(){
         $place.edit = !$place.edit;
+        $scope.updateConfirmation = true;
+        $timeout(function() {
+           $scope.updateConfirmation = false;
+        }, 3000);
       })
     }
 
@@ -67,6 +76,10 @@ angular.module('bobbyApp')
     $scope.save = function(){
       $scope.loading=true;
       serviceAjax.post('itemplaces', $scope.newPlace, 'POST').then(function(){
+        $scope.addConfirmation = true;
+        $timeout(function() {
+           $scope.addConfirmation = false;
+        }, 3000)
         loadPlace();
       })
       $scope.loading=false;
@@ -78,6 +91,10 @@ angular.module('bobbyApp')
 
     $scope.delete = function($place){
       $http.delete('http://localhost:8000/api/v1/itemplaces/'+ $place.id).then(function(){
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
         loadPlace();
       })
 

@@ -8,12 +8,17 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe) {
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    /*Initialisation des boutons de confirmation*/
+    $scope.addConfirmation = false;
+    $scope.updateConfirmation = false;
+    $scope.deleteConfirmation = false;
 
     $scope.asso_id = $routeParams.asso_id;
 
@@ -59,7 +64,6 @@ angular.module('bobbyApp')
           $scope.items[i].placeSection = $scope.places.filter((r)=>r.id == $scope.items[i].place)[0];
           $scope.items[i].status = $scope.items[i].status.toString();
         }
-        console.log('items', $scope.items);
       });
       $scope.loading=false;
       
@@ -107,8 +111,12 @@ angular.module('bobbyApp')
         $item.type = $item.typeSection.id;
       if($item.placeSection)
         $item.place = $item.placeSection.id;
-      $http.put('http://localhost:8000/api/v1/items/'+ $item.id, $item, gererErreur).then(function(){
+      $http.put('http://localhost:8000/api/v1/items/'+ $item.id, $item).then(function(){
         $item.edit = !$item.edit;
+        $scope.updateConfirmation = true;
+        $timeout(function() {
+           $scope.updateConfirmation = false;
+        }, 3000)
         loadItem();
       })
     }
@@ -121,7 +129,11 @@ angular.module('bobbyApp')
     $scope.save = function(){
       console.log($scope.newItem);
       $scope.loading=true;
-      serviceAjax.post('items', $scope.newItem, 'POST', gererErreur).then(function(){
+      serviceAjax.post('items', $scope.newItem, 'POST').then(function(){
+        $scope.addConfirmation = true;
+        $timeout(function() {
+           $scope.addConfirmation = false;
+        }, 3000)
         loadItem();
       })
       console.log($scope.items);      
@@ -129,24 +141,20 @@ angular.module('bobbyApp')
       $scope.loading=false;
 
       loadNewItem();
+      $scope.newItem.type = ""+$scope.types[0].id;
+      $scope.newItem.place = "" + $scope.places[0].id;
     }
 
 
 
     $scope.delete = function($item){
       $http.delete('http://localhost:8000/api/v1/items/'+ $item.id).then(function(){
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
         loadItem();
       })
-
-    }
-
-    var gererErreur = function(error) {
-        if(error.status == 422) {
-            $scope.inputErrors = error.data.data;
-        }
-        else if(error.status == 409) {
-            $scope.messageError = "Une machine avec le même nom existe déjà";
-        }
 
     }
 

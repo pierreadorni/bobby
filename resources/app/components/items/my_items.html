@@ -18,6 +18,15 @@
             </div>
           </div>
         </div>
+        <div class="row" ng-if="addConfirmation && !updateConfirmation && !deleteConfirmation">
+          <span class="btn spanConfirm addConfirm">La catégorie a bien été ajoutée</span>
+        </div>
+        <div class="row" ng-if="updateConfirmation && !addConfirmation && !deleteConfirmation">
+          <span class="btn spanConfirm updateConfirm">La catégorie a bien été mise à jour</span>
+        </div>
+        <div class="row" ng-if="deleteConfirmation && !addConfirmation && !updateConfirmation">
+          <span class="btn spanConfirm deleteConfirm">La catégorie a bien été supprimée</span>
+        </div>
         <thead class="thead-dark">
           <tr>
               <th ng-click="sortBy('name')">
