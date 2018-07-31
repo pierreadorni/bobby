@@ -42,23 +42,6 @@
     <script src="app/vendor/bootstrap/bootstrap.js"></script>
     <script src="app/vendor/toArrayFilter/toArrayFilter.js"></script>
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <!--<script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/index.js"></script>
-        <script src="scripts/controllers/my_items.js"></script>
-        <script src="scripts/controllers/categorie.js"></script>
-        <script src="scripts/controllers/validated_booking.js"></script>
-        <script src="scripts/controllers/waiting_booking.js"></script>
-        <script src="scripts/controllers/refused_booking.js"></script>
-        <script src="scripts/controllers/my_validated_booking.js"></script>
-        <script src="scripts/controllers/my_waiting_booking.js"></script>
-        <script src="scripts/controllers/my_refused_booking.js"></script>
-
-        <script src="scripts/controllers/add_item.js"></script>
-        <script src="scripts/services/serviceAjax.js"></script>
-        <!-- endbuild -->
-
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

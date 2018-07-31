@@ -76,11 +76,11 @@ angular.module('bobbyApp')
     $scope.save = function(){
       $scope.loading=true;
       serviceAjax.post('itemplaces', $scope.newPlace, 'POST').then(function(){
+        loadPlace();
         $scope.addConfirmation = true;
         $timeout(function() {
            $scope.addConfirmation = false;
         }, 3000)
-        loadPlace();
       })
       $scope.loading=false;
       $scope.addNewPlace = false;
@@ -91,11 +91,11 @@ angular.module('bobbyApp')
 
     $scope.delete = function($place){
       $http.delete('http://localhost:8000/api/v1/itemplaces/'+ $place.id).then(function(){
+        loadPlace();
         $scope.deleteConfirmation = true;
         $timeout(function() {
            $scope.deleteConfirmation = false;
         }, 3000)
-        loadPlace();
       })
 
     }

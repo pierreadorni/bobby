@@ -1,0 +1,337 @@
+<in-wrapper>
+    <br><br>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Réservation</h1>
+        </div>
+
+        <!--<div ng-show="saving">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        </div>-->
+
+        <!--<div ng-show="error && !saving" class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Une erreur est survenue : {{ error }}
+                </div>
+            </div>
+        </div>-->
+
+        <!--<div ng-hide="saving" class="row">-->
+    </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-5 offset-md-1" ng-hide="booking.assoRequesting">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Étape 1</h3>
+                        <p>Quel association désire emprunter?</p>
+                    </div>
+                    <div class="form-group">
+                            <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
+                        </div>
+                    <div class="list-group">
+                            <button ng-repeat="asso in assos | filter:assoSearch" type="button" class="list-group-item">
+                                <h5 ng-click="assoRequesting(asso.id)">{{ asso.name }}</h5>
+                                <span class="badge badge-pill"></span>
+                            </button>
+                        </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-5 offset-md-1" ng-show="booking.assoRequesting && !booking.assoRequested">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Étape 2</h3>
+                        <p>A quelle association le matériel à emprunter appartient-il?</p>
+                    </div>
+                    <!--<div class="form-group">
+                            <input ng-model="assoRequestedSearch" type="text" class="form-control" placeholder="Rechercher une association">
+                    </div>-->
+                    <div class="list-group">
+                            <!--<button ng-repeat="assoRequested in assosRequested | filter:assoRequestedSearch" type="button" class="list-group-item">-->
+                            <button ng-repeat="assoRequested in assosRequested" type="button" class="list-group-item">
+                                <h5 ng-click="associationRequested(assoRequested.id)">{{ assoRequested.name }}</h5>
+                                <span class="badge badge-pill"></span>
+                            </button>
+                        </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-5 offset-md-1" ng-show="booking.assoRequesting && booking.assoRequested">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Que veux-tu emprunter?</h3>
+                        <p>Sélectionner un ou plusieurs items</p>
+                    </div>
+                    <div class="panel-body">
+
+                        <!-- Item -->
+                        <div class="form-group">
+                            <input ng-show="items" ng-model="itemSearch" type="text" class="form-control" placeholder="Rechercher un item">
+                        </div>
+                        <div class="list-group">
+                            <button ng-repeat="item in items | filter:itemSearch" 
+                                    type="button" 
+                                    class="list-group-item"
+                                    ng-click="item.quantity>0 && addItem(item)"
+                                    ng-click="item.quantity<=0">
+                                <h5>{{ item.name }}</h5>
+                                <span class="badge badge-pill">{{ item.quantity}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="col-sm-12 col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Résumé de la réservation</h3>
+                    </div>
+
+                    <div class="panel-body row">
+                        <!-- User -->
+                        <div class=" col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <p>Commandes effectuées par :</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Entity -->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <p ng-hide="booking.assoRequesting"><i>Vous n'avez pas choisi pour quelle association vous voulez emprunter du matériel</i></p>
+                                    <div ng-show="booking.assoRequesting">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4>{{ booking.assoRequesting.name }}</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <p>{{ booking.assoRequesting.mail }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="booking.assoRequesting" class="panel-footer">
+                                    <button type="button" class="btn btn-yellow">Modifier l'association</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="col-lg-6 col-md-12" ng-if="can('change-purchase-entity')" >
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <p ng-hide="purchase.entity"><i>Vous n'avez pas choisi d'entité</i></p>
+                                    <div ng-show="purchase.entity">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4>{{ purchase.entity.name }}</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <p ng-bind-html="purchase.entity.invoice_address"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="purchase.entity" class="panel-footer">
+                                    <button ng-click="purchase.entity = null" type="button" class="btn btn-yellow">Modifier l'entité</button>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <p ng-hide="booking.assoRequested"><i>Vous n'avez pas choisi l'association à qui vous demandez du matériel</i></p>
+                                    <div ng-show="booking.assoRequested">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4>{{ booking.assoRequested.name }}</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <p>{{ booking.assoRequested.mail }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="booking.assoRequested" class="panel-footer">
+                                    <button type="button" class="btn btn-yellow">Modifier l'association</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Elements -->
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <p ng-hide="booking.items.length > 0"><i>Vous n'avez encore rien choisi pour la commande</i></p>
+
+                                    <div ng-show="booking.items.length > 0">
+
+                                    <!--Items-->
+                                        <h4>Items</h4>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Quantité</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ng-repeat="item in booking.items">
+                                                <tr>
+                                                    <td>{{ item.name }}</td>
+                                                    <td>{{ item.quantity }}
+                                                        <a href ng-click="addItemByIndex($index)"><img src="assets/img/add.png" width="12px"></a>
+                                                        <a href ng-click="removeProductByIndex($index)"><img src="assets/img/minus.png" width="12px"></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    <!--<p ng-hide="purchase.products.length > 0 || purchase.services.length > 0"><i>Vous n'avez encore rien choisi pour la commande</i></p>
+
+                                    <div ng-show="purchase.products.length > 0 || purchase.services.length > 0">-->
+
+                                        <!-- Products -->
+                                        <!--<div ng-show="purchase.products.length > 0" class="table-responsive">
+                                            <h4>Produits</h4>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Quantité</th>
+                                                    <th>Prix</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="product in purchase.products">
+                                                    <td class="col-md-6">{{ product.purchasable.name }}</td>
+                                                    <td class="col-md-3">{{ product.purchasedQuantity }}
+                                                        <a href ng-click="addProductByIndex($index)"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                        <a href ng-click="removeProductByIndex($index)"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                                                    </td>
+                                                    <td  class="col-md-3">{{ product.finalPrice | currency:'' }}€</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>-->
+
+                                        <!-- Services -->
+                                        <!--<div ng-show="purchase.services.length" class="table-responsive">
+                                            <h4>Services</h4>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Deadline</th>
+                                                    <th>Supprimer</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="service in purchase.services">
+                                                    <td class="col-md-6">{{ service.purchasable.name }}</td>
+                                                    <td class="col-md-4">{{ service.deadline | date:"dd/MM/yyyy" }}</td>
+                                                    <td class="col-md-2">
+                                                        <a href ng-click="purchase.services.splice($index, 1)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>-->
+
+                                        <!--<div>-->
+                                            <!-- Prix final -->
+                                            <!--<h4>Prix total: {{ prixTotal() | currency:'' }}€</h4>
+                                        </div>
+
+                                    </div>-->
+
+                                </div>
+                                <!--<div ng-show="purchase.user && purchase.products.length + purchase.services.length" class="panel-footer">
+                                    <button ng-click="save()"
+                                            type="button" class="btn btn-yellow">
+                                        Valider
+                                    </button>
+                                    <button ng-click="devis()" ng-hide="true" ng-disabled="loadingQuote"
+                                            ng-if="can('generate-quotation')"
+                                            type="button" class="btn btn-yellow">
+                                        Générer un devis
+                                    </button>
+                                </div>-->
+                                <div class="panel-footer">
+                                    <button ng-click="save()"
+                                            type="button" class="btn btn-yellow">
+                                        Valider
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div ng-hide="purchase.user" ng-show="can('order-for-someone')">
+                <div class="col-sm-12 col-md-5 col-md-pull-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>Étape 1 : Client</h3>
+                            <p>Qui souhaite effectuer une commande ?</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="purchase.login" ng-enter="setUserFromLogin()" placeholder="Entrez le login">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="!purchase.entity && purchase.user && !saving" ng-if="can('change-purchase-entity')">
+                <div class="col-sm-12 col-md-5 col-md-pull-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>Choix de l'entité</h3>
+                            <p>Quel entitée effectue la commande ?</p>
+                        </div>
+                        <div class="panel-body">
+                            <div ng-show="entities">
+                                <show-entities entities-data="entities" entities-callback="selectEntity(entity)"></show-entities>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
+            <!--<div ng-show="purchase.user && (purchase.entity || !can('change-purchase-entity')) && !saving">
+                <div class="col-sm-12 col-md-5 col-md-pull-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>Faites votre panier</h3>
+                            <p>Sélectionner un ou plusieurs <span ng-show="!membreCAS">produits / </span>services</p>
+                        </div>
+                        <div class="panel-body">-->
+
+                            <!-- Product -->
+                            <!--<div class="form-group">
+                                <input ng-show="elements.products" ng-model="productSearch" type="text" class="form-control" placeholder="Rechercher un produit">
+                            </div>
+                            <div class="list-group">
+                                <button ng-repeat="product in elements.products | filter:productSearch"
+                                        ng-click="product.remainingQuantity > 0 && addProduct(product)"
+                                        ng-class="{'disabled': product.remainingQuantity <= 0}"
+                                        type="button" class="list-group-item">
+                                    <h5>{{ product.name }}</h5>
+                                    {{ product.description }}
+                                    <span class="badge badge-pill">{{ product.remainingQuantity }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+            
+
+        </div>
+
+    <!-- /.row -->
+</in-wrapper>

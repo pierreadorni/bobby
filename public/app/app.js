@@ -57,6 +57,11 @@ var app  = angular
         controller : 'placesManagementCtrl',
         controllerAs : 'placesManagement'
       })
+      .when('/booking',{
+        templateUrl : 'app/components/bookings/bookings.html',
+        controller : 'bookingsCtrl',
+        controllerAs : 'bookings'
+      })
       /*.when('/items/:asso_id', {
         templateUrl: 'views/items.html',
         controller: 'ItemsCtrl',

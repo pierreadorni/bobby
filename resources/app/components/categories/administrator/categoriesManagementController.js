@@ -77,13 +77,14 @@ angular.module('bobbyApp')
       $scope.loading=true;
       serviceAjax.post('itemtypes', $scope.newCategorie, 'POST').then(function(){
         loadCategorie();
-      })
-      $scope.loading=false;
-      $scope.addNewCategorie = false;
-      $scope.addConfirmation = true;
+        $scope.addNewCategorie = false;
+        $scope.addConfirmation = true;
         $timeout(function() {
            $scope.addConfirmation = false;
         }, 3000)
+      })
+      $scope.loading=false;
+      
       loadNewCategorie();
     }
 
@@ -91,11 +92,11 @@ angular.module('bobbyApp')
 
     $scope.delete = function($categorie){
       $http.delete('http://localhost:8000/api/v1/itemtypes/'+ $categorie.id).then(function(){
+        loadCategorie();
         $scope.deleteConfirmation = true;
         $timeout(function() {
            $scope.deleteConfirmation = false;
         }, 3000)
-        loadCategorie();
       })
 
     }

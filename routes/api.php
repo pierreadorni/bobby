@@ -38,7 +38,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('items/categories/{categorie}',function ($categorie){
 
-        $items = Item::all()->where('type', $categorie)->where('status', 1);
+        $items = Item::all()->where('type', $categorie)->where('status', '<', 3);
         foreach ($items as $item) {
             $item->associationName = $item->associations->name;
             $item->placeName = $item->itemplaces->name;
@@ -73,6 +73,16 @@ Route::prefix('v1')->group(function () {
         }
         return $items;
     });
+
+    Route::get('booking/assos/{asso_id}', function($asso_id){
+        return $assos = Association::all()->where('id', '<>', $asso_id);
+    });
+
+    Route::get('booking/items/{asso_id}', function($asso_id){
+        return $items = Item::all()->where('association', $asso_id);
+        //->where('status', 1);
+    });
+
 
 	Route::get('assousers/users/{user}', function ($user_id) {
 
