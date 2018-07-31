@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BookingLine extends Model
 {
     protected $fillable = [
-		'booking','item', 'quantity', 'date', 'status'
+		'booking','item', 'quantity', 'startDate', 'status', 'endDate'
 	];
 
 	protected $table = 'booking_lines';

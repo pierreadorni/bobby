@@ -54,6 +54,11 @@ angular.module('bobbyApp')
   }
 
   /***  ETAPE 3 ***/
+  $scope.dateSave = function(){
+    $scope.booking.date = true;
+  }
+
+  /***  ETAPE 4 ***/
   //Chargement des items en fonction de l'association sélectionnée
   //ATTENTION FAIRE REQUETE SANS CAUTION ETC //
     var loadItem = function($id){
@@ -81,14 +86,29 @@ angular.module('bobbyApp')
                 id: $item.id,
                 name: $item.name,
                 quantity: 1,
+                startDate : $scope.booking.startDate,
+                endDate : $scope.booking.endDate
             })
         }else {
-            var itemBooked = $scope.booking.items[index]
+            var itemBooked = $scope.booking.items[index];
             itemBooked.quantity += 1;
         }
+        console.log($scope.booking.items);
     }
 
     /*** RESUME DE LA RESERVATION ***/
+
+    //Modification de l'association demandant des items
+    $scope.changeAssoRequesting = function(){
+      $scope.booking.assoRequesting = null;
+    }
+
+    //Modification de l'association à qui des items sont demandés
+    $scope.changeAssoRequested = function(){
+      $scope.booking.assoRequested = null;
+      $scope.booking.items = [];
+    }
+
     //Fonction permettant d'ajouter dans le résumé de la réservation un item si le stock le permet (icone +)
     $scope.addItemByIndex = function($index){
       var itemBooked = $scope.booking.items[$index];
@@ -110,7 +130,20 @@ angular.module('bobbyApp')
         }
     }
 
+    //Modification de la date de départ du prêt d'un item
+    $scope.editStartDate = function($item){
+      $item.editStartDate = true; 
+    }
+
+    //Modification de la date de fin du prêt d'un item
+    $scope.editEndDate = function($item){
+      $item.editEndDate = true; 
+    }
+
+
+
   });
+
 
 
 'use strict';
@@ -152,7 +185,6 @@ angular.module('bobbyApp')
     loadItem();
 
   });
-
 
 'use strict';
 

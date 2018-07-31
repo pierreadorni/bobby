@@ -18,7 +18,8 @@ class CreateBookingLinesTable extends Migration
             $table->integer('booking')->unsigned();
             $table->integer('item')->unsigned();
             $table->integer('quantity')->unsigned();
-            $table->timestamp('date');
+            $table->timestamp('startDate');
+            $table->timestamp('endDate');
             $table->string('status');
 
             $table->foreign('item')->references('id')->on('items');
