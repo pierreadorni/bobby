@@ -47,6 +47,21 @@ var app  = angular
         controller: 'categorieCtrl',
         controllerAs: 'categorie'
       })
+      .when('/booking',{
+        templateUrl : 'app/components/bookings/create_booking.html',
+        controller : 'createBookingCtrl',
+        controllerAs : 'createBooking'
+      })
+      .when('/mybookings',{
+        templateUrl : 'app/components/bookings/index_my_bookings.html',
+        controller : 'indexMyBookingsCtrl',
+        controllerAs : 'createBooking'
+      })
+      .when('/booking/:id',{
+        templateUrl : 'app/components/bookings/edit_booking.html',
+        controller : 'editBookingCtrl',
+        controllerAs : 'editBooking'
+      })
       .when('/gestion/categories', {
         templateUrl : 'app/components/categories/administrator/categories_management.html',
         controller : 'categoriesManagementCtrl',
@@ -57,50 +72,11 @@ var app  = angular
         controller : 'placesManagementCtrl',
         controllerAs : 'placesManagement'
       })
-      .when('/booking',{
-        templateUrl : 'app/components/bookings/bookings.html',
-        controller : 'bookingsCtrl',
-        controllerAs : 'bookings'
-      })
-      /*.when('/items/:asso_id', {
-        templateUrl: 'views/items.html',
-        controller: 'ItemsCtrl',
-        controllerAs: 'Items'
-      }).when('/add_item/:asso_id', {
-        templateUrl: 'views/add_item.html',
-        controller: 'AddItemCtrl',
-        controllerAs: 'addItem'
-      })
-        .when('/validated_booking/:asso_id', {
-        templateUrl: 'views/validated_booking.html',
-        controller: 'ValidatedBookingCtrl',
-        controllerAs: 'validatedBooking'
-      })
-        .when('/waiting_booking/:asso_id', {
-        templateUrl: 'views/waiting_booking.html',
-        controller: 'WaitingBookingCtrl',
-        controllerAs: 'waitingBooking'
-      })
-        .when('/refused_booking/:asso_id', {
-        templateUrl: 'views/refused_booking.html',
-        controller: 'RefusedBookingCtrl',
-        controllerAs: 'refusedBooking'
-      })
-        .when('/my_validated_booking/:asso_id', {
-        templateUrl: 'views/my_validated_booking.html',
-        controller: 'MyValidatedBookingCtrl',
-        controllerAs: 'MyValidatedBooking'
-      })
-        .when('/my_waiting_booking/:asso_id', {
-        templateUrl: 'views/my_waiting_booking.html',
-        controller: 'MyWaitingBookingCtrl',
-        controllerAs: 'MyWaitingBooking'
-      })
-        .when('/my_refused_booking/:asso_id', {
-        templateUrl: 'views/my_refused_booking.html',
-        controller: 'MyRefusedBookingCtrl',
-        controllerAs: 'MyRefusedBooking'
-      })*/
+      .when('/gestion/bookings',{
+        templateUrl : 'app/components/bookings/administrator/index_bookings.html',
+        controller : 'indexBookingsCtrl',
+        controllerAs : 'indexBookings'
+      })      
       .otherwise({
         redirectTo: '/'
       });

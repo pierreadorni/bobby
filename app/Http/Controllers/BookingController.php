@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\BookingRequest;
 use App\Http\Controllers\Controller;
 use App\Booking;
 use App\User;
 use App\Association;
-use App\Http\Requests\BookingRequest;
+use App\Item;
+use App\BookingLine;
 
 class BookingController extends Controller
 {
@@ -18,8 +20,41 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::get();
-        return response()->json($bookings, 200);
+        $bookings = Booking::all();
+
+        if($bookings){
+            foreach ($bookings as $booking) {
+
+                /*Requêtes pour les associations à changer avec Portail des assos*/
+                $booking->owner = Association::find($booking->owner);
+                $booking->booker = Association::find($booking->booker);
+
+                /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
+                $booking->user = User::find($booking->user);
+
+                /*Gestion des réceptions de caution*/
+                if($booking->cautionReceived)
+                    $booking->cautionReceived = "Oui";
+                else
+                    $booking->cautionReceived = "Non";
+
+                /*Gestion des status*/
+                switch ($booking->status) {
+                    case '1':
+                        $booking->status = "En cours";
+                        break;
+                    
+                    default:
+                        $booking->status = "";
+                        break;
+                }
+            }
+
+            return response()->json($bookings, 200);
+        }
+        else{
+            return response()->json(["message" => "Impossible de trouver les réservations"], 500);
+        }
     }
 
     /**
@@ -28,9 +63,10 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookingRequest $request)
     {
         $booking = Booking::create($request->all());
+
         if($booking)
         {
             return response()->json($booking, 200);
@@ -49,10 +85,41 @@ class BookingController extends Controller
      */
     public function show($id)
     {
-        $booking = Booking::find($id);
+        $booking = Booking::find($id);    
 
-        if($booking)
+        if($booking){
+            //Récupération des informations liées à la réservation
+            $booking->bookinglines = $booking->bookinglines()->get();
+            foreach ($booking->bookinglines as $bookingline) {
+                $bookingline->item = Item::find($bookingline->item);
+            }
+
+            /*Requêtes pour les associations à changer avec Portail des assos*/
+            $booking->owner = Association::find($booking->owner);
+            $booking->booker = Association::find($booking->booker);
+
+            /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
+            $booking->user = User::find($booking->user);
+
+            /*Gestion des réceptions de caution*/
+                if($booking->cautionReceived)
+                    $booking->cautionReceived = "Oui";
+                else
+                    $booking->cautionReceived = "Non";
+
+                /*Gestion des status*/
+                switch ($booking->status) {
+                    case '1':
+                        $booking->status = "En cours";
+                        break;
+                    
+                    default:
+                        $booking->status = "";
+                        break;
+                }
+
             return response()->json($booking, 200);
+        }
         else
             return response()->json(["message" => "Impossible de trouver la réservation"], 500);
     }
@@ -64,7 +131,7 @@ class BookingController extends Controller
      * @param  \App\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BookingRequest $request, $id)
     {
         $booking = Booking::find($id);
         if($booking){
@@ -93,5 +160,54 @@ class BookingController extends Controller
         }
         else
             return response()->json(["message" => "Impossible de trouver la réservation"], 500);
+    }
+
+    public function calculCaution(Request $request){
+        $caution = 0;
+        foreach ($request->items as $item) {
+            $caution+=Item::find($item['id'])->caution*$item['quantity'];
+        }
+        return($caution);
+    }
+
+    public function indexAssociation($asso_id){
+        //$bookings['owner'] = Booking::all()->where('owner', $asso_id);
+        $bookings = [
+            "ownerBookings"     =>  Booking::all()->where('owner', $asso_id),
+            "bookerBookings"    =>  Booking::all()->where('booker', $asso_id),
+        ];
+        if($bookings['ownerBookings']){
+            foreach ($bookings['ownerBookings'] as $booking) {
+
+                $booking->booker = Association::find($booking->booker);
+                
+                $booking->user = User::find($booking->user);
+
+                /*Gestion des réceptions de caution*/
+                if($booking->cautionReceived)
+                    $booking->cautionReceived = "Oui";
+                else
+                    $booking->cautionReceived = "Non";
+            }
+                }
+        if($bookings['bookerBookings']){
+            foreach ($bookings['bookerBookings'] as $booking) {
+
+                $booking->booker = Association::find($booking->owner);
+
+                /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
+                $booking->user = User::find($booking->user);
+
+                /*Gestion des réceptions de caution*/
+                if($booking->cautionReceived)
+                    $booking->cautionReceived = "Oui";
+                else
+                    $booking->cautionReceived = "Non";
+            }
+        
+
+            return response()->json($bookings, 200);
+        }
+        
     }
 }

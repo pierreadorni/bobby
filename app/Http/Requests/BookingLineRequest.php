@@ -1,8 +1,9 @@
-<?php
+;;             <?php
 
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class BookingLineRequest extends FormRequest
 {
@@ -24,11 +25,12 @@ class BookingLineRequest extends FormRequest
     public function rules()
     {
         return [
-            'booking'  =>  'integer|between:3,191'.($this->isMethod('put')?'':'|required'),
-            'item'  =>  'integer|integer|unsigned',
-            'quantity'  =>  'integer|between:3,191'.($this->isMethod('put')?'':'|required'),
-            'date'  =>  'timestamp'.($this->isMethod('put')?'':'|required'),
-            'status'    =>  'string|between:3,191'.($this->isMethod('put')?'':'|required'),
+            'booking'   =>  'exists:bookings,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
+            'item'      =>  'integer|exists:items,id|min:0'.($this->isMethod('put')?'':'|required'),
+            'quantity'  =>  'integer|min:0'.($this->isMethod('put')?'':'|required'),
+            'startDate' =>  'date|after_or_equal:'.Carbon::now().''.($this->isMethod('put')?'':'|required'),
+            'endDate'   =>  'date|after_or_equal:startDate'.($this->isMethod('put')?'':'|required'),
+            'status'    =>  'integer|min:1|max:4'.($this->isMethod('put')?'':'|required'),
         ];
     }
 }
