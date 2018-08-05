@@ -38,7 +38,7 @@
           <tr>
               <th ng-click="sort()">
                 Nom  
-                <span class="sortorder" ng-class="{reverse: reverse}"></span>
+                <span class="sort-item" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
               </th>
               <th>Action</th>
           </tr>
@@ -57,7 +57,7 @@
               </p>
             </td>
           </tr>
-          <tr ng-repeat="place in places | toArray:false | filter:placeSearch | orderBy:propertyName:reverse">
+          <tr ng-repeat="place in places | toArray:false | filter:placeSearch | orderBy:'name':reverse">
             <td>
               <span ng-show="!place.edit">{{ place.name }}</span>
               <input type="text" ng-model="place.name" ng-show="place.edit" class="form-control">

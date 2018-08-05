@@ -39,7 +39,7 @@
           <tr>
               <th ng-click="sort()">
                 Nom  
-                <span class="sortorder" ng-class="{reverse: reverse}"></span>
+                <span class="sort-item" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
               </th>
               <th>Action</th>
           </tr>
@@ -58,7 +58,7 @@
               </p>
             </td>
           </tr>
-          <tr ng-repeat="categorie in categories | toArray:false | filter:categorieSearch | orderBy:propertyName:reverse">
+          <tr ng-repeat="categorie in categories | toArray:false | filter:categorieSearch | orderBy:'name':reverse">
             <td>
               <span ng-show="!categorie.edit">{{ categorie.name }}</span>
               <input type="text" ng-model="categorie.name" ng-show="categorie.edit" class="form-control">

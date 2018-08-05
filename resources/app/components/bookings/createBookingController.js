@@ -22,7 +22,12 @@ angular.module('bobbyApp')
     var loadAssociations = function(){
     $scope.loading = true;
     serviceAjax.get("associations").then(function(data){
-        $scope.assos=data.data;
+        $scope.assosBooking=data.data;
+
+        if($scope.assosBooking.length==1){
+          $scope.booking.assoRequesting = $scope.assosBooking[0];
+          loadAssociationsRequested();
+        }
     });
     $scope.loading=false;
   }
@@ -30,24 +35,31 @@ angular.module('bobbyApp')
 
   //Fonction pour la sélection de l'association demandant un item
   $scope.assoRequesting = function($id){
-    $scope.booking.assoRequesting = $scope.assos.filter((r)=>r.id == $id)[0];
+    $scope.booking.assoRequesting = $scope.assosBooking.filter((r)=>r.id == $id)[0];
     console.log($scope.booking);
     //Chargement des associations hormis celles sélectionnées
-    loadAssociationsRequested($id);
+    loadAssociationsRequested();
   }
 
   /*Chargement des associations d'un utilisateur*/
-    var loadAssociationsRequested = function($id){
+    var loadAssociationsRequested = function(){
     $scope.loading = true;
-    serviceAjax.get("booking/assos/"+$id).then(function(data){
+    serviceAjax.get("associations").then(function(data){
         $scope.assosRequested=data.data;
-    });
+
+        //On retire l'association qui est déjà sélectionné en tant qu'emprunter
+        for (var i = $scope.assosRequested.length - 1; i >= 0; i--) {
+          if($scope.assosRequested[i].id==$scope.booking.assoRequesting.id){
+            $scope.assosRequested.splice(i,1);
+          }
+        }
+    });    
     $scope.loading=false;
   }
   
   //Fonction pour la sélection de l'association possédant les items à emprunter
   $scope.associationRequested = function($id){
-    $scope.booking.assoRequested = $scope.assos.filter((r)=>r.id == $id)[0];
+    $scope.booking.assoRequested = $scope.assosRequested.filter((r)=>r.id == $id)[0];
     loadItem($scope.booking.assoRequested.id);
     //Chargement des associations hormis celles sélectionnées
   }

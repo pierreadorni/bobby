@@ -1,128 +1,132 @@
 <in-wrapper>
 	<br><br>
-
-	<div class="container">
-	  	<h3 class="title">Réservations demandées par des associations</h3>
-
-		<table align="center" class="table">
-
-	    	<th align="center" nav-pills>
-
-
-	            <ul class="nav flex-column">
-	            	<br>
-	                <br>
-
-	            	<button class="btn bg-success text-white" ng-click="changeStatus(1)">
-	            		En cours
-	            	</button>
-	             	<br>
-	             	<button class="btn bg-warning text-white" ng-click="changeStatus(2)">
-	            		Validée
-	            	</button>
-	             	<br>
-	             	<button class="btn bg-danger text-white" ng-click="changeStatus(3)">
-	            		Archives
-	            	</button>
-		        </ul>
-	    	</th>
-
-	    	<th>
-
-
-                <table class="table table-hover">
-	              	<thead>
-	                	<tr>
-							<th scope="col">Par qui?</th>
-							<th scope="col">Caution</th>
-							<th scope="col">Caution versée?</th>
-							<th scope="col">Effectuée le</th>
-							<th scope="col"></th>
-	                	</tr>
-	              	</thead>
-	              	<tbody>
-
-						<tr ng-repeat="booking in bookings.ownerBookings | toArray:false | orderBy:propertyName:reverse" ng-click="open(booking.id)" ng-if="booking.status==status">
-							<td>
-								<span>{{ booking.booker.name }}</span>
-							</td>
-							<td>
-								<span>{{ booking.caution }}</span>
-							</td>
-							<td>
-								<span>{{ booking.cautionReceived }}</span>
-							</td>
-							<td>
-								<span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
-							</td>
-							<td style="text-align: center">
-								<a href="#!/booking/{{booking.id}}">
-								<button type="button" class="btn btn-outline-info">Voir</button>
-							</a>
-							</td>
-						</tr>
-	            	</tbody>
-	            </table>
-      		</th>
-    	</table>
+	<div ng-hide="singleAssociation">
+		<p class="title">Sélectionne une association</p>
+		<select class="col-md-2 offset-md-5 form-control" ng-model="data.asso_id">
+	        <option ng-repeat="asso in assos" value="{{asso.id}}">
+	        	<a ng-click="changeAsso(asso.id)">{{asso.name}}</a>
+	        </option>
+	     </select>
+	     <br>
+	     <hr>
 	</div>
-	<div class="container">
-	  	<h3 align="center">Réservations effectuées par votre association</h3>
+	<div ng-show="data.asso_id" class="row">
+		<div class="col-md-5 offset-md-1 col-sm-12">
+			<div class="row">
+			  	<h5 class="col-md-9">Réservations demandées par des associations</h5>
+			  	<div class="form-group col-md-3">
+		        	<input ng-model="ownerSearch" type="text" class="form-control search-list" placeholder="Rechercher...">
+		        </div>
+		     </div>
 
-		<table align="center" class="table" >
+		  	<div class="card text-center">
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus(1)" ng-class="{ active : isActive(1)}">En cours</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus(2)" ng-class="{ active : isActive(2)}">Validée</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus(3)" ng-class="{ active : isActive(3)}">Archives</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus(4)" ng-class="{ active : isActive(4)}">Toutes</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<table class="table table-hover">
+		              	<thead>
+		                	<tr>
+								<th scope="col">Par qui?</th>
+								<th scope="col">Caution</th>
+								<th scope="col">Caution versée?</th>
+								<th scope="col">Effectuée le</th>
+								<th scope="col"></th>
+		                	</tr>
+		              	</thead>
+		              	<tbody>
 
-	    	<th align="center" nav-pills>
+							<tr ng-repeat="booking in bookings.ownerBookings | toArray:false | orderBy:propertyName:reverse | filter:ownerSearch" ng-click="open(booking.id)" ng-if="booking.status==status">
+								<td>
+									<span>{{ booking.booker.name }}</span>
+								</td>
+								<td>
+									<span>{{ booking.caution }}</span>
+								</td>
+								<td>
+									<span>{{ booking.cautionReceived }}</span>
+								</td>
+								<td>
+									<span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
+								</td>
+								<td style="text-align: center">
+									<a href="#!/booking/{{booking.id}}">
+									<button type="button" class="btn btn-grey">Consulter</button>
+								</a>
+								</td>
+							</tr>
+		            	</tbody>
+		            </table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5 col-sm-12">
+			<div class="row">
+			  	<h5 class="col-md-9">Réservations effectuées par votre association</h5>
+			  	<div class="form-group col-md-3">
+		        	<input ng-model="bookingSearch" type="text" class="form-control search-list" placeholder="Rechercher...">
+		        </div>
+		     </div>
 
-
-	            <ul class="nav flex-column">
-	            	<br>
-	                <br>
-
-	            	<button class="btn bg-success text-white" ng-click="changeStatus(1)">
-	            		En cours
-	            	</button>
-	             	<br>
-	             	<button class="btn bg-warning text-white" ng-click="changeStatus(2)">
-	            		Validée
-	            	</button>
-	             	<br>
-	             	<button class="btn bg-danger text-white" ng-click="changeStatus(3)">
-	            		Archives
-	            	</button>
-		        </ul>
-	    	</th>
-
-	    	<th>
-
-
-                <table class="table table-hover">
-	              	<thead>
-	                	<tr>
-							<th scope="col">Par qui?</th>
-							<th scope="col">Caution versée?</th>
-							<th scope="col">Effectuée le</th>
-							<th scope="col"></th>
-	                	</tr>
-	              	</thead>
-	              	<tbody>
-
-						<tr ng-repeat="booking in bookings.bookerBookings | toArray:false | filter:bookingSearch | orderBy:propertyName:reverse" ng-click="open(booking.id)">
-							<td>
-								<span>{{ booking.booker.name }}</span>
-							</td>
-							<td>
-								<span>{{ booking.cautionReceived }}</span>
-							</td>
-							<td>
-								<span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
-							</td>
-							<td style="text-align: center">
-								<button type="button" class="btn btn-outline-info" href="!#/booking/{{booking.id}}">Voir</button>
-							</td>
-						</tr>
-	            	</tbody>
-	            </table>
-      		</th>
-    	</table>
+		  	<div class="card text-center">
+				<div class="card-header" id="topheader">
+					<ul class="nav nav-tabs card-header-tabs">
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus2(1)" ng-class="{ active : isActive2(1)}">En cours</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus2(2)" ng-class="{ active : isActive2(2)}">Validée</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus2(3)" ng-class="{ active : isActive2(3)}">Archives</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="changeStatus2(4)" ng-class="{ active : isActive2(4)}">Toutes</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<table class="table table-hover">
+		              	<thead>
+		                	<tr>
+								<th scope="col">Par qui?</th>
+								<th scope="col">Caution versée?</th>
+								<th scope="col">Effectuée le</th>
+								<th scope="col"></th>
+		                	</tr>
+		              	</thead>
+		              	<tbody>
+							<tr ng-repeat="booking in bookings.bookerBookings | toArray:false | filter:bookingSearch | orderBy:propertyName:reverse" ng-click="open(booking.id)" ng-if="booking.status==status2">
+								<td>
+									<span>{{ booking.booker.name }}</span>
+								</td>
+								<td>
+									<span>{{ booking.cautionReceived }}</span>
+								</td>
+								<td>
+									<span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
+								</td>
+								<td style="text-align: center">
+									<button type="button" class="btn btn-grey" href="!#/booking/{{booking.id}}">Consulter</button>
+								</td>
+							</tr>
+		            	</tbody>
+		            </table>
+				</div>
+			</div>
+		</div>
 	</div>
 </in-wrapper>

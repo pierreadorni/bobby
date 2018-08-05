@@ -30,9 +30,9 @@ var app  = angular
     'ngTouch',
     'angular-toArrayFilter'
   ])
-  .constant('__ENV', __ENV)
+  .constant('__ENV', __ENV);
 
-  .config(function ($routeProvider) {
+  app.config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'app/components/dashboard/main.html',
@@ -77,7 +77,14 @@ var app  = angular
         controller : 'indexBookingsCtrl',
         controllerAs : 'indexBookings'
       })      
+      .when('/login',{
+        templateUrl : 'app/components/login/login.html',
+        controller : 'loginCtrl',
+        controllerAs : 'login'
+      })  
       .otherwise({
         redirectTo: '/'
       });
   });
+
+

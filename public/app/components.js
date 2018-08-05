@@ -22,7 +22,12 @@ angular.module('bobbyApp')
     var loadAssociations = function(){
     $scope.loading = true;
     serviceAjax.get("associations").then(function(data){
-        $scope.assos=data.data;
+        $scope.assosBooking=data.data;
+
+        if($scope.assosBooking.length==1){
+          $scope.booking.assoRequesting = $scope.assosBooking[0];
+          loadAssociationsRequested();
+        }
     });
     $scope.loading=false;
   }
@@ -30,24 +35,31 @@ angular.module('bobbyApp')
 
   //Fonction pour la sélection de l'association demandant un item
   $scope.assoRequesting = function($id){
-    $scope.booking.assoRequesting = $scope.assos.filter((r)=>r.id == $id)[0];
+    $scope.booking.assoRequesting = $scope.assosBooking.filter((r)=>r.id == $id)[0];
     console.log($scope.booking);
     //Chargement des associations hormis celles sélectionnées
-    loadAssociationsRequested($id);
+    loadAssociationsRequested();
   }
 
   /*Chargement des associations d'un utilisateur*/
-    var loadAssociationsRequested = function($id){
+    var loadAssociationsRequested = function(){
     $scope.loading = true;
-    serviceAjax.get("booking/assos/"+$id).then(function(data){
+    serviceAjax.get("associations").then(function(data){
         $scope.assosRequested=data.data;
-    });
+
+        //On retire l'association qui est déjà sélectionné en tant qu'emprunter
+        for (var i = $scope.assosRequested.length - 1; i >= 0; i--) {
+          if($scope.assosRequested[i].id==$scope.booking.assoRequesting.id){
+            $scope.assosRequested.splice(i,1);
+          }
+        }
+    });    
     $scope.loading=false;
   }
   
   //Fonction pour la sélection de l'association possédant les items à emprunter
   $scope.associationRequested = function($id){
-    $scope.booking.assoRequested = $scope.assos.filter((r)=>r.id == $id)[0];
+    $scope.booking.assoRequested = $scope.assosRequested.filter((r)=>r.id == $id)[0];
     loadItem($scope.booking.assoRequested.id);
     //Chargement des associations hormis celles sélectionnées
   }
@@ -219,25 +231,63 @@ angular.module('bobbyApp')
       'AngularJS',
       'Karma'
     ];
+    $scope.data = {}
+    $scope.singleAssociation = true;
 
-    $scope.asso_id = 1;
+    //Chargement des associations de l'utilisateur
+    var loadAssociations = function(){
+    $scope.loading = true;
+    serviceAjax.get("associations").then(function(data){
+        $scope.singleAssociation = false;
+        $scope.assos=data.data;
+
+        /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
+        if($scope.assos.length==1){
+          $scope.data.asso_id = $scope.assos[0].id;
+          //Pour empêcher le select des assos de s'afficher
+          $scope.singleAssociation = true;
+          loadBookings();
+        }
+      });
+      $scope.loading=false;
+    }
+    loadAssociations();
+
+    /* Listener sur la valeur de asso_id */
+    $scope.$watch("data.asso_id", function(){
+      loadBookings();
+    });
 
     /*Filtre en fonction du statut des réservations*/
     $scope.status = 1;
+    $scope.status2 = 1;
 
     $scope.changeStatus=function(nb){
       $scope.status = nb;
+      console.log('asso', $scope.blabla)
+    }
+
+    $scope.changeStatus2=function(nb){
+      $scope.status2 = nb;
+    }
+
+    //Pour modifier les nav-item actifs 
+    $scope.isActive = function(nb){
+      return $scope.status == nb;
+    }
+    $scope.isActive2 = function(nb){
+      return $scope.status2 == nb;
     }
 
      //Recherche de la catégorie séléectionné
     var loadBookings = function(){
       $scope.loading = true;
-      serviceAjax.get("bookings/asso/" + $scope.asso_id).then(function(data){
+      serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
         $scope.bookings = data.data;
         console.log("donnees", $scope.bookings)
       })
     }
-    loadBookings();
+    //loadBookings();
 
     /* Gestion des tries des items*/
     $scope.propertyName = 'booker';
@@ -266,7 +316,7 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http) {
+  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -277,22 +327,202 @@ angular.module('bobbyApp')
      //Recherche de la catégorie séléectionné
     var loadCategorie = function(){
       $scope.loading = true;
-      serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
+      if($scope.categorie_id == 0){
+        $scope.type = 'Totalité du matériel';
+      }
+      else {
+        serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
         $scope.type = data.data.name;
-        console.log(data.data.name);
-      })
+        });
+      }
     }
     loadCategorie();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+    
     
     //Chargement des items en fonction de la catégorie sélectionnée
+
     var loadItem = function(){
       $scope.loading=true;
-      serviceAjax.get("items/categories/"+$scope.categorie_id).then(function(data){
-        $scope.items = data.data;
+      serviceAjax.get("items/categories/" + $scope.categorie_id)
+        .then(function(data){
+          $scope.items = data.data;
+        });
+      $scope.loading=false;
+    };
+    loadItem();
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    /*Initialisation des boutons de confirmation*/
+    $scope.addConfirmation = false;
+    $scope.updateConfirmation = false;
+    $scope.deleteConfirmation = false;
+
+    $scope.asso_id = $routeParams.asso_id;
+
+    var loadAssociation = function(){
+      $scope.loading=true;
+      serviceAjax.get("associations/"+$scope.asso_id).then(function(data){
+        $scope.asso = data.data.name;
       });
       $scope.loading=false;
     }
+    loadAssociation();
+
+    var loadItemTypes = function(){
+        $scope.loading = true;
+      serviceAjax.get("itemtypes").then(function(data){
+            $scope.types=data.data;
+            //Initialisation du type du nouvel item avec le premier élément des types
+            $scope.newItem.type = ""+$scope.types[0].id;
+        });
+    };
+    loadItemTypes();
+
+    var loadItemPlaces = function(){
+        $scope.loading = true;
+      serviceAjax.get("itemplaces").then(function(data){
+            $scope.places=data.data;
+            //Initialisation de la localisation du nouvel item avec le premier élément des localisations 
+            $scope.newItem.place = "" + $scope.places[0].id;
+        });
+      
+    };
+    loadItemPlaces();
+
+    
+    //Chargement des items en fonction de l'association sélectionnée
+    var loadItem = function(){
+      $scope.loading=true;
+      serviceAjax.get("association/items/"+$scope.asso_id).then(function(data){
+        $scope.items = data.data;
+        for (var i = $scope.items.length - 1; i >= 0; i--) {
+          //Permet d'affecter au ng-model d'edition des éléments
+          $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
+          $scope.items[i].placeSection = $scope.places.filter((r)=>r.id == $scope.items[i].place)[0];
+          $scope.items[i].status = $scope.items[i].status.toString();
+        }
+      });
+      $scope.loading=false;
+      
+    }
     loadItem();
+
+    //Pour afficher le formulaire d'ajout d'un nouvel item
+    $scope.addNewItem = false;
+    
+    var loadNewItem = function(){
+      //Pour remplir le nouvel item
+      $scope.newItem = {};
+      //Paramètre par défaut
+      $scope.newItem.status = "1";
+      $scope.newItem.association = $routeParams.asso_id;
+    }
+
+    loadNewItem();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+
+    /* Fonctions de gestions des items*/
+
+    $scope.add = function(){
+      loadItem();
+      $scope.addNewItem = true;
+      $scope.focusInput = true;
+    }
+
+    $scope.edit = function($item){
+      $scope.addNewItem = false;       
+      $item.edit=!$item.edit;
+    }
+
+    $scope.update = function($item){
+      console.log($item);
+      if($item.typeSection)
+        $item.type = $item.typeSection.id;
+      if($item.placeSection)
+        $item.place = $item.placeSection.id;
+      $http.put('http://localhost:8000/api/v1/items/'+ $item.id, $item).then(function(){
+        $item.edit = !$item.edit;
+        loadItem();
+        $scope.updateConfirmation = true;
+        $timeout(function() {
+           $scope.updateConfirmation = false;
+        }, 3000)
+      })
+    }
+
+    $scope.cancel = function(){
+      $scope.addNewItem = false;
+      loadItem();
+    }
+
+    $scope.save = function(){
+      console.log($scope.newItem);
+      $scope.loading=true;
+      serviceAjax.post('items', $scope.newItem, 'POST').then(function(){
+        loadItem();
+        $scope.addConfirmation = true;
+        $timeout(function() {
+           $scope.addConfirmation = false;
+        }, 3000)
+      })
+      console.log($scope.items);      
+
+      $scope.loading=false;
+      $scope.addNewItem = false;
+
+      loadNewItem();
+      $scope.newItem.type = ""+$scope.types[0].id;
+      $scope.newItem.place = "" + $scope.places[0].id;
+    }
+
+
+
+    $scope.delete = function($item){
+      $http.delete('http://localhost:8000/api/v1/items/'+ $item.id).then(function(){
+        loadItem();
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+      })
+
+    }
 
   });
 
@@ -412,170 +642,6 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    /*Initialisation des boutons de confirmation*/
-    $scope.addConfirmation = false;
-    $scope.updateConfirmation = false;
-    $scope.deleteConfirmation = false;
-
-    $scope.asso_id = $routeParams.asso_id;
-
-    var loadAssociation = function(){
-      $scope.loading=true;
-      serviceAjax.get("associations/"+$scope.asso_id).then(function(data){
-        $scope.asso = data.data.name;
-      });
-      $scope.loading=false;
-    }
-    loadAssociation();
-
-    var loadItemTypes = function(){
-        $scope.loading = true;
-      serviceAjax.get("itemtypes").then(function(data){
-            $scope.types=data.data;
-            //Initialisation du type du nouvel item avec le premier élément des types
-            $scope.newItem.type = ""+$scope.types[0].id;
-        });
-    };
-    loadItemTypes();
-
-    var loadItemPlaces = function(){
-        $scope.loading = true;
-      serviceAjax.get("itemplaces").then(function(data){
-            $scope.places=data.data;
-            //Initialisation de la localisation du nouvel item avec le premier élément des localisations 
-            $scope.newItem.place = "" + $scope.places[0].id;
-        });
-      
-    };
-    loadItemPlaces();
-
-    
-    //Chargement des items en fonction de l'association sélectionnée
-    var loadItem = function(){
-      $scope.loading=true;
-      serviceAjax.get("association/items/"+$scope.asso_id).then(function(data){
-        $scope.items = data.data;
-        for (var i = $scope.items.length - 1; i >= 0; i--) {
-          //Permet d'affecter au ng-model d'edition des éléments
-          $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
-          $scope.items[i].placeSection = $scope.places.filter((r)=>r.id == $scope.items[i].place)[0];
-          $scope.items[i].status = $scope.items[i].status.toString();
-        }
-      });
-      $scope.loading=false;
-      
-    }
-    loadItem();
-
-    //Pour afficher le formulaire d'ajout d'un nouvel item
-    $scope.addNewItem = false;
-    
-    var loadNewItem = function(){
-      //Pour remplir le nouvel item
-      $scope.newItem = {};
-      //Paramètre par défaut
-      $scope.newItem.status = "1";
-      $scope.newItem.association = $routeParams.asso_id;
-    }
-
-    loadNewItem();
-
-    /* Gestion des tries des items*/
-    $scope.propertyName = 'name';
-    $scope.reverse = false;
-
-    $scope.sortBy = function(propertyName) {
-      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-      $scope.propertyName = propertyName;
-    };
-
-    /* Fonctions de gestions des items*/
-
-    $scope.add = function(){
-      $scope.addNewItem = true;
-      $scope.focusInput = true;
-      console.log('newItem', $scope.newItem);
-    }
-
-    $scope.edit = function($item){
-      $scope.addNewItem = false;
-      $item.edit=!$item.edit;
-    }
-
-    $scope.update = function($item){
-      console.log($item);
-      if($item.typeSection)
-        $item.type = $item.typeSection.id;
-      if($item.placeSection)
-        $item.place = $item.placeSection.id;
-      $http.put('http://localhost:8000/api/v1/items/'+ $item.id, $item).then(function(){
-        $item.edit = !$item.edit;
-        loadItem();
-        $scope.updateConfirmation = true;
-        $timeout(function() {
-           $scope.updateConfirmation = false;
-        }, 3000)
-      })
-    }
-
-    $scope.cancel = function(){
-      $scope.addNewItem = false;
-      loadItem();
-    }
-
-    $scope.save = function(){
-      console.log($scope.newItem);
-      $scope.loading=true;
-      serviceAjax.post('items', $scope.newItem, 'POST').then(function(){
-        loadItem();
-        $scope.addConfirmation = true;
-        $timeout(function() {
-           $scope.addConfirmation = false;
-        }, 3000)
-      })
-      console.log($scope.items);      
-
-      $scope.loading=false;
-      $scope.addNewItem = false;
-
-      loadNewItem();
-      $scope.newItem.type = ""+$scope.types[0].id;
-      $scope.newItem.place = "" + $scope.places[0].id;
-    }
-
-
-
-    $scope.delete = function($item){
-      $http.delete('http://localhost:8000/api/v1/items/'+ $item.id).then(function(){
-        loadItem();
-        $scope.deleteConfirmation = true;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-      })
-
-    }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -594,7 +660,7 @@ angular.module('bobbyApp')
     loadBookings();
 
     /* Gestion des tries des items*/
-    $scope.propertyName = 'booker';
+    $scope.propertyName = 'booker.name';
     $scope.reverse = false;
 
     $scope.sortBy = function(propertyName) {

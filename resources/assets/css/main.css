@@ -10,6 +10,10 @@
   content: '\0025BD';   // BLACK DOWN-POINTING TRIANGLE
 }
 
+.sort-item {
+	margin-left: 6px;
+}
+
 /*  VIOLET  */
 
 .purple-text{

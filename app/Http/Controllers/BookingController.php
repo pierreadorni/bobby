@@ -171,11 +171,14 @@ class BookingController extends Controller
     }
 
     public function indexAssociation($asso_id){
-        //$bookings['owner'] = Booking::all()->where('owner', $asso_id);
+
         $bookings = [
+            /* Réservation où l'association est propriétaire */
             "ownerBookings"     =>  Booking::all()->where('owner', $asso_id),
+            /* Réservation demandée par l'association */
             "bookerBookings"    =>  Booking::all()->where('booker', $asso_id),
         ];
+
         if($bookings['ownerBookings']){
             foreach ($bookings['ownerBookings'] as $booking) {
 
@@ -190,6 +193,7 @@ class BookingController extends Controller
                     $booking->cautionReceived = "Non";
             }
                 }
+
         if($bookings['bookerBookings']){
             foreach ($bookings['bookerBookings'] as $booking) {
 
@@ -203,6 +207,11 @@ class BookingController extends Controller
                     $booking->cautionReceived = "Oui";
                 else
                     $booking->cautionReceived = "Non";
+
+                /* Retrait de la caution que l'association demandeuse ne doit pas voir */
+                $booking->offsetUnset('caution');
+
+
             }
         
 

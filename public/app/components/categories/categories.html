@@ -15,19 +15,30 @@
         </div>
         <thead>
           <tr>
-              <th>Nom</th>
-              <th>Quantité</th>
-              <th>Propriétaire</th>
-              <th>#</th>
+            <th ng-click="sortBy('name')">
+              Nom 
+              <span class="sort-item" ng-show="propertyName == 'name'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+            </th>
+            <th ng-click="sortBy('quantity')">
+              Quantité
+              <span class="sort-item" ng-show="propertyName == 'quantity'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+            </th>
+            <th ng-click="sortBy('associationName')">
+              Propriétaire
+              <span class="sort-item" ng-show="propertyName == 'associationName'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+            </th>
+            <th ng-show="categorie_id == 0" ng-click="sortBy('typeName')">
+              Catégorie
+              <span class="sort-item" ng-show="propertyName == 'typeName'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items | toArray:false | filter:itemSearch ">
+          <tr ng-repeat="item in items | toArray:false | filter:itemSearch | orderBy:propertyName:reverse ">
               <td >{{ item.name }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.associationName }}</td>
-              <td>
-                <button type="button" class="btn btn-info">Demander</button>
+              <td ng-show="categorie_id == 0"> 
+                {{ item.typeName }}
               </td>
           </tr>
         </tbody>

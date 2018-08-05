@@ -15,31 +15,31 @@
         </div>
         <thead>
           <tr>
-              <th ng-click="sortBy('booker')">
+              <th ng-click="sortBy('booker.name')">
                 Emprunteur  
-                <span class="sortorder" ng-show="propertyName=='booker'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='booker.name'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
-              <th ng-click="sortBy('owner')">
+              <th ng-click="sortBy('owner.name')">
                 Propriétaire  
-                <span class="sortorder" ng-show="propertyName=='owner'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='owner.name'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
               <th ng-click="sortBy('caution')">
                 Caution  
-                <span class="sortorder" ng-show="propertyName=='caution'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='caution'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
               <th ng-click="sortBy('cautionReceived')">
                 Caution reçue?  
-                <span class="sortorder" ng-show="propertyName=='cautionReceived'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='cautionReceived'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
               <th ng-click="sortBy('status')">
                 Statut  
-                <span class="sortorder" ng-show="propertyName=='status'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='status'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
-              <th ng-click="sortBy('created')">
+              <th ng-click="sortBy('created_at')">
                 Effectuée le  
-                <span class="sortorder" ng-show="propertyName=='created'" ng-class="{reverse: reverse}"></span>
+                <span ng-show="propertyName=='created_at'" ng-class="{reverse: reverse}" class="sort-item"><i class="fas fa-sort"></i></span>
               </th>
-              <th>Consulter</th>
+              <th>#</th>
           </tr>
         </thead>
         <tbody>
@@ -62,8 +62,8 @@
             <td>
               <span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
             </td>
-            <td style="text-align: center">
-              <img src="assets/img/loading-mark.png" width="20px" href="!#/booking/{{booking.id}}">
+            <td>
+              <a href="#!/booking/{{booking.id}}"><button type="button" class="btn btn-grey">Consulter</button></a>
             </td>
           </tr>
         </tbody>

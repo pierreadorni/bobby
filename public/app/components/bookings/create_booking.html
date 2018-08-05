@@ -22,7 +22,7 @@
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="asso in assos | filter:assoSearch" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="asso in assosBooking | filter:assoSearch" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
                             {{ asso.name }}
                         </a>
                     </div>
@@ -36,12 +36,11 @@
                     <i>A quelle association veux-tu emprunter du matériel?</i>
                 </div>
                 <div class="card-body">
-                    <!-- DONNEES A TRANSFORMER EN ARRAY -->
-                    <!--<div class="form-group">
+                    <div class="form-group">
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
-                    </div>-->
+                    </div>
                     <div class="list-group">
-                        <a ng-repeat="assoRequested in assosRequested" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="assoRequested in assosRequested | filter : assoSearch" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
                             {{ assoRequested.name }}
                         </a>
                     </div>
@@ -116,12 +115,12 @@
 
                                     <!-- ASSO REQUESTING -->
                                     <div class="col-md-6 card">
+                                        <h4 class="title">Emprunteur</h4>
+                                        <br>
                                         <div ng-hide="booking.assoRequesting">
                                             <i>Vous n'avez pas choisi pour quelle association vous voulez emprunter du matériel.</i>
                                         </div>
                                         <div ng-show="booking.assoRequesting">
-                                            <h4 class="title">Emprunteur</h4>
-                                            <br>
                                             <h6>{{ booking.assoRequesting.name }}</h6>
                                             <p>{{ booking.assoRequesting.mail }}</p>
                                             <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequesting()">Modifier</button>
@@ -129,12 +128,12 @@
                                     </div>
                                     <!-- ASSO REQUESTED -->
                                     <div class="col-md-6 card">
+                                        <h4 class="title">Propriétaire</h4>
+                                        <br>
                                         <div ng-hide="booking.assoRequested">
                                             <i>Vous n'avez pas choisi l'association à qui vous demandez du matériel.</i>
                                         </div>
-                                        <div ng-show="booking.assoRequested">
-                                            <h4 class="title">Propriétaire</h4>
-                                            <br>
+                                        <div ng-show="booking.assoRequested">  
                                             <h6>{{ booking.assoRequested.name }}</h6>
                                             <p>{{ booking.assoRequested.mail }}</p>
                                             <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequested()">Modifier</button>
@@ -148,14 +147,15 @@
 
                     <!-- ITEMS -->
                     
-                    <div ng-hide="bookingline.items.length > 0">
-                        <i>Vous n'avez encore rien choisi pour la commande.</i>
-                    </div>
-                    <div class="card" ng-show="bookingline.items.length > 0">
+                    
+                    <div class="card" >
                         <div class="card-header">
                             <h5 class="title">Items</h5>
                         </div>
-                        <div class="card-body">
+                        <div ng-hide="bookingline.items.length > 0">
+                            <p class="title"><i>Vous n'avez encore rien choisi pour la commande.</i></p>
+                        </div>
+                        <div class="card-body" ng-show="bookingline.items.length > 0">
                             <table class="table">
                                 <thead>
                                     <tr>

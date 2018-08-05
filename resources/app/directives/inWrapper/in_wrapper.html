@@ -28,12 +28,24 @@
                   <div ng-repeat="type in types">
                       <a class="dropdown-item" href="#!/categories/{{type.id}}">{{type.name}}</a>
                   </div>
+                  <div>
+                    <a class="dropdown-item" href="#!/categories/0">Toutes</a>
+                  </div>
                 </div>
             </li>
           </div>
 
           <!-- bouton deroulant 2 -->
-          <div class="dropdown">
+
+          <!-- Si l'utilisateur fait parti d'une seule association -->
+          <div ng-show="singleAssociation" class="dropdown">
+            <li class="nav-item">
+               <a class="nav-link" href="#!/items/{{assos[0].id}}">Mon matériel</a>
+            </li>
+          </div>
+
+          <!-- Si l'utilisateur fait parti de plusieurs associations -->
+          <div ng-hide="singleAssociation" class="dropdown">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Mon matériel
@@ -50,7 +62,7 @@
           <div class="dropdown">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Mes reservations
+              Réservations
               </a>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a class="dropdown-item" href="#!/booking">Réserver</a>

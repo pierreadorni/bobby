@@ -95,13 +95,13 @@ angular.module('bobbyApp')
     /* Fonctions de gestions des items*/
 
     $scope.add = function(){
+      loadItem();
       $scope.addNewItem = true;
       $scope.focusInput = true;
-      console.log('newItem', $scope.newItem);
     }
 
     $scope.edit = function($item){
-      $scope.addNewItem = false;
+      $scope.addNewItem = false;       
       $item.edit=!$item.edit;
     }
 

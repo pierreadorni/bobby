@@ -38,14 +38,17 @@ Route::prefix('v1')->group(function () {
 
     Route::get('items/categories/{categorie}',function ($categorie){
 
-        $items = Item::all()->where('type', $categorie)->where('status', '<', 3);
+        $items = Item::all()->where('status', '<', 3);
+        if($categorie>0){
+            $items = $items->where('type', $categorie);
+        }
         foreach ($items as $item) {
             $item->associationName = $item->associations->name;
             $item->placeName = $item->itemplaces->name;
+            $item->typeName = $item->itemtypes->name;
         }
         return $items;
     });
-
 
     Route::get('association/items/{asso_id}', function($asso_id){
         $items = Item::all()->where('association', $asso_id);
@@ -104,4 +107,5 @@ Route::prefix('v1')->group(function () {
 
     	return Association::find($association_id)->bookings()->where('bookings.status', $type_id)->join('booking_lines', 'bookings.id', '=', 'booking_lines.booking')->join('items', 'booking_lines.item', '=', 'items.id')->get();
     });
+
 });

@@ -26,7 +26,7 @@ angular.module('bobbyApp')
     loadBookings();
 
     /* Gestion des tries des items*/
-    $scope.propertyName = 'booker';
+    $scope.propertyName = 'booker.name';
     $scope.reverse = false;
 
     $scope.sortBy = function(propertyName) {
