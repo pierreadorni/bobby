@@ -7,10 +7,12 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
   /*serviceAjax.get('authorization_code').then(function(data){
     console.log(data);
   })*/
-  console.log("her");
+  /*console.log("her");
   $http.get('http://localhost:8000/api/v1/authorization_code').then(function(data){
     console.log(data);
-  })
+  })*/
+
+  $location.url('https://portail.nastuzzi.fr/oauth/authorize?client_id=4&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Flogin&response_type=code&scope=');
   /*$scope.message = "Connexion";
 
   if($routeParams.token) { // Si l'on a un token en paramètre (/login?token=)

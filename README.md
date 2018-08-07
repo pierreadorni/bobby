@@ -36,6 +36,10 @@ Générer la clé pour php artisan
 php artisan key:generate
 ```
 
+Installer les dépendances npm:
+```
+npm install
+```
 
 Gulp
 ```
