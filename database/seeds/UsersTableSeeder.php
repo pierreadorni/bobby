@@ -12,21 +12,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = [
-        	[
-        		'login' => 'jpennors',
-	        ],
-	        [
-                'login' => 'obledaym',
-            ],
-	        [
-                'login' => 'moumouth',
-            ],
-        ];
-
-        foreach ($users as $user => $values){
-            User::create($values);
-        }
-
+       
     }
 }

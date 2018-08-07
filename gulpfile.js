@@ -144,6 +144,9 @@ gulp.task('vendor', function() {
   gulp.src('resources/app/vendor/jquery/dist/jquery.js')
   .pipe(gulp.dest(dist + '/app/vendor/jquery/'))
 
+
+  gulp.src('resources/app/vendor/CORS/jquery.xdomainajax.js')
+  .pipe(gulp.dest(dist + '/app/vendor/CORS/'))
   /*
    *  Bootstrap
    */

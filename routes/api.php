@@ -108,4 +108,9 @@ Route::prefix('v1')->group(function () {
     	return Association::find($association_id)->bookings()->where('bookings.status', $type_id)->join('booking_lines', 'bookings.id', '=', 'booking_lines.booking')->join('items', 'booking_lines.item', '=', 'items.id')->get();
     });
 
+    Route::post('/login', 'LoginController@login');
+
+    Route::get('/authorization_code', 'LoginController@authorization_code');
+
+    Route::post('/send', 'MailController@send');
 });

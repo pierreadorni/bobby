@@ -13,6 +13,8 @@ class BookingLine extends Model
 
 	protected $table = 'booking_lines';
 
+	protected $dates = ['startDate', 'endDate'];
+
 	public function bookings()
 	{
 		$this->belongsTo('App\BookingLine');

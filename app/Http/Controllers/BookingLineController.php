@@ -30,13 +30,25 @@ class BookingLineController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(BookingLineRequest $request)
+    public function storeOne(Array $request)
     {
-        $b = Booking::findOrFail($request->booking);
+        //dd($request);
+        $b = Booking::findOrFail($request['booking']);
+        /*dd($b);*/
 
-        $bookingline = $b->bookinglines()->create($request->all());
+        $bookingline = new BookingLine();
+        $bookingline->booking = $request['booking'];
+        $bookingline->item = $request['item'];
+        $bookingline->quantity = $request['quantity'];
+        $bookingline->startDate = $request['startDate'];
+        $bookingline->endDate = $request['endDate'];
+        $bookingline->status = $request['status'];
+
+        $bookingline->save();
+
         if($bookingline)
         {
+            $bookingline->item = Item::find($bookingline['item']);
             return response()->json($bookingline, 200);
         }
         else
@@ -101,6 +113,16 @@ class BookingLineController extends Controller
         }
         else
             return response()->json(["message" => "Impossible de trouver l'objet"], 500);
+    }
+
+    public function store(Request $request){
+
+       $bookinglines = [];
+        foreach ($request->items as $item) {
+            array_push($bookinglines, $this->storeOne($item));
+        }
+
+        return response()->json($bookinglines, 200);
     }
     
 }
