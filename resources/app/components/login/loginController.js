@@ -8,8 +8,8 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
     console.log(data);
   })*/
   console.log("her");
-  $http.get('http://localhost:8000/api/v1/authorization_code').then(function(data){
-    console.log(data);
+  $http.get('http://localhost:8000/api/v1/login').then(function(data){
+    window.location.href = data.data;
   })
   /*$scope.message = "Connexion";
 

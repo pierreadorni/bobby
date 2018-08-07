@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class LoginController extends Controller
 {
@@ -13,19 +14,15 @@ class LoginController extends Controller
      *  Processus de login: connexion par le Portail des assos et génération de token
      *
      */
-    public function login() {
-
-        $request = $this->authorization_code();
-
-
-        //$response = $this->get_token($request);
-		
-        //return $response;
+    public function login(Request $request) {
+        if ($request->filled('code'))
+            return $this->get_token($request);
+        else
+            return redirect($this->authorization_code());
     }
 
 
     public function authorization_code(){
-
         $query = http_build_query([
         'client_id' => 4,
         'redirect_uri' => 'http://localhost:8000/login',
@@ -33,12 +30,11 @@ class LoginController extends Controller
         'scope' => '',
         ]);
 
-        return redirect('https://portail.nastuzzi.fr/oauth/authorize?'.$query);
+        return 'https://portail.nastuzzi.fr/oauth/authorize?'.$query;
     }
 
-    public function get_token(Request $Request){
-
-        $http = new GuzzleHttp\Client;
+    public function get_token(Request $request){
+        $http = new Client;
 
         $response = $http->post('https://portail.nastuzzi.fr/oauth/token', [
             'form_params' => [
