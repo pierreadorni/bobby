@@ -1,55 +1,90 @@
 <in-wrapper>
 
 	<br><br>
-	<div class="container">
-	  	<h2 align="center">Résumé réservation</h2>
-	  	<hr>
-	  	<div class="row">
-			<div class="col-md-4">
-				<div class="panel panel-default">
-		            <div class="panel-heading">
-		                <h3>Information générale</h3>
-		                <p>Effectuée par : <i>{{booking.user.login}}</i></p>
-		                <p>Le : <i>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-		            </div>
-		        </div>
+	<div class="row">
+		<div class="col-md-10 offset-md-1 col-sm-12">
+			<div class="card card-no-border">
+				<div class="card-header card-purple">
+			  		<h3 align="center">Résumé réservation</h3>
+			  	</div>
+			  	
+			  	<div class="card-body">
+			  		<div class="row">
+						<div class="col-md-4 col-sm-12">
+							<div class="card">
+					            <div class="card-header">
+					                <h5>Information générale</h5>
+					            </div>
+					            <div class="card-body">
+					                <p>Effectuée par : <i>{{booking.user.login}}</i></p>
+					                <p>Le : <i>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
+					                <p>Caution reçue ? <i>{{booking.cautionReceived}}</i></p>
+					               	<p>Statut : <i>{{booking.statusName}}</i></p>
+					            </div>
+					        </div>
+					    </div>
+					    <div class="col-md-4 col-sm-12">
+					        <div class="card">
+				                <div class="card-header">
+				                    <h5>Propriétaire</h5>
+				                </div>
+				                <div class="card-body">
+				                    <p>{{booking.owner.name}}</p>
+				                    <p>{{booking.owner.mail}}</p>
+				                    <button class="btn btn-grey">Envoyer un mail</button>
+				                </div>
+				            </div>
+				        </div>
+				        <div class="col-md-4 col-sm-12">
+				            <div class="card">
+				                <div class="card-header">
+				                    <h5>Emprunteur</h5>
+				                </div>
+				               	<div class="card-body">
+				                    <p>{{booking.booker.name}}</p>
+				                    <p>{{booking.booker.mail}}</p>
+				                    <button class="btn btn-grey">Envoyer un mail</button>
+				                </div>
+				            </div>
+				        </div>
+				    </div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-10 offset-md-1 col-sm-12">
+			<div class="card card-no-border">
+				<div class="card-header card-purple">
+				    <h3 align="center">Matériel</h3>
+			  	</div>
+			  	<div class="card-body">
+			  		<div class="row">
+						<div class="col-md-4 col-sm-12" ng-repeat="bookingline in booking.bookinglines">
+							<div class="card">
+					            <div class="card-header">
+					                <h5>{{bookingline.item.name}}</h5>
+					            </div>
+					            <div class="card-body">
+					                <p>Quantité : <i>{{bookingline.quantity}}</i></p>
+					                <p>Du : <i>{{ bookingline.startDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
+					                <p>Au : <i>{{ bookingline.endDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
+					                <p>Statut : {{bookingline.statusName}}</p>
+					                <div class="row" ng-if="bookingline.status==1">
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="accept(bookingline)">Accepter</button>
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelLine(bookingline)">Refuser</button>
+					                </div>
+					                <div class="row" ng-if="bookingline.status==2">
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBack(bookingline)">Rendu</button>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+			    </div>
 		    </div>
-		    <div class="col-md-4">
-		        <div class="panel panel-default">
-	                <div class="panel-heading">
-	                    <h3>Propriétaire</h3>
-	                    <p>{{booking.owner.name}}</p>
-	                    <p>{{booking.owner.mail}}</p>
-	                    <button class="btn">Envoyer un mail</button>
-	                </div>
-	            </div>
-	        </div>
-	        <div class="col-md-4">
-	            <div class="panel panel-default">
-	                <div class="panel-heading">
-	                    <h3>Emprunteur</h3>
-	                    <p>{{booking.booker.name}}</p>
-	                    <p>{{booking.booker.mail}}</p>
-	                    <button class="btn">Envoyer un mail</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	    <br>
-	    <h2 align="center">Matériel</h2>
-	  	<hr>
-	  	<div class="row">
-			<div class="col-md-4" ng-repeat="bookingline in booking.bookinglines">
-				<div class="panel panel-default">
-		            <div class="panel-heading">
-		                <h3>{{bookingline.item.name}}</h3>
-		                <p>Quantité :<i>{{bookingline.quantity}}</i></p>
-		                <p>Du :<i>{{ bookingline.startDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-		                <p>Au :<i>{{ bookingline.endDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-		            </div>
-		        </div>
-		    </div>
-	    </div>
-    </div>
-
+		</div>
+	</div>
+	<br>
 </in-wrapper>

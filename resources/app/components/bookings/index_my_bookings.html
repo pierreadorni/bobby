@@ -64,8 +64,8 @@
 								</td>
 								<td style="text-align: center">
 									<a href="#!/booking/{{booking.id}}">
-									<button type="button" class="btn btn-grey">Consulter</button>
-								</a>
+										<button type="button" class="btn btn-grey">Consulter</button>
+									</a>
 								</td>
 							</tr>
 		            	</tbody>
@@ -120,7 +120,9 @@
 									<span>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
 								</td>
 								<td style="text-align: center">
-									<button type="button" class="btn btn-grey" href="!#/booking/{{booking.id}}">Consulter</button>
+									<a href="#!/booking/{{booking.id}}">
+										<button type="button" class="btn btn-grey">Consulter</button>
+									</a>
 								</td>
 							</tr>
 		            	</tbody>

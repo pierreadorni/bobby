@@ -8,9 +8,42 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
     console.log(data);
   })*/
 
-  $http.get('http://localhost:8000/api/v1/login').then(function(data){
-    window.location.href = data.data;
+  if($routeParams.token) {
+    console.log("dd");
+  }
+
+
+  $http.get('http://localhost:8000/api/v1/code').then(function(data){
+    console.log(data);
+    /*$http.defaults.headers.common.Authorization = 'Bearer' + data.data.token;
+    $location.path("/");
+    $location.url($location.path());*/
+    /*window.location.href = data.data;
+    console.log(data.data.token);*/
+
+    /*if($routeParams.token){
+      console.log('token', $routeParams.token)
+      $location.path("/");
+      $location.url($location.path());
+      console.log("dd");
+    }*/
+    /*$location.absUrl(data.data);
+    console.log($location)*/
+    /*if(!data.data.token)
+      window.location.href = data.data;*/
+      /*if(!data.url){
+        console.log("ok");
+      }
+      else*/
+        if($routeParams.code){
+          console.loge("code", $routeParams.code);
+        }
+       window.location.href = data.data['url'];
+
+    //console.log(window.locaion.href)
   })
+
+
   /*$scope.message = "Connexion";
 
   if($routeParams.token) { // Si l'on a un token en paramètre (/login?token=)

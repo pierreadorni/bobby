@@ -41,11 +41,23 @@ class BookingController extends Controller
                 /*Gestion des status*/
                 switch ($booking->status) {
                     case '1':
-                        $booking->status = "En cours";
+                        $booking->statusName = "En cours";
+                        break;
+
+                    case '2':
+                        $booking->statusName = "Validée";
+                        break;
+
+                    case '1':
+                        $booking->statusName = "Terminée";
+                        break;
+
+                    case '1':
+                        $booking->statusName = "Annulée";
                         break;
                     
                     default:
-                        $booking->status = "";
+                        $booking->statusName = "";
                         break;
                 }
             }
@@ -92,6 +104,30 @@ class BookingController extends Controller
             $booking->bookinglines = $booking->bookinglines()->get();
             foreach ($booking->bookinglines as $bookingline) {
                 $bookingline->item = Item::find($bookingline->item);
+
+                /*Gestion des status*/
+                switch ($bookingline->status) {
+                    case '1':
+                        $bookingline->statusName = "En cours";
+                        break;
+
+                    case '2':
+                        $bookingline->statusName = "Validé";
+                        break;
+
+                    case '3':
+                        $bookingline->statusName = "Rendu";
+                        break;
+
+                    case '4':
+                        $bookingline->statusName = "Annulé";
+                        break;
+                    
+                    default:
+                        $bookingline->statusName = "";
+                        break;
+                }
+
             }
 
             /*Requêtes pour les associations à changer avec Portail des assos*/
@@ -110,11 +146,23 @@ class BookingController extends Controller
                 /*Gestion des status*/
                 switch ($booking->status) {
                     case '1':
-                        $booking->status = "En cours";
+                        $booking->statusName = "En cours";
+                        break;
+
+                    case '2':
+                        $booking->statusName = "Validé";
+                        break;
+
+                    case '3':
+                        $booking->statusName = "Rendu";
+                        break;
+
+                    case '4':
+                        $booking->statusName = "Annulé";
                         break;
                     
                     default:
-                        $booking->status = "";
+                        $booking->statusName = "";
                         break;
                 }
 
