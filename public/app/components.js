@@ -21,6 +21,10 @@ angular.module('bobbyApp')
     //Emprunt
     $scope.booking = {}
 
+    //Current date
+    $scope.currentDate = new Date();
+    console.log("date", $scope.currentDate);
+
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
     $scope.loading = true;
@@ -140,6 +144,7 @@ angular.module('bobbyApp')
         if(itemBooked.quantity == 0){
             $scope.bookingline.items.splice($index, 1);
         }
+      console.log($scope.bookingline.items);
     }
 
     //Modification de la date de départ du prêt d'un item
@@ -208,12 +213,16 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('editBookingCtrl', function ($scope, $routeParams, serviceAjax, $location, $http) {
+  .controller('editBookingCtrl', function ($scope, $routeParams, serviceAjax, $location, $filter, $http) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    //Current date
+    $scope.currentDate = new Date();
+    console.log("date", $scope.currentDate);
 
     $scope.booking_id = $routeParams.id;
     console.log("booking", $scope.booking_id)
@@ -228,9 +237,60 @@ angular.module('bobbyApp')
     }
     loadBookings();
 
+    /* PARTIE INFORMATION GENERALE */
+
+    //Remise de la caution
+    $scope.changeCaution =function(){
+      $scope.booking.cautionReceived = "Oui";
+      var booking = {};
+      booking.cautionReceived = true;
+      $http.put("http://localhost:8000/api/v1/bookings/" + $scope.booking.id, booking);
+    }
+
+    //Validation de tous les items
+    $scope.acceptAll=function(){
+      serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
+        $scope.booking = data.data;
+        console.log("donnees", $scope.booking)
+        $scope.booking.statusName="Validée";
+        $scope.booking.status = "2";
+        for (var i = $scope.booking.bookinglines.length - 1; i >= 0; i--) {
+          if($scope.booking.bookinglines[i].status==1)
+            $scope.accept($scope.booking.bookinglines[i]);
+        }
+      })
+    }
+
+    //Annulation de la réservation
+    $scope.cancelBooking=function(){
+      for (var i = $scope.booking.bookinglines.length - 1; i >= 0; i--) {
+          $scope.cancelLine($scope.booking.bookinglines[i]);
+      }
+      $scope.booking.status = "4";
+      $scope.booking.statusName = "Annulée";
+    }
+
+    //Validation du rendu du matériel pour tous les items
+    $scope.getBackAll=function(){
+      serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
+        $scope.booking = data.data;
+        console.log("donnees", $scope.booking)
+        $scope.booking.statusName="Terminée";
+        $scope.booking.status = "3";
+        for (var i = $scope.booking.bookinglines.length - 1; i >= 0; i--) {
+          if($scope.booking.bookinglines[i].status==2)
+            $scope.getBack($scope.booking.bookinglines[i]);
+        }
+      })
+    }
 
 
     /* PARTIE MATERIEL */
+
+    //Editer un item
+    $scope.edit=function($item){
+      $item.edit = !$item.edit;
+    }
 
     //Accepter un item
     $scope.accept=function($bookingline){
@@ -337,6 +397,22 @@ angular.module('bobbyApp')
         updateBooking.status = 2
         $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
       }
+    }
+
+    //Mise à jour d'un item et validation
+    $scope.update=function($item){
+      var bookingline = {}
+      bookingline.status = 2;
+      bookingline.quantity = $item.quantity;
+      $scope.startDate = $item.startDate;
+      $scope.endDate = $item.endDate;
+      bookingline.startDate = $filter('date')($scope.startDate, "yyyy-MM-dd");
+      bookingline.endDate = $filter('date')($scope.endDate, "yyyy-MM-dd");
+      $http.put("http://localhost:8000/api/v1/bookinglines/"+$item.id, bookingline).then(function(){
+        $item.status = "2";
+        $item.statusName = "Validé";
+        $item.edit = false;
+      })
     }
 
   });
@@ -654,6 +730,98 @@ angular.module('bobbyApp')
   });
 
 
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, serviceAjax, $http) {
+
+
+  $scope.message = "Connexion";
+
+
+  /*serviceAjax.get('authorization_code').then(function(data){
+    console.log(data);
+  })*/
+
+  if($routeParams.token) {
+    console.log("dd");
+  }
+
+
+  $http.get('http://localhost:8000/api/v1/code').then(function(data){
+    console.log(data);
+    /*$http.defaults.headers.common.Authorization = 'Bearer' + data.data.token;
+    $location.path("/");
+    $location.url($location.path());*/
+    /*window.location.href = data.data;
+    console.log(data.data.token);*/
+
+    /*if($routeParams.token){
+      console.log('token', $routeParams.token)
+      $location.path("/");
+      $location.url($location.path());
+      console.log("dd");
+    }*/
+    /*$location.absUrl(data.data);
+    console.log($location)*/
+    /*if(!data.data.token)
+      window.location.href = data.data;*/
+      /*if(!data.url){
+        console.log("ok");
+      }
+      else*/
+        if($routeParams.code){
+          console.loge("code", $routeParams.code);
+        }
+       window.location.href = data.data['url'];
+
+    //console.log(window.locaion.href)
+  })
+
+
+  /*$scope.message = "Connexion";
+
+  if($routeParams.token) { // Si l'on a un token en paramètre (/login?token=)
+
+    // On enregistre ce token dans la factory
+    $rootScope.auth.login($routeParams.token)
+    .then(function(data){
+
+      // On redirige vers la page main
+      $location.path("/");
+      $location.url($location.path());  // Clear des paramètres
+
+    }, function(error){
+
+      // Erreur pour récupérer le membre malgré le succès au CAS, erreur 500
+      $location.path("/error/500");
+      $location.url($location.path()); // Clear des paramètres
+
+    });
+
+  }
+  else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
+
+    $scope.message = "Erreur de connexion";
+
+    // On redirige vers la page d'erreur 401
+    $location.path("/error/401");
+    $location.url($location.path());  // Clear des paramètres
+
+  }
+  else {
+
+    $scope.message = "Redirection vers le CAS";
+
+    // Si l'on a pas de token, c'est que l'on a pas encore été vers le login CAS.
+    // On redirige vers le processus d'authentification grâce à la méthode goLogin() de la factory
+    $rootScope.auth.goLogin();
+
+    if($routeParams.token){
+      console.log("aaaaaa");
+    }
+
+  }*/
+
+});
+
 'use strict';
 
 /**
@@ -758,98 +926,6 @@ angular.module('bobbyApp')
 
   });
 
-
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, serviceAjax, $http) {
-
-
-  $scope.message = "Connexion";
-
-
-  /*serviceAjax.get('authorization_code').then(function(data){
-    console.log(data);
-  })*/
-
-  if($routeParams.token) {
-    console.log("dd");
-  }
-
-
-  $http.get('http://localhost:8000/api/v1/code').then(function(data){
-    console.log(data);
-    /*$http.defaults.headers.common.Authorization = 'Bearer' + data.data.token;
-    $location.path("/");
-    $location.url($location.path());*/
-    /*window.location.href = data.data;
-    console.log(data.data.token);*/
-
-    /*if($routeParams.token){
-      console.log('token', $routeParams.token)
-      $location.path("/");
-      $location.url($location.path());
-      console.log("dd");
-    }*/
-    /*$location.absUrl(data.data);
-    console.log($location)*/
-    /*if(!data.data.token)
-      window.location.href = data.data;*/
-      /*if(!data.url){
-        console.log("ok");
-      }
-      else*/
-        if($routeParams.code){
-          console.loge("code", $routeParams.code);
-        }
-       window.location.href = data.data['url'];
-
-    //console.log(window.locaion.href)
-  })
-
-
-  /*$scope.message = "Connexion";
-
-  if($routeParams.token) { // Si l'on a un token en paramètre (/login?token=)
-
-    // On enregistre ce token dans la factory
-    $rootScope.auth.login($routeParams.token)
-    .then(function(data){
-
-      // On redirige vers la page main
-      $location.path("/");
-      $location.url($location.path());  // Clear des paramètres
-
-    }, function(error){
-
-      // Erreur pour récupérer le membre malgré le succès au CAS, erreur 500
-      $location.path("/error/500");
-      $location.url($location.path()); // Clear des paramètres
-
-    });
-
-  }
-  else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-    $scope.message = "Erreur de connexion";
-
-    // On redirige vers la page d'erreur 401
-    $location.path("/error/401");
-    $location.url($location.path());  // Clear des paramètres
-
-  }
-  else {
-
-    $scope.message = "Redirection vers le CAS";
-
-    // Si l'on a pas de token, c'est que l'on a pas encore été vers le login CAS.
-    // On redirige vers le processus d'authentification grâce à la méthode goLogin() de la factory
-    $rootScope.auth.goLogin();
-
-    if($routeParams.token){
-      console.log("aaaaaa");
-    }
-
-  }*/
-
-});
 
 'use strict';
 

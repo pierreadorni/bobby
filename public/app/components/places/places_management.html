@@ -45,10 +45,16 @@
         </thead>
         <tbody>
           <tr ng-show="addNewPlace">
-            <td><input type="text" ng-model="newPlace.name" class="form-control" focus-me="focusInput"></td>
+            <td>
+              <form novalidate name="formPlace">
+                <input type="text" name="inputPlace" ng-model="newCategorie.name" class="form-control" focus-me="focusInput" required ng-class="{error : !formPlace.inputPlace.$valid && formPlace.inputPlace.$dirty}">
+              </form>
             <td>
               <p class="purple-text">
-                <a ng-click="save()">
+                <a ng-hide="formPlace.inputPlace.$valid">
+                  <i class="fas fa-check i-right invalid" aria-hidden="true"></i>
+                </a>
+                <a ng-show="formPlace.inputPlace.$valid" ng-click="save()">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
                 <a ng-click="cancel()">

@@ -66,40 +66,60 @@
         </thead>
         <tbody>
           <tr ng-show="addNewItem">
-            <td><input type="text" ng-model="newItem.name" class="form-control" focus-me="focusInput"></td>
-            <td>
-              <select class="form-control" ng-model="newItem.type">
-                <option ng-repeat="type in types" value="{{type.id}}">
-                  {{type.name}}
-                </option>
-              </select>
-            </td>
-            <td><input type="text" ng-model="newItem.quantity" class="form-control"></td>
-            <td><input type="text" ng-model="newItem.caution" class="form-control"></td>
-            <td>
-              <select class="form-control" ng-model="newItem.place">
-                <option ng-repeat="place in places" value="{{place.id}}">
-                  {{place.name}}
-                </option>
-              </select>
-            </td>
-            <td>
-              <select class="form-control" ng-model="newItem.status">
-                  <option value="1">Visible</option>
-                  <option value="2">Visible et non empruntable</option>
-                  <option value="3">Invisible</option>
-              </select>
-            </td>
-            <td>
-              <p class="purple-text">
-                <a ng-click="save()">
-                  <i class="fas fa-check i-right" aria-hidden="true"></i>
-                </a>
-                <a ng-click="cancel()">
-                  <i  class="fas fa-times i-left" aria-hidden="true"></i>
-                </a>
-              </p>
-            </td>
+              <td>
+                <form novalidate name="formName">
+                  <input type="text" name="inputName" ng-model="newItem.name" class="form-control" focus-me="focusInput" required ng-class="{error : !formName.inputName.$valid && formName.inputName.$dirty}">
+                </form>
+              </td>
+              <td>
+                <form novalidate name="formType">
+                  <select class="form-control" name="inputType" ng-model="newItem.type" required ng-class="{error : !formType.inputType.$valid && formType.inputType.$dirty}">
+                    <option ng-repeat="type in types" value="{{type.id}}">
+                      {{type.name}}
+                    </option>
+                  </select>
+                </form>
+              </td>
+              <td>
+                <form novalidate name="formQ">
+                  <input type="number" name="Q" min="0" ng-model="newItem.quantity" class="form-control" required ng-class="{error : !formQ.Q.$valid && formQ.Q.$dirty}">
+                </form>
+              </td>
+              <td>
+                <form novalidate name="formCaution">
+                  <input type="number" name="inputCaution" min="0" ng-model="newItem.caution" class="form-control" required ng-class="{error : !formCaution.inputCaution.$valid && formCaution.inputCaution.$dirty}">
+                </form>
+              </td>
+              <td>
+                <form novalidate name="formPlace">
+                  <select class="form-control" name="inputPlace" ng-model="newItem.place" required ng-class="{error : !formPlace.inputPlace.$valid && formPlace.inputPlace.$dirty}">
+                    <option ng-repeat="place in places" value="{{place.id}}">
+                      {{place.name}}
+                    </option>
+                  </select>
+                </form>
+              </td>
+              <td>
+                <form novalidate name="formStatus">
+                  <select class="form-control" name="inputStatus" ng-model="newItem.status" required ng-class="{error : !formStatus.inputStatus.$valid && formStatus.inputStatus.$dirty}">
+                      <option value="1">Visible</option>
+                      <option value="2">Visible et non empruntable</option>
+                      <option value="3">Invisible</option>
+                  </select>
+              </td>
+              <td>
+                <p class="purple-text">
+                  <a ng-hide="formName.inputName.$valid && formType.inputType.$valid && formQ.Q.$valid && formCaution.inputCaution.$valid && formPlace.inputPlace.$valid && formStatus.inputStatus.$valid">
+                      <i class="fas fa-check i-right invalid" aria-hidden="true"></i>
+                  </a>
+                  <a ng-click="save()" ng-show="formName.inputName.$valid && formType.inputType.$valid && formQ.Q.$valid && formCaution.inputCaution.$valid && formPlace.inputPlace.$valid && formStatus.inputStatus.$valid">
+                      <i class="fas fa-check i-right" aria-hidden="true"></i>
+                  </a>
+                  <a ng-click="cancel()">
+                    <i  class="fas fa-times i-left" aria-hidden="true"></i>
+                  </a>
+                </p>
+              </td>
           </tr>
           <tr ng-repeat="item in items | toArray:false | filter:itemSearch | orderBy:propertyName:reverse">
             <td>

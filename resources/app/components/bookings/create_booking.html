@@ -54,20 +54,22 @@
                     <i>A quelle date? (Tu pourras les ajuster pour chaque item ensuite)</i>
                 </div>
                 <div class="card-body">
-                    <br>
-                    <div class="row">
-                        <label class="form-label col-md-4">Date d'emprunt</label>
-                        <input class="form-control col-md-4" type="date" ng-model="booking.startDate">
-                    </div>
-                    <br>
-                    <div class="row">
-                        <label class="form-label col-md-4">Date de retour</label>
-                        <input class="form-control col-md-4" type="date" ng-model="booking.endDate">
-                    </div>
-                    <br>
-                    <div class="row">
-                        <button class="btn btn-grey col-md-2 offset-md-5" ng-click="dateSave()">Confirmer</button>
-                    </div>
+                    <form novalidate name="form">
+                        <br>
+                        <div class="row">
+                            <label class="form-label col-md-4">Date d'emprunt</label>
+                            <input class="form-control col-md-4" type="date" name="startDate" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-model="booking.startDate" required>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="form-label col-md-4">Date de retour</label>
+                            <input class="form-control col-md-4" type="date" name="endDate" min="{{booking.startDate | date:'yyyy-MM-dd'}}" ng-model="booking.endDate" ng-disabled="!booking.startDate" required="">
+                        </div>
+                        <br>
+                        <div class="row">
+                            <button class="btn btn-grey col-md-2 offset-md-5" ng-click="dateSave()" ng-disabled="!form.startDate.$valid || !form.endDate.$valid">Confirmer</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -208,19 +210,22 @@
                             <p class="title"><i>Pour que l'association comprenne tes besoins !</i></p>
                         </div>
                         <div class="card-body">
-                            <textarea class="form-control" rows="3" ng-model="comment"></textarea>
+                            <form novalidate name="formComment">
+                                <textarea class="form-control" name="inputComment" rows="3" ng-model="comment" required ng-class="{error : !formComment.inputComment.$valid && formComment.inputComment.$dirty}"></textarea>
+                            </form>
                         </div>
-                        <p>{{comment}}</p>
                     </div>
                     <hr>
                     <div>
                         <button ng-click="save()"
-                                type="button" class="btn btn-grey col-md-2 offset-md-5">
+                                type="button" class="btn btn-grey col-md-2 offset-md-5"
+                                ng-disabled="!booking.assoRequesting || !booking.assoRequested || !booking.date || !(bookingline.items.length > 0) || !formComment.inputComment.$valid">
                             Valider
                         </button>
                     </div>
                 </div>
             </div>
+            <br>
         </div>
     </div>
 

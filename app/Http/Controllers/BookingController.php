@@ -128,6 +128,8 @@ class BookingController extends Controller
                         break;
                 }
 
+                $bookingline->edit = false;
+
             }
 
             /*Requêtes pour les associations à changer avec Portail des assos*/
@@ -150,15 +152,15 @@ class BookingController extends Controller
                         break;
 
                     case '2':
-                        $booking->statusName = "Validé";
+                        $booking->statusName = "Validée";
                         break;
 
                     case '3':
-                        $booking->statusName = "Rendu";
+                        $booking->statusName = "Terminée";
                         break;
 
                     case '4':
-                        $booking->statusName = "Annulé";
+                        $booking->statusName = "Annulée";
                         break;
                     
                     default:

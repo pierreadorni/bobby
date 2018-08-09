@@ -18,8 +18,24 @@
 					            <div class="card-body">
 					                <p>Effectuée par : <i>{{booking.user.login}}</i></p>
 					                <p>Le : <i>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-					                <p>Caution reçue ? <i>{{booking.cautionReceived}}</i></p>
+					                <p>
+					                	Caution reçue ? 
+					                	<i style="margin-right: 10px">{{booking.cautionReceived}}</i>
+					                	<a ng-show="booking.cautionReceived=='Non' && booking.status!=4" ng-click="changeCaution()">
+					                		<span class="badge badge-pill badge-secondary">
+					                			J'ai reçu la caution 
+					                			<i class="fas fa-check i-right" aria-hidden="true"></i> 
+					                		</span>
+					                	</a>
+					                </p>
 					               	<p>Statut : <i>{{booking.statusName}}</i></p>
+					               	<div class="row" ng-show="booking.status==1">
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="acceptAll()">Tout valider</button>
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelBooking()">Tout refuser</button>
+					                </div>
+					                <div class="row" ng-if="booking.status==2">
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBackAll()">Items rendus</button>
+					                </div>
 					            </div>
 					        </div>
 					    </div>
@@ -64,19 +80,47 @@
 						<div class="col-md-4 col-sm-12" ng-repeat="bookingline in booking.bookinglines">
 							<div class="card">
 					            <div class="card-header">
-					                <h5>{{bookingline.item.name}}</h5>
+					                <h5>
+					                	{{bookingline.item.name}}
+					                	<a ng-click="edit(bookingline)">
+					                		<i class="fa fa-edit i-right pull-right" aria-hidden="true"></i>
+					                	</a>
+					                </h5>
 					            </div>
 					            <div class="card-body">
-					                <p>Quantité : <i>{{bookingline.quantity}}</i></p>
-					                <p>Du : <i>{{ bookingline.startDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-					                <p>Au : <i>{{ bookingline.endDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
-					                <p>Statut : {{bookingline.statusName}}</p>
-					                <div class="row" ng-if="bookingline.status==1">
+					            	<div class="row">
+						                <span class="col-md-4 offset-md-1">Quantité :</span> 
+					                	<span ng-show="!bookingline.edit" class="col-md-4"><i>{{bookingline.quantity}}</i></span>
+					                	<input class="form-control col-md-4" type="number" name="Q" ng-model="bookingline.quantity" required ng-show="bookingline.edit">
+						            </div>
+						            <div class="row">
+							                <span class="col-md-4 offset-md-1">Du :</span> 
+						                	<span ng-show="!bookingline.edit" class="col-md-4">
+						                		<i>{{ bookingline.startDate.toString().replace(' ', 'T') | date : "dd/MM/yyyy" }}</i>
+						                	</span>
+						                	<input class="form-control col-md-6" type="date" ng-model="bookingline.startDate" ng-show="bookingline.edit">
+						            </div>
+						            <div class="row">
+					                	<span class="col-md-4 offset-md-1">Au :</span> 
+					                	<span ng-show="!bookingline.edit" class="col-md-4">
+					                		<i>{{ bookingline.endDate.toString().replace(' ', 'T') | date : "dd/MM/yyyy" }}</i>
+					                	</span>
+					                	<input class="form-control col-md-6" type="date" ng-model="bookingline.endDate" ng-show="bookingline.edit">
+						            </div>
+						            <div class="row" ng-show="!bookingline.edit">
+						                <span class="col-md-4 offset-md-1">Statut :</span> 
+					                	<span class="col-md-4"><i>{{bookingline.statusName}}</i></span>
+						            </div>
+
+					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit">
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="accept(bookingline)">Accepter</button>
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelLine(bookingline)">Refuser</button>
 					                </div>
-					                <div class="row" ng-if="bookingline.status==2">
+					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit">
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBack(bookingline)">Rendu</button>
+					                </div>
+					                <div class="row" ng-if="bookingline.edit">
+					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="update(bookingline)">Valider</button>
 					                </div>
 					            </div>
 					        </div>

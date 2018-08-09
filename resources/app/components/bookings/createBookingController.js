@@ -21,6 +21,10 @@ angular.module('bobbyApp')
     //Emprunt
     $scope.booking = {}
 
+    //Current date
+    $scope.currentDate = new Date();
+    console.log("date", $scope.currentDate);
+
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
     $scope.loading = true;
@@ -140,6 +144,7 @@ angular.module('bobbyApp')
         if(itemBooked.quantity == 0){
             $scope.bookingline.items.splice($index, 1);
         }
+      console.log($scope.bookingline.items);
     }
 
     //Modification de la date de départ du prêt d'un item
