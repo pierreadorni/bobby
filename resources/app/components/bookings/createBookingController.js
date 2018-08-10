@@ -167,11 +167,9 @@ angular.module('bobbyApp')
       $scope.booking.booker = $scope.booking.assoRequesting.id;
       $scope.booking.status = 1;
       $scope.booking.cautionReceived = false;
-      serviceAjax.post("booking/validation/items", $scope.bookingline, "POST").then(function(data){
+      serviceAjax.post("booking/validation/items", $scope.bookingline).then(function(data){
         $scope.booking.caution = data.data;
-        serviceAjax.post('bookings', $scope.booking, 'POST').then(function(data){
-          console.log("bookings", data);
-          console.log('com2', $scope.mail.comment)
+        serviceAjax.post('bookings', $scope.booking).then(function(data){
           $scope.callBackBooking = data.data;
           /* Envoi du mail automatique */
           $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
@@ -191,11 +189,11 @@ angular.module('bobbyApp')
 
             }
 
-            serviceAjax.post("bookinglines", $scope.bookingline, 'POST').then(function(data){
+            serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
               console.log("response", data.data);
               $scope.mail.bookinglines = data.data;
               console.log($scope.mail);
-              serviceAjax.post('send', $scope.mail, 'POST');
+              serviceAjax.post('send', $scope.mail);
             })
         });
       })

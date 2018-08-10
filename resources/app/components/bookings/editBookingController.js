@@ -17,10 +17,8 @@ angular.module('bobbyApp')
 
     //Current date
     $scope.currentDate = new Date();
-    console.log("date", $scope.currentDate);
 
     $scope.booking_id = $routeParams.id;
-    console.log("booking", $scope.booking_id)
 
      //Recherche de la catégorie séléectionné
     var loadBookings = function(){
@@ -39,7 +37,7 @@ angular.module('bobbyApp')
       $scope.booking.cautionReceived = "Oui";
       var booking = {};
       booking.cautionReceived = true;
-      $http.put("http://localhost:8000/api/v1/bookings/" + $scope.booking.id, booking);
+      serviceAjax.put("bookings/" + $scope.booking.id, booking);
     }
 
     //Validation de tous les items
@@ -93,7 +91,7 @@ angular.module('bobbyApp')
       $bookingline.statusName = "Validé";
       var updateBookingLine = {};
       updateBookingLine.status = 2;
-      $http.put("http://localhost:8000/api/v1/bookinglines/"+$bookingline.id, updateBookingLine);
+      serviceAjax.put("bookinglines/"+$bookingline.id, updateBookingLine);
       //Mise a jour si nécessaire du status de la commande
       //Variable qui vérifie qu'il n'y a plus de statut "En cours"
       var validate=0;
@@ -106,7 +104,7 @@ angular.module('bobbyApp')
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 2
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
     }
 
@@ -116,7 +114,7 @@ angular.module('bobbyApp')
       $bookingline.statusName = "Annulé";
       var updateBookingLine = {};
       updateBookingLine.status = 4;
-      $http.put("http://localhost:8000/api/v1/bookinglines/"+$bookingline.id, updateBookingLine);
+      serviceAjax.put("bookinglines/"+$bookingline.id, updateBookingLine);
       //Mise a jour si nécessaire du status de la commande
       //Variable qui vérifie qu'il n'y a plus de statut "En cours"
       var validate=0;
@@ -139,21 +137,21 @@ angular.module('bobbyApp')
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 4
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
       else if(rendu==0){
         $scope.booking.statusName = "Terminée";
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 3
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
       else if(validate==0){
         $scope.booking.statusName = "Validée";
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 2
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
     }
 
@@ -163,7 +161,7 @@ angular.module('bobbyApp')
       $bookingline.statusName = "Rendu";
       var updateBookingLine = {};
       updateBookingLine.status = 3;
-      $http.put("http://localhost:8000/api/v1/bookinglines/"+$bookingline.id, updateBookingLine);
+      serviceAjax.put("bookinglines/"+$bookingline.id, updateBookingLine);
       //Mise a jour si nécessaire du status de la commande
       //Variable qui vérifie qu'il n'y a plus de statut "En cours"
       var validate=0;
@@ -183,14 +181,14 @@ angular.module('bobbyApp')
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 3
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
       else if(validate==0){
         $scope.booking.statusName = "Validée";
         //Envoie de la mise a jour à la BDD
         var updateBooking = {};
         updateBooking.status = 2
-        $http.put("http://localhost:8000/api/v1/bookings/"+$scope.booking.id, updateBooking)
+        serviceAjax.put("bookings/"+$scope.booking.id, updateBooking)
       }
     }
 
@@ -198,12 +196,13 @@ angular.module('bobbyApp')
     $scope.update=function($item){
       var bookingline = {}
       bookingline.status = 2;
+      $item.edit = false;
       bookingline.quantity = $item.quantity;
       $scope.startDate = $item.startDate;
       $scope.endDate = $item.endDate;
       bookingline.startDate = $filter('date')($scope.startDate, "yyyy-MM-dd");
       bookingline.endDate = $filter('date')($scope.endDate, "yyyy-MM-dd");
-      $http.put("http://localhost:8000/api/v1/bookinglines/"+$item.id, bookingline).then(function(){
+      serviceAjax.put("bookinglines/"+$item.id, bookingline).then(function(){
         $item.status = "2";
         $item.statusName = "Validé";
         $item.edit = false;

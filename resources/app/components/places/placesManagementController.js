@@ -59,7 +59,7 @@ angular.module('bobbyApp')
     }
 
     $scope.update = function($place){
-      $http.put('http://localhost:8000/api/v1/itemplaces/'+ $place.id, $place).then(function(){
+      serviceAjax.put('itemplaces/'+ $place.id, $place).then(function(){
         $place.edit = !$place.edit;
         $scope.updateConfirmation = true;
         $timeout(function() {
@@ -75,7 +75,8 @@ angular.module('bobbyApp')
 
     $scope.save = function(){
       $scope.loading=true;
-      serviceAjax.post('itemplaces', $scope.newPlace, 'POST').then(function(){
+      console.log($scope.newPlace)
+      serviceAjax.post('itemplaces', $scope.newPlace).then(function(){
         loadPlace();
         $scope.addConfirmation = true;
         $timeout(function() {
@@ -90,7 +91,7 @@ angular.module('bobbyApp')
 
 
     $scope.delete = function($place){
-      $http.delete('http://localhost:8000/api/v1/itemplaces/'+ $place.id).then(function(){
+      serviceAjax.delete('itemplaces/'+ $place.id).then(function(){
         loadPlace();
         $scope.deleteConfirmation = true;
         $timeout(function() {

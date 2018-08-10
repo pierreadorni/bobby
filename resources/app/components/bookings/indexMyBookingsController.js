@@ -81,10 +81,5 @@ angular.module('bobbyApp')
       $scope.propertyName = propertyName;
     };
 
-    /* Ouverture d'une réservation */
-    $scope.open= function($id){
-      console.log($id);
-    }
-
   });
 

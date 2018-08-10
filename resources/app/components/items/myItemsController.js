@@ -111,7 +111,7 @@ angular.module('bobbyApp')
         $item.type = $item.typeSection.id;
       if($item.placeSection)
         $item.place = $item.placeSection.id;
-      $http.put('http://localhost:8000/api/v1/items/'+ $item.id, $item).then(function(){
+      serviceAjax.put('items/'+ $item.id, $item).then(function(){
         $item.edit = !$item.edit;
         loadItem();
         $scope.updateConfirmation = true;
@@ -129,7 +129,7 @@ angular.module('bobbyApp')
     $scope.save = function(){
       console.log($scope.newItem);
       $scope.loading=true;
-      serviceAjax.post('items', $scope.newItem, 'POST').then(function(){
+      serviceAjax.post('items', $scope.newItem).then(function(){
         loadItem();
         $scope.addConfirmation = true;
         $timeout(function() {
@@ -149,7 +149,7 @@ angular.module('bobbyApp')
 
 
     $scope.delete = function($item){
-      $http.delete('http://localhost:8000/api/v1/items/'+ $item.id).then(function(){
+      serviceAjax.delete('items/'+ $item.id).then(function(){
         loadItem();
         $scope.deleteConfirmation = true;
         $timeout(function() {

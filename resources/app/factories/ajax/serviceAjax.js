@@ -33,13 +33,14 @@ angular.module('bobbyApp')
                 return $http.get(__ENV.apiUrl + '/' + path);
             },
 
-            post: function(path, item, methodType){
-                return $http({
-                    method : methodType,
-                    url : __ENV.apiUrl + '/' + path,
-                    data : item,
-                });
+            post: function(path, object){
+                return $http.post(__ENV.apiUrl + '/' + path, object);
+            },
+            put: function(path, object){
+                return $http.put(__ENV.apiUrl + '/' + path, object);
+            },
+            delete : function(path){
+                return $http.delete(__ENV.apiUrl + '/' + path);
             }
-
         }
     });

@@ -59,7 +59,7 @@ angular.module('bobbyApp')
     }
 
     $scope.update = function($categorie){
-      $http.put('http://localhost:8000/api/v1/itemtypes/'+ $categorie.id, $categorie).then(function(){
+      serviceAjax.put('itemtypes/'+ $categorie.id, $categorie).then(function(){
         $categorie.edit = !$categorie.edit;
         $scope.updateConfirmation = true;
         $timeout(function() {
@@ -75,7 +75,7 @@ angular.module('bobbyApp')
 
     $scope.save = function(){
       $scope.loading=true;
-      serviceAjax.post('itemtypes', $scope.newCategorie, 'POST').then(function(){
+      serviceAjax.post('itemtypes', $scope.newCategorie).then(function(){
         loadCategorie();
         $scope.addNewCategorie = false;
         $scope.addConfirmation = true;
@@ -91,7 +91,7 @@ angular.module('bobbyApp')
 
 
     $scope.delete = function($categorie){
-      $http.delete('http://localhost:8000/api/v1/itemtypes/'+ $categorie.id).then(function(){
+      serviceAjax.delete('itemtypes/'+ $categorie.id).then(function(){
         loadCategorie();
         $scope.deleteConfirmation = true;
         $timeout(function() {
