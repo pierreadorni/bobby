@@ -9,8 +9,9 @@ use App\User;
 
 class LoginController extends Controller
 {
-
-
+    public function __construct() {
+        $this->middleware('guest');
+    }
 
     /**
      *  Processus de login: connexion par le Portail des assos et génération de token
@@ -41,7 +42,7 @@ class LoginController extends Controller
                     'refresh_token' => $token['refresh_token'],
                 ]));
 
-                return redirect('/');
+                return redirect()->route('/');
             } catch (ClientException $e) {}
         }
 
