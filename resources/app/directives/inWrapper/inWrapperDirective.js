@@ -5,7 +5,7 @@ app.directive('inWrapper', function() {
         scope: {},
         controller: function() {
         },
-        templateUrl: 'app/Directives/inWrapper/in_wrapper.html',
+        templateUrl: 'app/directives/inWrapper/in_wrapper.html',
     };
 })
 .controller('inWrapperCtrl', function($scope, serviceAjax, $http, $rootScope){
