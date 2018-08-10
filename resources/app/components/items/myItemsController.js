@@ -8,7 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout) {
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -58,6 +58,7 @@ angular.module('bobbyApp')
       $scope.loading=true;
       serviceAjax.get("association/items/"+$scope.asso_id).then(function(data){
         $scope.items = data.data;
+        console.log($scope.items);
         for (var i = $scope.items.length - 1; i >= 0; i--) {
           //Permet d'affecter au ng-model d'edition des éléments
           $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
