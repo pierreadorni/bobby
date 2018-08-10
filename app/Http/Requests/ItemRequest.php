@@ -24,7 +24,7 @@ class ItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'          =>  'unique:items,name->ignore('.$this->id.')|string|between:2,191'.($this->isMethod('put')?'':'|required'),
+            'name'          =>  'string|between:2,191'.($this->isMethod('put')?'':'|required'),
             'quantity'      =>  'integer|min:0|'.($this->isMethod('put')?'':'|required'),
             'place'         => 'exists:itemplaces,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
             'status'        =>  'integer|min:1|max:3'.($this->isMethod('put')?'':'|required'),
