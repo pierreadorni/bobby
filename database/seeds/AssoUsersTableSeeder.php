@@ -12,24 +12,6 @@ class AssoUsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $asso_users = [
-        	[
-        		'association' => 1,
-                'user'  =>  3,
-	        ],
-	        [
-                'association' => 2,
-                'user'  =>  3,
-            ],
-	        [
-                'association' => 3,
-                'user'  =>  3,
-            ],
-        ];
-
-        foreach ($asso_users as $asso_user => $values){
-            AssoUser::create($values);
-        }
 
     }
 }
