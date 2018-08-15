@@ -558,204 +558,6 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, serviceAjax, $http) {
-
-
-  $scope.message = "Connexion";
-
-
-  /*serviceAjax.get('authorization_code').then(function(data){
-    console.log(data);
-  })*/
-
-  if($routeParams.token) {
-    console.log("dd");
-  }
-
-
-  $http.get('http://localhost:8000/api/v1/code').then(function(data){
-    console.log(data);
-    /*$http.defaults.headers.common.Authorization = 'Bearer' + data.data.token;
-    $location.path("/");
-    $location.url($location.path());*/
-    /*window.location.href = data.data;
-    console.log(data.data.token);*/
-
-    /*if($routeParams.token){
-      console.log('token', $routeParams.token)
-      $location.path("/");
-      $location.url($location.path());
-      console.log("dd");
-    }*/
-    /*$location.absUrl(data.data);
-    console.log($location)*/
-    /*if(!data.data.token)
-      window.location.href = data.data;*/
-      /*if(!data.url){
-        console.log("ok");
-      }
-      else*/
-        if($routeParams.code){
-          console.loge("code", $routeParams.code);
-        }
-       window.location.href = data.data['url'];
-
-    //console.log(window.locaion.href)
-  })
-
-
-  /*$scope.message = "Connexion";
-
-  if($routeParams.token) { // Si l'on a un token en paramètre (/login?token=)
-
-    // On enregistre ce token dans la factory
-    $rootScope.auth.login($routeParams.token)
-    .then(function(data){
-
-      // On redirige vers la page main
-      $location.path("/");
-      $location.url($location.path());  // Clear des paramètres
-
-    }, function(error){
-
-      // Erreur pour récupérer le membre malgré le succès au CAS, erreur 500
-      $location.path("/error/500");
-      $location.url($location.path()); // Clear des paramètres
-
-    });
-
-  }
-  else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-    $scope.message = "Erreur de connexion";
-
-    // On redirige vers la page d'erreur 401
-    $location.path("/error/401");
-    $location.url($location.path());  // Clear des paramètres
-
-  }
-  else {
-
-    $scope.message = "Redirection vers le CAS";
-
-    // Si l'on a pas de token, c'est que l'on a pas encore été vers le login CAS.
-    // On redirige vers le processus d'authentification grâce à la méthode goLogin() de la factory
-    $rootScope.auth.goLogin();
-
-    if($routeParams.token){
-      console.log("aaaaaa");
-    }
-
-  }*/
-
-});
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    /*Initialisation des boutons de confirmation*/
-    $scope.addConfirmation = false;
-    $scope.updateConfirmation = false;
-    $scope.deleteConfirmation = false;
-
-    //Pour afficher le formulaire d'ajout d'une nouvelle catégorie
-    $scope.addNewPlace = false;
-    
-    var loadNewPlace = function(){
-      //Pour remplir la nouvelle catégorie
-      $scope.newPlace = {};
-    }
-
-    loadNewPlace();
-
-
-     //Recherche de la catégorie séléectionné
-    var loadPlace = function(){
-      $scope.loading = true;
-      serviceAjax.get("itemplaces").then(function(data){
-        $scope.places = data.data;
-      })
-    }
-    loadPlace();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
-
-    /* Fonctions de gestions des catégories*/
-
-    $scope.add = function(){
-      $scope.addNewPlace = true;
-      $scope.focusInput = true;
-    }
-
-    $scope.edit = function($place){
-      $place.edit=!$place.edit;
-    }
-
-    $scope.update = function($place){
-      serviceAjax.put('itemplaces/'+ $place.id, $place).then(function(){
-        $place.edit = !$place.edit;
-        $scope.updateConfirmation = true;
-        $timeout(function() {
-           $scope.updateConfirmation = false;
-        }, 3000);
-      })
-    }
-
-    $scope.cancel = function(){
-      $scope.addNewPlace = false;
-      loadPlace();
-    }
-
-    $scope.save = function(){
-      $scope.loading=true;
-      console.log($scope.newPlace)
-      serviceAjax.post('itemplaces', $scope.newPlace).then(function(){
-        loadPlace();
-        $scope.addConfirmation = true;
-        $timeout(function() {
-           $scope.addConfirmation = false;
-        }, 3000)
-      })
-      $scope.loading=false;
-      $scope.addNewPlace = false;
-      loadNewPlace();
-    }
-
-
-
-    $scope.delete = function($place){
-      serviceAjax.delete('itemplaces/'+ $place.id).then(function(){
-        loadPlace();
-        $scope.deleteConfirmation = true;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-      })
-
-    }
-
-  });
-
-
 'use strict';
 
 /**
@@ -909,6 +711,122 @@ angular.module('bobbyApp')
     $scope.delete = function($item){
       serviceAjax.delete('items/'+ $item.id).then(function(){
         loadItem();
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+      })
+
+    }
+
+  });
+
+
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, serviceAjax, $http) {
+
+
+  $scope.message = "Connexion";
+
+  $http.get('http://localhost:8000/api/v1/login').then(function(data){
+   window.location.href = data.data['url'];
+  })
+});
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    /*Initialisation des boutons de confirmation*/
+    $scope.addConfirmation = false;
+    $scope.updateConfirmation = false;
+    $scope.deleteConfirmation = false;
+
+    //Pour afficher le formulaire d'ajout d'une nouvelle catégorie
+    $scope.addNewPlace = false;
+    
+    var loadNewPlace = function(){
+      //Pour remplir la nouvelle catégorie
+      $scope.newPlace = {};
+    }
+
+    loadNewPlace();
+
+
+     //Recherche de la catégorie séléectionné
+    var loadPlace = function(){
+      $scope.loading = true;
+      serviceAjax.get("itemplaces").then(function(data){
+        $scope.places = data.data;
+      })
+    }
+    loadPlace();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
+    };
+
+    /* Fonctions de gestions des catégories*/
+
+    $scope.add = function(){
+      $scope.addNewPlace = true;
+      $scope.focusInput = true;
+    }
+
+    $scope.edit = function($place){
+      $place.edit=!$place.edit;
+    }
+
+    $scope.update = function($place){
+      serviceAjax.put('itemplaces/'+ $place.id, $place).then(function(){
+        $place.edit = !$place.edit;
+        $scope.updateConfirmation = true;
+        $timeout(function() {
+           $scope.updateConfirmation = false;
+        }, 3000);
+      })
+    }
+
+    $scope.cancel = function(){
+      $scope.addNewPlace = false;
+      loadPlace();
+    }
+
+    $scope.save = function(){
+      $scope.loading=true;
+      console.log($scope.newPlace)
+      serviceAjax.post('itemplaces', $scope.newPlace).then(function(){
+        loadPlace();
+        $scope.addConfirmation = true;
+        $timeout(function() {
+           $scope.addConfirmation = false;
+        }, 3000)
+      })
+      $scope.loading=false;
+      $scope.addNewPlace = false;
+      loadNewPlace();
+    }
+
+
+
+    $scope.delete = function($place){
+      serviceAjax.delete('itemplaces/'+ $place.id).then(function(){
+        loadPlace();
         $scope.deleteConfirmation = true;
         $timeout(function() {
            $scope.deleteConfirmation = false;

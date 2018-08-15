@@ -42,7 +42,7 @@ class LoginController extends Controller
                     'refresh_token' => $token['refresh_token'],
                 ]));
 
-                return redirect()->route('/');
+                return redirect('/');
             } catch (ClientException $e) {}
         }
 
