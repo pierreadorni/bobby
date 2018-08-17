@@ -36,7 +36,6 @@ Route::prefix('v1')->group(function () {
 			'bookinglines'			=> 'BookingLineController',
 			'items'			=> 'ItemController',
 			'itemtypes'		=> 'ItemTypeController',
-			'assousers'		=>	'AssoUserController',
             'itemplaces'    =>  'ItemPlaceController',
 	]);
 
@@ -100,10 +99,7 @@ Route::prefix('v1')->group(function () {
     Route::post('booking/validation/items', 'BookingController@calculCaution');
 
 
-	Route::get('assousers/users/{user}', function ($user_id) {
-
-    	return $assos = User::find($user_id)->associations();
-    });
+	Route::get('userassos', 'UserController@associations');
 
     Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 

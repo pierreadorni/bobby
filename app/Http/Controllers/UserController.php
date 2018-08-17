@@ -34,6 +34,27 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
+
+    /**
+    * Display the associations of a user
+    *
+    */
+    public function associations(Request $request)
+    {
+        $auth = $request->header('Authorization');
+
+        $http = new Client([
+            'base_uri' => 'https://portail.nastuzzi.fr/api/v1/',
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+        ]);
+        $response = $http->get('user/assos');
+        $assos = json_decode((string) $response->getBody(), true);
+        return response()->json($assos, 200);
+    }
+
+    
     /**
      * Store a newly created resource in storage.
      *

@@ -38,18 +38,6 @@ app.directive('inWrapper', function() {
       'Karma'
     ];
 
-    console.log($rootScope);
-
-    /* Ajout pour gérer l'utilisateur */
-
-    /*$scope.isActive = function($nb){
-    	return $rootScope.user == $nb;
-    }
-
-    $scope.changeUser = function($nb){
-    	$rootScope.user = $nb;
-    }*/
-    console.log($rootScope.auth);
 
 	var loadItemTypes = function(){
 		$scope.loading = true;
@@ -65,7 +53,7 @@ app.directive('inWrapper', function() {
 
 	var loadAssociations = function(){
 		$scope.loading = true;
-		serviceAjax.get("associations").then(function(data){
+		serviceAjax.get("userassos").then(function(data){
 	    	console.log("Poulet",data.data);
 
 	    	$scope.assos=data.data;

@@ -28,7 +28,7 @@ angular.module('bobbyApp')
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
     $scope.loading = true;
-    serviceAjax.get("associations").then(function(data){
+    serviceAjax.get("userassos").then(function(data){
         $scope.assosBooking=data.data;
 
         if($scope.assosBooking.length==1){
@@ -520,7 +520,6 @@ angular.module('bobbyApp')
   });
 
 
-
 'use strict';
 
 /**
@@ -576,6 +575,33 @@ angular.module('bobbyApp')
     loadItem();
 
   });
+
+
+app.controller('errorCtrl', function($scope, $routeParams, $location) {
+
+  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
+
+    $scope.errorCode = 401;
+    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 404) {
+
+    $scope.errorCode = 404;
+    $scope.errorDesc = "Page demandée introuvable";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 500) {
+
+    $scope.errorCode = 500;
+    $scope.errorDesc = "Erreur interne, veuillez contacter un administrateur.";
+
+  }
+  else {
+    $location.path("/");
+  }
+
+});
 
 'use strict';
 
@@ -741,32 +767,6 @@ angular.module('bobbyApp')
 
   });
 
-
-app.controller('errorCtrl', function($scope, $routeParams, $location) {
-
-  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
-
-    $scope.errorCode = 401;
-    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
-
-  }
-  else if ($routeParams.code && $routeParams.code == 404) {
-
-    $scope.errorCode = 404;
-    $scope.errorDesc = "Page demandée introuvable";
-
-  }
-  else if ($routeParams.code && $routeParams.code == 500) {
-
-    $scope.errorCode = 500;
-    $scope.errorDesc = "Erreur interne, veuillez contacter un administrateur.";
-
-  }
-  else {
-    $location.path("/");
-  }
-
-});
 
 app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, $http, PortailAuth, serviceAjax) {
 
