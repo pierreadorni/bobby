@@ -28,37 +28,37 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   /**
    *  Enregistre les variables auth et token dans un cookie
    */
-  /*factory.saveCookie = function() {
+  factory.saveCookie = function() {
       // Remove permissions, we don't need to save them into a cookie
-      var member = factory.member;
+      /*var member = factory.member;
       if (member.role)
-        member.role.permissions = null;
-      $cookies.putObject('UTCAuth',
+        member.role.permissions = null;*/
+      $cookies.putObject('PortailAuth',
           {
             'auth' : factory.auth,
             'token' : factory.token,
-            'member' : member,
+            'member' : factory.member,
           }
       );
-  }*/
+  }
 
   /**
    *  Charge les variables auth et token depuis un cookie
    */
-  /*factory.loadCookie = function() {
-    if($cookies.getObject('UTCAuth')) {
-      factory.auth = $cookies.getObject('UTCAuth').auth;
-      factory.token = $cookies.getObject('UTCAuth').token;
-      factory.member = $cookies.getObject('UTCAuth').member;
+  factory.loadCookie = function() {
+    if($cookies.getObject('PortailAuth')) {
+      factory.auth = $cookies.getObject('PortailAuth').auth;
+      factory.token = $cookies.getObject('PortailAuth').token;
+      factory.member = $cookies.getObject('PortailAuth').member;
     }
-  }*/
+  }
 
   /**
    *  Setter pour auth
    */
   factory.setAuth = function(auth) {
     factory.auth = auth;
-    //factory.saveCookie();
+    factory.saveCookie();
   }
 
   /**
@@ -66,7 +66,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
    */
   factory.setToken = function(token){
     factory.token = token;
-    //factory.saveCookie();
+    factory.saveCookie();
   }
 
   /**
@@ -74,7 +74,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
    */
   factory.setMember = function(member) {
     factory.member = member;
-    //factory.saveCookie();
+    factory.saveCookie();
   }
 
   /**
@@ -83,7 +83,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   factory.clear = function() {
     factory.setAuth(false);
     factory.setToken('');
-    //factory.setMember({});
+    factory.setMember({});
   }
 
     /**
@@ -147,7 +147,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   }*/
 
     /**
-     * Détermine si permission est dans la liste des permission de UTCAuth
+     * Détermine si permission est dans la liste des permission de PortailAuth
      * @param permission
      * @returns {boolean}
      */
@@ -218,7 +218,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   /*factory.goLogout = function() {
     $http.get(__ENV.apiUrl+'/logout')
       .success(function(data){
-        factory.logout(); // On vide les infos auth et token de UTCAuth
+        factory.logout(); // On vide les infos auth et token de PortailAuth
         $window.location.href = data.url; // Vers le logout CAS
       }).error(function(error){
         // Gérer en cas d'erreur
@@ -227,12 +227,12 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
 
   // Avant de retourner la factory, on récupère les informations dans le cookie,
   // s'il existe, sinon on le créé
-  /*if($cookies.getObject('UTCAuth')) {
+  if($cookies.getObject('PortailAuth')) {
       factory.loadCookie();
-      factory.refreshPermissions();
+      //factory.refreshPermissions();
   } else {
       factory.saveCookie();
-  }*/
+  }
 
   return factory;
 });
