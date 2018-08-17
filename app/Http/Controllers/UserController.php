@@ -28,9 +28,7 @@ class UserController extends Controller
         ]);
         $response = $http->get('user');
         $user = json_decode((string) $response->getBody(), true);
-        //dd($user);
-        //dd($request->header('Authorization'));
-        //$users = User::get();
+
         return response()->json($user, 200);
     }
 

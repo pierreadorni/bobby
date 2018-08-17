@@ -49,6 +49,7 @@ app.run(function($rootScope, PortailAuth) {
     $routeProvider
       .when('/', {
         templateUrl: 'app/components/dashboard/main.html',
+        controller: 'MainCtrl'
       })
       .when('/items/:asso_id', {
         templateUrl: 'app/components/items/my_items.html',
