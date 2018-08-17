@@ -1,9 +1,41 @@
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, serviceAjax, $http) {
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, $http, PortailAuth, serviceAjax) {
 
 
   $scope.message = "Connexion";
 
-  $http.get('http://localhost:8000/api/v1/login').then(function(data){
-   window.location.href = data.data['url'];
-  })
+
+	/*if($routeParams.code){
+  		console.log("ok");
+  		$scope.request={};
+  		$scope.request.code = $routeParams.code;
+  		$http.post('http://localhost:8000/api/v1/login', $scope.request).then(function(data){
+	  	console.log(data)
+	  })
+	}*/
+	
+	if($routeParams.token){
+		$rootScope.auth.login($routeParams.token)
+		// On redirige vers la page main
+		/*serviceAjaxPortail.get("user").then(function(data){
+			console.log(data);
+		})*/
+		/*$http.get('https://portail.nastuzzi.fr/api/v1/user').then(function(data){
+			console.log(data);
+		})*/
+		/*serviceAjax.get("user").then(function(data){
+			console.log(data)
+		})*/
+		serviceAjax.get('user').then(function(data){
+			console.log(data)
+		})
+		$location.path("/");
+		$location.url($location.path());  // Clear des paramètres
+	}
+
+	else {
+	  	$http.get('http://localhost:8000/api/v1/code').then(function(data){
+		  	console.log(data)
+		   	window.location.href = data.data["url"];
+		})
+	}
 });

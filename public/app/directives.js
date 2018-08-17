@@ -15,6 +15,8 @@ app.directive('inWrapper', function() {
       'Karma'
     ];
 
+    console.log($rootScope);
+
     /* Ajout pour gérer l'utilisateur */
 
     /*$scope.isActive = function($nb){

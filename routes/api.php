@@ -32,13 +32,15 @@ Route::prefix('v1')->group(function () {
 	Route::apiResources([
 			'associations'		=> 'AssociationController',
 			'bookings'	=> 'BookingController',
-			'users'			=> 'UserController',
+			//'users'			=> 'UserController',
 			'bookinglines'			=> 'BookingLineController',
 			'items'			=> 'ItemController',
 			'itemtypes'		=> 'ItemTypeController',
 			'assousers'		=>	'AssoUserController',
             'itemplaces'    =>  'ItemPlaceController',
 	]);
+
+    Route::get('user', 'UserController@getUser');
 
     Route::get('items/categories/{categorie}',function ($categorie){
 
@@ -112,7 +114,14 @@ Route::prefix('v1')->group(function () {
     	return Association::find($association_id)->bookings()->where('bookings.status', $type_id)->join('booking_lines', 'bookings.id', '=', 'booking_lines.booking')->join('items', 'booking_lines.item', '=', 'items.id')->get();
     });
 
-    Route::get('/login', 'LoginController@authorization_code');
+
+//Route::group(['middleware' => 'cors'], function () {
+    Route::get('/login', 'LoginController@login');
+
+    Route::get('/code', 'LoginController@authorization_code');
+
+    //Route::get('/token', 'LoginController@get_token');
 
     Route::post('/send', 'MailController@send');
+//});
 });
