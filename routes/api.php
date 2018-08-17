@@ -97,7 +97,7 @@ Route::prefix('v1')->group(function () {
         return($item);
     });
 
-    Route::post('booking/validation/items', 'bookingController@calculCaution');
+    Route::post('booking/validation/items', 'BookingController@calculCaution');
 
 
 	Route::get('assousers/users/{user}', function ($user_id) {
@@ -105,7 +105,7 @@ Route::prefix('v1')->group(function () {
     	return $assos = User::find($user_id)->associations();
     });
 
-    Route::get('bookings/asso/{asso_id}', 'bookingController@indexAssociation');
+    Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 
 
     Route::get('associations/booking/{owner}/{type}', function($association_id, $type_id) {

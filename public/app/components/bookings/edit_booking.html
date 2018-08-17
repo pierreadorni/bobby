@@ -22,7 +22,7 @@
 					                	Caution reçue ? 
 					                	<i style="margin-right: 10px">{{booking.cautionReceived}}</i>
 					                	<a ng-show="booking.cautionReceived=='Non' && booking.status!=4" ng-click="changeCaution()">
-					                		<span class="badge badge-pill badge-secondary">
+					                		<span class="badge badge-pill badge-secondary" ng-show="memberAssoOwner">
 					                			J'ai reçu la caution 
 					                			<i class="fas fa-check i-right" aria-hidden="true"></i> 
 					                		</span>
@@ -47,7 +47,7 @@
 				                <div class="card-body">
 				                    <p>{{booking.owner.name}}</p>
 				                    <p>{{booking.owner.mail}}</p>
-				                    <button class="btn btn-grey">Envoyer un mail</button>
+				                    <button class="btn btn-grey" ng-show="memberAssoBooker">Envoyer un mail</button>
 				                </div>
 				            </div>
 				        </div>
@@ -59,7 +59,7 @@
 				               	<div class="card-body">
 				                    <p>{{booking.booker.name}}</p>
 				                    <p>{{booking.booker.mail}}</p>
-				                    <button class="btn btn-grey">Envoyer un mail</button>
+				                    <button class="btn btn-grey" ng-show="memberAssoOwner">Envoyer un mail</button>
 				                </div>
 				            </div>
 				        </div>
@@ -82,7 +82,7 @@
 					            <div class="card-header">
 					                <h5>
 					                	{{bookingline.item.name}}
-					                	<a ng-click="edit(bookingline)">
+					                	<a ng-click="edit(bookingline)" ng-show="memberAssoOwner">
 					                		<i class="fa fa-edit i-right pull-right" aria-hidden="true"></i>
 					                	</a>
 					                </h5>
@@ -112,14 +112,14 @@
 					                	<span class="col-md-4"><i>{{bookingline.statusName}}</i></span>
 						            </div>
 
-					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit">
+					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit" ng-show="memberAssoOwner">
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="accept(bookingline)">Accepter</button>
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelLine(bookingline)">Refuser</button>
 					                </div>
-					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit">
+					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit" ng-show="memberAssoOwner">
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBack(bookingline)">Rendu</button>
 					                </div>
-					                <div class="row" ng-if="bookingline.edit">
+					                <div class="row" ng-if="bookingline.edit" ng-show="memberAssoOwner='true'>
 					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="update(bookingline)">Valider</button>
 					                </div>
 					            </div>

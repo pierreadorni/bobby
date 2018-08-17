@@ -43,6 +43,16 @@ class ItemsTableSeeder extends Seeder
                 'type' => 1,
                 'association' => 1,
             ],
+            [
+                'name' => 'Cintre',
+                'description'   =>  null,
+                'quantity'  =>  10,
+                'place' => 3,
+                'status' =>  true,
+                'caution' => 300,
+                'type' => 1,
+                'association' => 2,
+            ],
         ];
 
         foreach ($items as $item => $values){

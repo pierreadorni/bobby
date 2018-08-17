@@ -1,5 +1,5 @@
 angular.module('bobbyApp')  
-  .factory('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
+  .directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
       return {
         //scope: true,   // optionally create a child scope
         link: function (scope, element, attrs) {

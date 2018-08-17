@@ -8,63 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    $scope.categorie_id = $routeParams.id;
-
-     //Recherche de la catégorie séléectionné
-    var loadCategorie = function(){
-      $scope.loading = true;
-      if($scope.categorie_id == 0){
-        $scope.type = 'Totalité du matériel';
-      }
-      else {
-        serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
-        $scope.type = data.data.name;
-        });
-      }
-    }
-    loadCategorie();
-
-    /* Gestion des tries des items*/
-    $scope.propertyName = 'name';
-    $scope.reverse = false;
-
-    $scope.sortBy = function(propertyName) {
-      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-      $scope.propertyName = propertyName;
-    };
-    
-    
-    //Chargement des items en fonction de la catégorie sélectionnée
-
-    var loadItem = function(){
-      $scope.loading=true;
-      serviceAjax.get("items/categories/" + $scope.categorie_id)
-        .then(function(data){
-          $scope.items = data.data;
-        });
-      $scope.loading=false;
-    };
-    loadItem();
-
-  });
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout, $filter, $q) {
+  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout, $filter) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -138,7 +82,12 @@ angular.module('bobbyApp')
     var loadItem = function($id){
       $scope.loading=true;
       serviceAjax.get("booking/items/" + $id).then(function(data){
-        $scope.items = data.data;
+        if(data.data.length == 1){
+          $scope.items = new Array(data.data);
+          //$scope.items[0]=data.data;
+        }
+        else 
+          $scope.items = data.data;  
       });
       $scope.loading=false;
       
@@ -227,6 +176,7 @@ angular.module('bobbyApp')
         $scope.booking.caution = data.data;
         serviceAjax.post('bookings', $scope.booking).then(function(data){
           $scope.callBackBooking = data.data;
+          
           /* Envoi du mail automatique */
           $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
           $scope.mail.content = "L'association " + $scope.booking.assoRequesting.name + " vient de faire une demande de réservation de matériel à votre association." +  " En voici la liste :";
@@ -243,14 +193,15 @@ angular.module('bobbyApp')
             $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
             $scope.bookingline.items[i].status = 1;
 
-            }
+          }
 
-            serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
-              console.log("response", data.data);
-              $scope.mail.bookinglines = data.data;
-              console.log($scope.mail);
-              serviceAjax.post('send', $scope.mail);
-            })
+          serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
+            console.log("response", data.data);
+            $scope.mail.bookinglines = data.data;
+            console.log($scope.mail);
+            //serviceAjax.post('send', $scope.mail);
+            $location.path('/booking/' + $scope.callBackBooking.id);
+          })
         });
       })
     }
@@ -279,12 +230,24 @@ angular.module('bobbyApp')
 
     $scope.booking_id = $routeParams.id;
 
+    //Autorisation pour l'utilisateur avant d'avoir chargé les données
+    $scope.memberAssoOwner = false;
+    $scope.memberAssoBooker = false;
+
+    //association de l'utilisateur connecté
+    $scope.assoUser = "1";
+
      //Recherche de la catégorie séléectionné
     var loadBookings = function(){
       $scope.loading = true;
       serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
         $scope.booking = data.data;
         console.log("donnees", $scope.booking)
+        //Autorisation pour l'utilisateur
+        if($scope.assoUser == $scope.booking.owner.id)
+          $scope.memberAssoOwner = true;
+        if($scope.assoUser == $scope.booking.booker.id)
+          $scope.memberAssoBooker = true;          
       })
     }
     loadBookings();
@@ -568,7 +531,63 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout) {
+  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    $scope.categorie_id = $routeParams.id;
+
+     //Recherche de la catégorie séléectionné
+    var loadCategorie = function(){
+      $scope.loading = true;
+      if($scope.categorie_id == 0){
+        $scope.type = 'Totalité du matériel';
+      }
+      else {
+        serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
+        $scope.type = data.data.name;
+        });
+      }
+    }
+    loadCategorie();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+    
+    
+    //Chargement des items en fonction de la catégorie sélectionnée
+
+    var loadItem = function(){
+      $scope.loading=true;
+      serviceAjax.get("items/categories/" + $scope.categorie_id)
+        .then(function(data){
+          $scope.items = data.data;
+        });
+      $scope.loading=false;
+    };
+    loadItem();
+
+  });
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -618,6 +637,7 @@ angular.module('bobbyApp')
       $scope.loading=true;
       serviceAjax.get("association/items/"+$scope.asso_id).then(function(data){
         $scope.items = data.data;
+        console.log($scope.items);
         for (var i = $scope.items.length - 1; i >= 0; i--) {
           //Permet d'affecter au ng-model d'edition des éléments
           $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
@@ -800,7 +820,7 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
+  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -906,7 +926,51 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
+  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+     //Recherche de la catégorie séléectionné
+    var loadBookings = function(){
+      $scope.loading = true;
+      serviceAjax.get("bookings").then(function(data){
+        $scope.bookings = data.data;
+        console.log($scope.bookings)
+      })
+    }
+    loadBookings();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'booker.name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+
+    /* Ouverture d'une réservation */
+    $scope.open= function($id){
+      console.log($id);
+    }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -997,50 +1061,6 @@ angular.module('bobbyApp')
         }, 3000)
       })
 
-    }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-     //Recherche de la catégorie séléectionné
-    var loadBookings = function(){
-      $scope.loading = true;
-      serviceAjax.get("bookings").then(function(data){
-        $scope.bookings = data.data;
-        console.log($scope.bookings)
-      })
-    }
-    loadBookings();
-
-    /* Gestion des tries des items*/
-    $scope.propertyName = 'booker.name';
-    $scope.reverse = false;
-
-    $scope.sortBy = function(propertyName) {
-      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-      $scope.propertyName = propertyName;
-    };
-
-    /* Ouverture d'une réservation */
-    $scope.open= function($id){
-      console.log($id);
     }
 
   });

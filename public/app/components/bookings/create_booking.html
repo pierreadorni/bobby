@@ -22,7 +22,7 @@
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="asso in assosBooking | filter:assoSearch" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="asso in assosBooking | toArray:false | filter:assoSearch" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
                             {{ asso.name }}
                         </a>
                     </div>
@@ -40,7 +40,7 @@
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="assoRequested in assosRequested | filter : assoSearch" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="assoRequested in assosRequested | toArray:false | filter : assoSearch" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
                             {{ assoRequested.name }}
                         </a>
                     </div>
@@ -86,7 +86,7 @@
                         <input ng-show="items" ng-model="itemSearch" type="text" class="form-control" placeholder="Rechercher un item">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="item in items | filter:itemSearch" ng-click="item.quantity>0 && addItem(item)" class="list-group-item list-group-item-action title">
+                        <a ng-repeat="item in items | toArray:false | filter:itemSearch" ng-click="item.quantity>0 && addItem(item)" class="list-group-item list-group-item-action title">
                                 <p class="title">
                                     {{ item.name }}
                                     <br>
