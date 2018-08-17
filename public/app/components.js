@@ -577,6 +577,29 @@ angular.module('bobbyApp')
   });
 
 
+    'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MainCtrl', function ($scope, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    //console.log($rootScope)
+    
+    $scope.prenom = $rootScope.auth.member.firstname;
+
+  });
+
 app.controller('errorCtrl', function($scope, $routeParams, $location) {
 
   if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder

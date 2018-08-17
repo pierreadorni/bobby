@@ -15,7 +15,6 @@ app.directive('inWrapper', function() {
       'Karma'
     ];
 
-
 	var loadItemTypes = function(){
 		$scope.loading = true;
 		serviceAjax.get("itemtypes").then(function(data){
