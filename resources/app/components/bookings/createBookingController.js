@@ -28,7 +28,8 @@ angular.module('bobbyApp')
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
     $scope.loading = true;
-    serviceAjax.get("userassos").then(function(data){
+    serviceAjax.get("assos").then(function(data){
+    //serviceAjax.get("userassos").then(function(data){
         $scope.assosBooking=data.data;
 
         if($scope.assosBooking.length==1){
