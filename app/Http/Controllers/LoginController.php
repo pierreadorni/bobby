@@ -42,6 +42,7 @@ class LoginController extends Controller
                     'refresh_token' => $token['refresh_token'],
                 ]);
 
+                dd(env('APP_URL').'/#!/login?token='.$token["access_token"]);
                 return redirect(env('APP_URL').'/#!/login?token='.$token["access_token"]);
             //} catch (ClientException $e) {}
         }
