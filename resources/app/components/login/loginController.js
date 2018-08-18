@@ -14,14 +14,13 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}*/
 	
 	if($routeParams.token){
-		$rootScope.auth.login($routeParams.token)
-		/*.then(function(){
+		$rootScope.auth.login($routeParams.token).then(function(){
 			serviceAjax.get('user').then(function(data){
 			console.log(data)
 			$location.path("/");
-		$location.url($location.path());  // Clear des paramètres
+			$location.url($location.path());  // Clear des paramètres
 		})
-		})*/
+	})
 		// On redirige vers la page main
 		/*serviceAjaxPortail.get("user").then(function(data){
 			console.log(data);
