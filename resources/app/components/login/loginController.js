@@ -33,7 +33,7 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}
 
 	else {
-	  	$http.get('http://localhost:8000/api/v1/code').then(function(data){
+	  	serviceAjax.get('code').then(function(data){
 		  	console.log(data)
 		   	window.location.href = data.data["url"];
 		})
