@@ -30,7 +30,7 @@ app.directive('inWrapper', function() {
 	var loadAssociations = function(){
 		$scope.loading = true;
 		//serviceAjax.get("userassos").then(function(data){
-		serviceAjax.get("assos").then(function(data){
+		serviceAjax.get("associations").then(function(data){
 	    	console.log("Poulet",data.data);
 
 	    	$scope.assos=data.data;
