@@ -43,7 +43,8 @@ class LoginController extends Controller
                 ]);
 
                 //dd(env('APP_URL').'/#!/login?token='.$token["access_token"]);
-                return redirect(env('APP_URL').'/#!/login?token='.$token["access_token"]);
+                //return redirect(env('APP_URL').'/#!/login?token='.$token["access_token"]);
+                return redirect('/#!/login?token='.$token["access_token"]);
             //} catch (ClientException $e) {}
         }
         return ($this->authorization_code()['url']);
