@@ -41,8 +41,6 @@ app.directive('inWrapper', function() {
 	var loadItemTypes = function(){
 		$scope.loading = true;
 		serviceAjax.get("itemtypes").then(function(data){
-	    	console.log("Poulet",data.data);
-
 	    	$scope.types=data.data;
 		});
 		$scope.loading = false;
@@ -52,9 +50,8 @@ app.directive('inWrapper', function() {
 
 	var loadAssociations = function(){
 		$scope.loading = true;
-		serviceAjax.get("userassos").then(function(data){
-	    	console.log("Poulet",data.data);
-
+		//serviceAjax.get("userassos").then(function(data){
+		serviceAjax.get("associations").then(function(data){
 	    	$scope.assos=data.data;
 
             if($scope.assos.length == 1){

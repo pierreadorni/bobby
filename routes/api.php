@@ -41,46 +41,10 @@ Route::prefix('v1')->group(function () {
 
     Route::get('user', 'UserController@getUser');
 
-    Route::get('items/categories/{categorie}',function ($categorie){
+    //Quand on clique sur une catégorie
+    Route::get('items/categories/{categorie}', 'ItemController@itemFromCategorie');
 
-        $items = Item::all()->where('status', '<', 3);
-        if($categorie>0){
-            $items = $items->where('type', $categorie);
-        }
-        foreach ($items as $item) {
-            $item->associationName = $item->associations->name;
-            $item->placeName = $item->itemplaces->name;
-            $item->typeName = $item->itemtypes->name;
-        }
-        return $items;
-    });
-
-    Route::get('association/items/{asso_id}', function($asso_id){
-        $items = Item::all()->where('association', $asso_id);
-        foreach ($items as $item) {
-            if($item->type)
-                $item->typeName = $item->itemtypes->name;
-            if($item->place)
-                $item->placeName = $item->itemplaces->name;
-            switch ($item->status) {
-                case '1':
-                    $item->statusName = 'Visible';
-                    break;
-                case '2':
-                    $item->statusName = 'Visible et non empruntable';
-                    break;
-                case '3':
-                    $item->statusName = 'Invisible';
-                    break;
-
-                default:
-                    $item->statusName = 'Visible';
-                    break;
-            }
-            $item->edit = null;
-        }
-        return $items;
-    });
+    Route::get('association/items/{uid}', 'ItemController@itemFromAssociation');
 
     Route::get('booking/assos/{asso_id}', function($asso_id){
         return $assos = Association::all()->where('id', '<>', $asso_id);
@@ -102,13 +66,6 @@ Route::prefix('v1')->group(function () {
 	Route::get('userassos', 'UserController@associations');
 
     Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
-
-
-    Route::get('associations/booking/{owner}/{type}', function($association_id, $type_id) {
-    	return Association::find($association_id)->bookings()->where('status', $type_id)->with('bookinglines')->get();
-
-    	return Association::find($association_id)->bookings()->where('bookings.status', $type_id)->join('booking_lines', 'bookings.id', '=', 'booking_lines.booking')->join('items', 'booking_lines.item', '=', 'items.id')->get();
-    });
 
 
 //Route::group(['middleware' => 'cors'], function () {

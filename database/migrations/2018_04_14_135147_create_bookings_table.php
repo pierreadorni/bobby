@@ -15,15 +15,14 @@ class CreateBookingsTable extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('owner')->unsigned();
-            $table->integer('booker')->unsigned();
-            $table->integer('user')->unsigned();
+            $table->string('owner');
+            $table->string('booker');
+            $table->string('user');
+            $table->foreign('user')->references('id')->on('users');
             $table->integer('status');
             $table->boolean('cautionReceived');
             $table->integer('caution')->unsigned();
 
-            $table->foreign('owner')->references('id')->on('associations');
-            $table->foreign('booker')->references('id')->on('associations');
             $table->timestamps();
         });
     }

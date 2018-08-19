@@ -23,9 +23,9 @@
               Quantité
               <span class="sort-item" ng-show="propertyName == 'quantity'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
             </th>
-            <th ng-click="sortBy('associationName')">
+            <th ng-click="sortBy('association.shortname')">
               Propriétaire
-              <span class="sort-item" ng-show="propertyName == 'associationName'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+              <span class="sort-item" ng-show="propertyName == 'association.shortname'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
             </th>
             <th ng-show="categorie_id == 0" ng-click="sortBy('typeName')">
               Catégorie
@@ -36,7 +36,7 @@
           <tr ng-repeat="item in items | toArray:false | filter:itemSearch | orderBy:propertyName:reverse ">
               <td >{{ item.name }}</td>
               <td>{{ item.quantity }}</td>
-              <td>{{ item.associationName }}</td>
+              <td>{{ item.association.shortname }}</td>
               <td ng-show="categorie_id == 0"> 
                 {{ item.typeName }}
               </td>

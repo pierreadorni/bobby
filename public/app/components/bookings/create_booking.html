@@ -22,7 +22,7 @@
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="asso in assosBooking | toArray:false | filter:assoSearch" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="asso in assosBooking | toArray:false | filter:assoSearch | orderBy : '+name'" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
                             {{ asso.name }}
                         </a>
                     </div>
@@ -40,7 +40,7 @@
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="assoRequested in assosRequested | toArray:false | filter : assoSearch" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
+                        <a ng-repeat="assoRequested in assosRequested | toArray:false | filter : assoSearch | orderBy : '+name'" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
                             {{ assoRequested.name }}
                         </a>
                     </div>
@@ -110,7 +110,7 @@
                     <!-- USER -->
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="title">Josselin Pennors</h5>
+                                <h5 class="title">{{user.name}}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -124,7 +124,7 @@
                                         </div>
                                         <div ng-show="booking.assoRequesting">
                                             <h6>{{ booking.assoRequesting.name }}</h6>
-                                            <p>{{ booking.assoRequesting.mail }}</p>
+                                            <p>{{ booking.assoRequesting.email }}</p>
                                             <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequesting()">Modifier</button>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                                         </div>
                                         <div ng-show="booking.assoRequested">  
                                             <h6>{{ booking.assoRequested.name }}</h6>
-                                            <p>{{ booking.assoRequested.mail }}</p>
+                                            <p>{{ booking.assoRequested.email }}</p>
                                             <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequested()">Modifier</button>
                                         </div>
                                     </div>

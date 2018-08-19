@@ -51,7 +51,7 @@
 
 							<tr ng-repeat="booking in bookings.ownerBookings | toArray:false | orderBy:propertyName:reverse | filter:ownerSearch" ng-click="open(booking.id)" ng-if="booking.status==status">
 								<td>
-									<span>{{ booking.booker.name }}</span>
+									<span>{{ booking.booker.shortname }}</span>
 								</td>
 								<td>
 									<span>{{ booking.caution }}</span>
@@ -111,7 +111,7 @@
 		              	<tbody>
 							<tr ng-repeat="booking in bookings.bookerBookings | toArray:false | filter:bookingSearch | orderBy:propertyName:reverse" ng-click="open(booking.id)" ng-if="booking.status==status2">
 								<td>
-									<span>{{ booking.booker.name }}</span>
+									<span>{{ booking.owner.shortname }}</span>
 								</td>
 								<td>
 									<span>{{ booking.cautionReceived }}</span>

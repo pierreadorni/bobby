@@ -51,7 +51,7 @@ app.run(function($rootScope, PortailAuth) {
         templateUrl: 'app/components/dashboard/main.html',
         controller: 'MainCtrl'
       })
-      .when('/items/:asso_id', {
+      .when('/items/:asso_uid', {
         templateUrl: 'app/components/items/my_items.html',
         controller: 'MyItemsCtrl',
         controllerAs: 'MyItems'

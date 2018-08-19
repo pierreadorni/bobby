@@ -20,12 +20,12 @@ angular.module('bobbyApp')
     $scope.updateConfirmation = false;
     $scope.deleteConfirmation = false;
 
-    $scope.asso_id = $routeParams.asso_id;
+    $scope.asso_uid = $routeParams.asso_uid;
 
     var loadAssociation = function(){
       $scope.loading=true;
-      serviceAjax.get("associations/"+$scope.asso_id).then(function(data){
-        $scope.asso = data.data.name;
+      serviceAjax.get("associations/"+$scope.asso_uid).then(function(data){
+        $scope.asso = data.data.shortname;
       });
       $scope.loading=false;
     }
@@ -56,9 +56,8 @@ angular.module('bobbyApp')
     //Chargement des items en fonction de l'association sélectionnée
     var loadItem = function(){
       $scope.loading=true;
-      serviceAjax.get("association/items/"+$scope.asso_id).then(function(data){
+      serviceAjax.get("association/items/"+$scope.asso_uid).then(function(data){
         $scope.items = data.data;
-        console.log($scope.items);
         for (var i = $scope.items.length - 1; i >= 0; i--) {
           //Permet d'affecter au ng-model d'edition des éléments
           $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
@@ -79,7 +78,7 @@ angular.module('bobbyApp')
       $scope.newItem = {};
       //Paramètre par défaut
       $scope.newItem.status = "1";
-      $scope.newItem.association = $routeParams.asso_id;
+      $scope.newItem.association = $routeParams.asso_uid;
     }
 
     loadNewItem();
@@ -128,7 +127,6 @@ angular.module('bobbyApp')
     }
 
     $scope.save = function(){
-      console.log($scope.newItem);
       $scope.loading=true;
       serviceAjax.post('items', $scope.newItem).then(function(){
         loadItem();
@@ -137,8 +135,7 @@ angular.module('bobbyApp')
            $scope.addConfirmation = false;
         }, 3000)
       })
-      console.log($scope.items);      
-
+      
       $scope.loading=false;
       $scope.addNewItem = false;
 
@@ -146,7 +143,6 @@ angular.module('bobbyApp')
       $scope.newItem.type = ""+$scope.types[0].id;
       $scope.newItem.place = "" + $scope.places[0].id;
     }
-
 
 
     $scope.delete = function($item){

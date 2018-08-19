@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ItemRequest;
 use App\Http\Controllers\Controller;
 use App\Item;
+use Portail;
 
 class ItemController extends Controller
 {
@@ -93,5 +94,48 @@ class ItemController extends Controller
         }
         else
             return response()->json(["message" => "Impossible de trouver l'objet"], 500);
+    }
+
+    //Quand on clique sur une catégorie
+    public function itemFromCategorie(Request $request, $categorie)
+    {
+        $items = Item::all()->where('status', '<', 3);
+        if($categorie>0){
+            $items = $items->where('type', $categorie);
+        }
+        foreach ($items as $item) {
+            $item->association = Portail::showAsso($request, $item->association);
+            $item->placeName = $item->itemplaces->name;
+            $item->typeName = $item->itemtypes->name;
+        }
+        return $items;
+    }
+
+    public function itemFromAssociation(Request $request, $uid)
+    {
+        $items = Item::all()->where('association', $uid);
+        foreach ($items as $item) {
+            if($item->type)
+                $item->typeName = $item->itemtypes->name;
+            if($item->place)
+                $item->placeName = $item->itemplaces->name;
+            switch ($item->status) {
+                case '1':
+                    $item->statusName = 'Visible';
+                    break;
+                case '2':
+                    $item->statusName = 'Visible et non empruntable';
+                    break;
+                case '3':
+                    $item->statusName = 'Invisible';
+                    break;
+
+                default:
+                    $item->statusName = 'Visible';
+                    break;
+            }
+            $item->edit = null;
+        }
+        return $items;
     }
 }

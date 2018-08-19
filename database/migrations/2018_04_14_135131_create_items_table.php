@@ -25,11 +25,8 @@ class CreateItemsTable extends Migration
             $table->integer('caution')->unsigned();
             $table->integer('type')->unsigned()->nullable();
             $table->foreign('type')->references('id')->on('itemTypes')->onDelete('set null')->onUpdate('cascade');
-            $table->integer('association')->unsigned();
-
-            $table->foreign('association')->references('id')->on('associations');
-            
-            
+            //Comportera l'uid de l'association sur le portial des assos
+            $table->string('association');            
 
             $table->timestamps();
         });

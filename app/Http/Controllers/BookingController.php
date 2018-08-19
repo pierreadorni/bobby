@@ -10,6 +10,7 @@ use App\User;
 use App\Association;
 use App\Item;
 use App\BookingLine;
+use Portail;
 
 class BookingController extends Controller
 {
@@ -18,16 +19,15 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $bookings = Booking::all();
 
         if($bookings){
             foreach ($bookings as $booking) {
 
-                /*Requêtes pour les associations à changer avec Portail des assos*/
-                $booking->owner = Association::find($booking->owner);
-                $booking->booker = Association::find($booking->booker);
+                $booking->booker = Portail::showAsso($request, $booking->booker);
+                $booking->owner = Portail::showAsso($request, $booking->owner);
 
                 /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
                 $booking->user = User::find($booking->user);
@@ -95,7 +95,7 @@ class BookingController extends Controller
      * @param  \App\Booking  $booking
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $booking = Booking::find($id);    
 
@@ -133,8 +133,8 @@ class BookingController extends Controller
             }
 
             /*Requêtes pour les associations à changer avec Portail des assos*/
-            $booking->owner = Association::find($booking->owner);
-            $booking->booker = Association::find($booking->booker);
+            $booking->owner = Portail::showAsso($request, $booking->owner);
+            $booking->booker = Portail::showAsso($request, $booking->booker);
 
             /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
             $booking->user = User::find($booking->user);
@@ -220,7 +220,7 @@ class BookingController extends Controller
         return($caution);
     }
 
-    public function indexAssociation($asso_id){
+    public function indexAssociation(Request $request, $asso_id){
 
         $bookings = [
             /* Réservation où l'association est propriétaire */
@@ -232,8 +232,8 @@ class BookingController extends Controller
         if($bookings['ownerBookings']){
             foreach ($bookings['ownerBookings'] as $booking) {
 
-                $booking->booker = Association::find($booking->booker);
-                
+                $booking->booker = Portail::showAsso($request, $booking->booker);
+
                 $booking->user = User::find($booking->user);
 
                 /*Gestion des réceptions de caution*/
@@ -247,7 +247,7 @@ class BookingController extends Controller
         if($bookings['bookerBookings']){
             foreach ($bookings['bookerBookings'] as $booking) {
 
-                $booking->booker = Association::find($booking->owner);
+                $booking->owner = Portail::showAsso($request, $booking->owner);
 
                 /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
                 $booking->user = User::find($booking->user);
@@ -260,11 +260,7 @@ class BookingController extends Controller
 
                 /* Retrait de la caution que l'association demandeuse ne doit pas voir */
                 $booking->offsetUnset('caution');
-
-
             }
-        
-
             return response()->json($bookings, 200);
         }
         
