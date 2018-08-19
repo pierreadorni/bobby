@@ -57,7 +57,7 @@ class LoginController extends Controller
             'redirect_uri' => env('REDIRECT_URI'),
             'response_type' => 'code',
             //'scope' => 'user-get-info-identity-email user-get-info-identity-type-contributorBde user-get-assos, user-get-roles-users',
-            'scope' =>  'user-get-info user-get-assos user-get-roles-users',
+            'scope' =>  'user-get-info user-get-assos user-get-roles-users user-get-contacts-assos',
         ]);
         return ["url" => env('BASE_URI').'/oauth/authorize?'.$query];
     }
