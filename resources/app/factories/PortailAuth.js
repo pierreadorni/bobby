@@ -200,17 +200,18 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   }
 
   /**
-   *  Redirige vers la page d'authentification CAS
+   *  Redirige vers la page d'authentification du Portail
    */
-  /*factory.goLogin = function() {
-    var webapp = encodeURIComponent(__ENV.webappUrl+'/#/login');
-    $http.get(__ENV.apiUrl+'/login?webapp='+webapp)
-      .success(function(data){
-        $window.location.href = data.url; // Vers le login CAS
-      }).error(function(error){
-        // Gérer en cas d'erreur
+  factory.goLogin = function() {
+    //On lance loginController@code pour composer l'URL servant à récupérer le code 
+    serviceAjax.get('code')
+      .then(function(data){
+        //Redirection pour récupérer le code
+        //Redirection vers LoginController@login
+        //=> Pour récupérer le token
+        window.location.href = data.data["url"];
       });
-  }*/
+  }
 
   /**
    *  Redirige vers la page de logout CAS
