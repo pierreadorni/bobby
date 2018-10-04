@@ -20,12 +20,24 @@ angular.module('bobbyApp')
 
     $scope.booking_id = $routeParams.id;
 
+    //Autorisation pour l'utilisateur avant d'avoir chargé les données
+    $scope.memberAssoOwner = false;
+    $scope.memberAssoBooker = false;
+
+    //association de l'utilisateur connecté
+    $scope.assoUser = "1";
+
      //Recherche de la catégorie séléectionné
     var loadBookings = function(){
       $scope.loading = true;
       serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
         $scope.booking = data.data;
         console.log("donnees", $scope.booking)
+        //Autorisation pour l'utilisateur
+        if($scope.assoUser == $scope.booking.owner.id)
+          $scope.memberAssoOwner = true;
+        if($scope.assoUser == $scope.booking.booker.id)
+          $scope.memberAssoBooker = true;          
       })
     }
     loadBookings();

@@ -8,7 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, focusMe, $timeout) {
+  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',

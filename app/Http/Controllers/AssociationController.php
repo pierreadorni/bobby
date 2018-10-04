@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AssociationRequest;
 use App\Http\Controllers\Controller;
 use App\Association;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class AssociationController extends Controller
 {
@@ -14,10 +16,24 @@ class AssociationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $associations = Association::get();
-        return response()->json($associations, 200);
+        /*$associations = Association::get();
+        return response()->json($associations, 200);*/
+        $auth = $request->header('Authorization');
+
+        $http = new Client([
+            'base_uri' => 'https://portail.nastuzzi.fr/api/v1/',
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+        ]);
+        $response = $http->get('assos');
+        $assos = json_decode((string) $response->getBody(), true);
+        //dd($user);
+        //dd($request->header('Authorization'));
+        //$users = User::get();
+        return response()->json($assos, 200);
     }
 
     /**

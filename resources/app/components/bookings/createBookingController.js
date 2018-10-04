@@ -8,7 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, focusMe, $timeout, $filter, $q) {
+  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout, $filter) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -28,7 +28,7 @@ angular.module('bobbyApp')
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
     $scope.loading = true;
-    serviceAjax.get("associations").then(function(data){
+    serviceAjax.get("userassos").then(function(data){
         $scope.assosBooking=data.data;
 
         if($scope.assosBooking.length==1){
@@ -82,7 +82,12 @@ angular.module('bobbyApp')
     var loadItem = function($id){
       $scope.loading=true;
       serviceAjax.get("booking/items/" + $id).then(function(data){
-        $scope.items = data.data;
+        if(data.data.length == 1){
+          $scope.items = new Array(data.data);
+          //$scope.items[0]=data.data;
+        }
+        else 
+          $scope.items = data.data;  
       });
       $scope.loading=false;
       
@@ -171,6 +176,7 @@ angular.module('bobbyApp')
         $scope.booking.caution = data.data;
         serviceAjax.post('bookings', $scope.booking).then(function(data){
           $scope.callBackBooking = data.data;
+          
           /* Envoi du mail automatique */
           $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
           $scope.mail.content = "L'association " + $scope.booking.assoRequesting.name + " vient de faire une demande de réservation de matériel à votre association." +  " En voici la liste :";
@@ -187,14 +193,15 @@ angular.module('bobbyApp')
             $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
             $scope.bookingline.items[i].status = 1;
 
-            }
+          }
 
-            serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
-              console.log("response", data.data);
-              $scope.mail.bookinglines = data.data;
-              console.log($scope.mail);
-              serviceAjax.post('send', $scope.mail);
-            })
+          serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
+            console.log("response", data.data);
+            $scope.mail.bookinglines = data.data;
+            console.log($scope.mail);
+            //serviceAjax.post('send', $scope.mail);
+            $location.path('/booking/' + $scope.callBackBooking.id);
+          })
         });
       })
     }

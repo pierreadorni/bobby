@@ -24,7 +24,6 @@ class CreateBookingsTable extends Migration
 
             $table->foreign('owner')->references('id')->on('associations');
             $table->foreign('booker')->references('id')->on('associations');
-            $table->foreign('user')->references('id')->on('users');
             $table->timestamps();
         });
     }

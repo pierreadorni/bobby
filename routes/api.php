@@ -32,13 +32,14 @@ Route::prefix('v1')->group(function () {
 	Route::apiResources([
 			'associations'		=> 'AssociationController',
 			'bookings'	=> 'BookingController',
-			'users'			=> 'UserController',
+			//'users'			=> 'UserController',
 			'bookinglines'			=> 'BookingLineController',
 			'items'			=> 'ItemController',
 			'itemtypes'		=> 'ItemTypeController',
-			'assousers'		=>	'AssoUserController',
             'itemplaces'    =>  'ItemPlaceController',
 	]);
+
+    Route::get('user', 'UserController@getUser');
 
     Route::get('items/categories/{categorie}',function ($categorie){
 
@@ -95,15 +96,12 @@ Route::prefix('v1')->group(function () {
         return($item);
     });
 
-    Route::post('booking/validation/items', 'bookingController@calculCaution');
+    Route::post('booking/validation/items', 'BookingController@calculCaution');
 
 
-	Route::get('assousers/users/{user}', function ($user_id) {
+	Route::get('userassos', 'UserController@associations');
 
-    	return $assos = User::find($user_id)->associations();
-    });
-
-    Route::get('bookings/asso/{asso_id}', 'bookingController@indexAssociation');
+    Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 
 
     Route::get('associations/booking/{owner}/{type}', function($association_id, $type_id) {
@@ -112,7 +110,14 @@ Route::prefix('v1')->group(function () {
     	return Association::find($association_id)->bookings()->where('bookings.status', $type_id)->join('booking_lines', 'bookings.id', '=', 'booking_lines.booking')->join('items', 'booking_lines.item', '=', 'items.id')->get();
     });
 
-    Route::get('/login', 'LoginController@authorization_code');
+
+//Route::group(['middleware' => 'cors'], function () {
+    Route::get('/login', 'LoginController@login');
+
+    Route::get('/code', 'LoginController@authorization_code');
+
+    //Route::get('/token', 'LoginController@get_token');
 
     Route::post('/send', 'MailController@send');
+//});
 });
