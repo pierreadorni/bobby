@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Portail;
 
 class UserController extends Controller
 {
@@ -18,16 +17,8 @@ class UserController extends Controller
      */
     public function getUser(Request $request)
     {
-        $auth = $request->header('Authorization');
 
-        $http = new Client([
-            'base_uri' => 'https://portail.nastuzzi.fr/api/v1/',
-            'headers' => [
-                'Authorization' => $auth,
-            ],
-        ]);
-        $response = $http->get('user');
-        $user = json_decode((string) $response->getBody(), true);
+        $user = Portail::getInfoUser($request);
 
         return response()->json($user, 200);
     }
@@ -37,91 +28,11 @@ class UserController extends Controller
     * Display the associations of a user
     *
     */
-    public function associations(Request $request)
+    public function userAssociations(Request $request)
     {
-        $auth = $request->header('Authorization');
+        $assos = Portail::getUserAssociation($request);
 
-        $http = new Client([
-            'base_uri' => 'https://portail.nastuzzi.fr/api/v1/',
-            'headers' => [
-                'Authorization' => $auth,
-            ],
-        ]);
-        $response = $http->get('user/assos');
-        $assos = json_decode((string) $response->getBody(), true);
         return response()->json($assos, 200);
     }
 
-    
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UserRequest $request)
-    {
-        //dd($request->login);
-        $user = User::create($request->all());
-        if($user)
-        {
-            return response()->json($user, 200);
-        }
-        else
-        {
-            return response()->json(["message" => "Impossible de créer l'utilisateur"], 500);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $user = User::find($id);
-        if($user)
-            return response()->json($user, 200);
-        else
-            return response()->json(["message" => "Impossible de trouver l'utilisateur"], 500);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UserRequest $request, $id)
-    {
-        $user = User::find($id);
-        if($user){
-            $value = $user->update($request->input());
-            if($value)
-                return response()->json($value, 201);
-            return response()->json(['message'=>'An error ocured'],500);
-        }
-        return response()->json(["message" => "Impossible de trouver l'utilisateur"], 500);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $user = User::find($id);
-        if ($user)
-        {
-            $user->delete();
-            return response()->json([], 200);
-        }
-        else
-            return response()->json(["message" => "Impossible de trouver l'utilisation"], 500);
-    }
 }

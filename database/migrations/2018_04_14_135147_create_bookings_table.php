@@ -24,6 +24,7 @@ class CreateBookingsTable extends Migration
             $table->integer('caution')->unsigned();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

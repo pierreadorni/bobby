@@ -19,8 +19,9 @@ class LoginController extends Controller
      */
     public function login(Request $request) {
 
-        if($request->code){
-            //try {
+        //A mettre en production
+        /*if($request->code){
+            try {
                 $token = $this->get_token($request);
 
                 $http = new Client([
@@ -29,6 +30,50 @@ class LoginController extends Controller
                         'Authorization' => $token['token_type'].' '.$token['access_token'],
                     ],
                 ]);
+
+                $response = $http->get('user/assos');
+                $association = json_decode((string) $response->getBody(), true);
+
+                //On vérifie que l'utilisateur a le droit de rentrer sur la webapp
+                if($association){
+
+                    $response = $http->get('user');
+                    $userData = json_decode((string) $response->getBody(), true);
+
+                    User::updateOrCreate([
+                        'id' => $userData['id'],
+                    ],[
+                        'email' => $userData['email'],
+                        'firstname' => $userData['firstname'],
+                        'lastname' => $userData['lastname'],
+                        'token' => $token['access_token'],
+                        'refresh_token' => $token['refresh_token'],
+                    ]);
+
+                    return redirect('/#!/login?token='.$token["access_token"]);
+
+                }
+                else{
+                    return redirect('/#!/error/401');
+                }
+            } catch (ClientException $e) {
+                return redirect('/#!/error/500');
+            }
+        }
+        return ($this->authorization_code()['url']);*/
+
+
+        if($request->code){
+            try {
+                $token = $this->get_token($request);
+
+                $http = new Client([
+                    'base_uri' => env('BASE_URI').'/api/v1/',
+                    'headers' => [
+                        'Authorization' => $token['token_type'].' '.$token['access_token'],
+                    ],
+                ]);
+
                 $response = $http->get('user');
                 $userData = json_decode((string) $response->getBody(), true);
 
@@ -42,10 +87,11 @@ class LoginController extends Controller
                     'refresh_token' => $token['refresh_token'],
                 ]);
 
-                //dd(env('APP_URL').'/#!/login?token='.$token["access_token"]);
-                //return redirect(env('APP_URL').'/#!/login?token='.$token["access_token"]);
                 return redirect('/#!/login?token='.$token["access_token"]);
-            //} catch (ClientException $e) {}
+
+            } catch (ClientException $e) {
+                return redirect('/#!/error/500');
+            }
         }
         return ($this->authorization_code()['url']);
     }

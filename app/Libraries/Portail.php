@@ -54,4 +54,40 @@ class Portail
         return $asso;
     }
 
+    public function getInfoUser(Request $request)
+    {
+
+        $auth = $request->header('Authorization');
+
+        $http = new Client([
+            'base_uri' => env('BASE_URI').'/api/v1/',
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+        ]);
+        $response = $http->get('user');
+        $user = json_decode((string) $response->getBody(), true);
+
+        //dd($user);
+        //Récupérer mail !
+
+        return $user;
+    
+    }
+
+    public function getUserAssociation(Request $request)
+    {
+        $auth = $request->header('Authorization');
+
+        $http = new Client([
+            'base_uri' => 'https://portail.nastuzzi.fr/api/v1/',
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+        ]);
+        $response = $http->get('user/assos');
+        $assos = json_decode((string) $response->getBody(), true);
+        return $assos;
+    }
+
 }

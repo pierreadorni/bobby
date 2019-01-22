@@ -51,8 +51,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::get('booking/items/{asso_id}', function($asso_id){
-        return $items = Item::all()->where('association', $asso_id);
-        //->where('status', 1);
+        return $items = Item::all()->where('association', $asso_id)->where('status', 1);
     });
 
     Route::get('booking/validation/item/{item_id}', function($item_id){
@@ -63,7 +62,7 @@ Route::prefix('v1')->group(function () {
     Route::post('booking/validation/items', 'BookingController@calculCaution');
 
 
-	Route::get('userassos', 'UserController@associations');
+	Route::get('userassos', 'UserController@userAssociations');
 
     Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 
@@ -77,4 +76,8 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/send', 'MailController@send');
 //});
+
+
+    //Export 
+    Route::get('export/items', 'ItemController@exportItem');
 });

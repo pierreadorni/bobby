@@ -130,8 +130,6 @@ gulp.task('vendor', function() {
     'resources/app/vendor/angular-route/angular-route.js',
     'resources/app/vendor/angular-sanitize/angular-sanitize.js',
     'resources/app/vendor/angular-touch/angular-touch.js',
-    'resources/app/vendor/ui-bootstrap-2.2.0.min.js',
-    'resources/app/vendor/ui-codemirror.min.js'
   ];
   gulp.src(angular)
   .pipe(concat('angular.min.js'))
@@ -257,15 +255,16 @@ gulp.task('vendor', function() {
    *  Libs diverses
    */
 
-  /*var tools = [
-    'resources/app/vendor/Blob.js',
-    'resources/app/vendor/esprima.js',
-    'resources/app/vendor/FileSaver.min.js',
-    'resources/app/vendor/underscore.min.js'
+  var tools = [
+    'resources/app/vendor/Blob/Blob.js',
+    'resources/app/vendor/esprima/esprima.js',
+    'resources/app/vendor/FileSaver/FileSaver.js',
+    'resources/app/vendor/underscore/underscore.min.js',
+    'resources/app/vendor/papaparse.min.js'
   ];
 
   gulp.src(tools)
   .pipe(concat('tools.min.js'))
   .pipe(gulp.dest(dist + '/app/vendor/tools'))
-*/
+
 });

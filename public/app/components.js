@@ -8,6 +8,62 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
+  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    $scope.categorie_id = $routeParams.id;
+
+     //Recherche de la catégorie séléectionné
+    var loadCategorie = function(){
+      $scope.loading = true;
+      if($scope.categorie_id == 0){
+        $scope.type = 'Totalité du matériel';
+      }
+      else {
+        serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
+        $scope.type = data.data.name;
+        });
+      }
+    }
+    loadCategorie();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+    
+    
+    //Chargement des items en fonction de la catégorie sélectionnée
+
+    var loadItem = function(){
+      $scope.loading=true;
+      serviceAjax.get("items/categories/" + $scope.categorie_id)
+        .then(function(data){
+          $scope.items = data.data;
+        });
+      $scope.loading=false;
+    };
+    loadItem();
+
+  });
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
   .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $timeout, $filter, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -520,62 +576,6 @@ angular.module('bobbyApp')
   });
 
 
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    $scope.categorie_id = $routeParams.id;
-
-     //Recherche de la catégorie séléectionné
-    var loadCategorie = function(){
-      $scope.loading = true;
-      if($scope.categorie_id == 0){
-        $scope.type = 'Totalité du matériel';
-      }
-      else {
-        serviceAjax.get("itemtypes/"+$scope.categorie_id).then(function(data){
-        $scope.type = data.data.name;
-        });
-      }
-    }
-    loadCategorie();
-
-    /* Gestion des tries des items*/
-    $scope.propertyName = 'name';
-    $scope.reverse = false;
-
-    $scope.sortBy = function(propertyName) {
-      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-      $scope.propertyName = propertyName;
-    };
-    
-    
-    //Chargement des items en fonction de la catégorie sélectionnée
-
-    var loadItem = function(){
-      $scope.loading=true;
-      serviceAjax.get("items/categories/" + $scope.categorie_id)
-        .then(function(data){
-          $scope.items = data.data;
-        });
-      $scope.loading=false;
-    };
-    loadItem();
-
-  });
-
 
     'use strict';
 
@@ -634,12 +634,17 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout, $window, $log, FileSaver) {
+
+    /*$scope.previewSrc = null;
+    $scope.product = {}
+
+    $scope.$watch("product.pic", function(newV, oldV) {
+      console.log("there");
+        if(newV !== oldV && newV instanceof File) {
+            $scope.previewSrc = $window.URL.createObjectURL(newV);
+        }
+    });*/
 
     /*Initialisation des boutons de confirmation*/
     $scope.addConfirmation = false;
@@ -782,6 +787,97 @@ angular.module('bobbyApp')
 
     }
 
+
+    /* EXPORT */
+    $scope.export = function(){
+        serviceAjax.get('export/items', {responseType : "blob"}).then(
+        function(data){
+           console.log(data)
+          /*var excel = [];
+          excel.push(data.data)
+          console.log(data);*/
+         /* var excel = new Blob(data, { type: 'text/plain;charset=utf-8' });
+          console.log(excel)*/
+          var data = new Blob([data.data]);
+          FileSaver.saveAs(data, 'inventaire_'+$scope.asso+'.xlsx');
+          /*var file = new File(data.data, "hello world.xlx");
+FileSaver.saveAs(file);*/
+            //saveAs(data.data, 'inventaire_'+$scope.asso+'.xlsx');
+        });
+    }
+
+    /* IMPORT */
+
+    //$scope.file = null;
+
+    $scope.readImport = function(){
+      $scope.import=true;
+    }
+
+    /* Fonctoin faisant appel a la bibliothèque Papaparse, appel asynchrone => utilisation de Promise */
+    function parse(file) {
+      var deferred = $q.defer();
+      config = {
+        header: false,
+        dynamicTyping: true,
+        encoding: "ISO-8859-1"
+      }
+      config.complete = function onComplete(result) {
+        if (config.rejectOnError && result.errors.length) {
+          deferred.reject(result);
+          return;
+        }
+        deferred.resolve(result);
+      };
+      config.error = function onError(error) {
+        deferred.reject(error);
+      };
+      Papa.parse(file, config);
+      return deferred.promise;
+    }
+
+
+    $scope.csvParse = function(){
+      var file = $scope.file;
+      console.log(file);
+
+      if(file instanceof File){
+        parse($scope.file).then(function(data){
+          console.log(data);
+          //$scope.csvLines = data.data;
+          /*$scope.items = {};
+          $scope.items.data = [];
+          $scope.headers = {};
+          $scope.headers.data = [];
+          console.log($scope.type)
+          
+          switch($scope.type){
+            case 'products' :
+                $scope.items.data = Csv.products($scope.csvLines)
+                $scope.headers.data = Csv.productsHeader();
+                break;
+            case 'engines' :
+                $scope.items.data = Csv.engines($scope.csvLines)
+                $scope.headers.data = Csv.enginesHeader();
+                break;
+            case 'tools' :
+                $scope.items.data = Csv.tools($scope.csvLines)
+                $scope.headers.data = Csv.toolsHeader();
+                break;
+            case 'expendables' :
+                $scope.items.data = Csv.expendables($scope.csvLines)
+                $scope.headers.data = Csv.expendablesHeader();
+                break;
+          }*/
+
+          //console.log($scope.items)
+          //console.log($scope.headers)
+          
+          
+        });
+      }
+    }
+
   });
 
 
@@ -789,6 +885,8 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 
 
   $scope.message = "Connexion";
+
+  console.log($routeParams);
 	
 	//Url avec token?=
 	if($routeParams.token){
@@ -798,6 +896,15 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 			$location.path("/");
 			$location.url($location.path());  // Clear des paramètres
 		})
+	}
+	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
+
+	    $scope.message = "Erreur de connexion";
+
+	    // On redirige vers la page d'erreur 401
+	    $location.path("/error/401");
+	    $location.url($location.path());  // Clear des paramètres
+
 	}
 
 	else {
@@ -921,50 +1028,6 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-     //Recherche de la catégorie séléectionné
-    var loadBookings = function(){
-      $scope.loading = true;
-      serviceAjax.get("bookings").then(function(data){
-        $scope.bookings = data.data;
-        console.log($scope.bookings)
-      })
-    }
-    loadBookings();
-
-    /* Gestion des tries des items*/
-    $scope.propertyName = 'booker.name';
-    $scope.reverse = false;
-
-    $scope.sortBy = function(propertyName) {
-      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-      $scope.propertyName = propertyName;
-    };
-
-    /* Ouverture d'une réservation */
-    $scope.open= function($id){
-      console.log($id);
-    }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -1056,6 +1119,50 @@ angular.module('bobbyApp')
         }, 3000)
       })
 
+    }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+     //Recherche de la catégorie séléectionné
+    var loadBookings = function(){
+      $scope.loading = true;
+      serviceAjax.get("bookings").then(function(data){
+        $scope.bookings = data.data;
+        console.log($scope.bookings)
+      })
+    }
+    loadBookings();
+
+    /* Gestion des tries des items*/
+    $scope.propertyName = 'booker.name';
+    $scope.reverse = false;
+
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+    };
+
+    /* Ouverture d'une réservation */
+    $scope.open= function($id){
+      console.log($id);
     }
 
   });

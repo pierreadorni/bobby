@@ -25,6 +25,7 @@ class CreateBookingLinesTable extends Migration
             $table->foreign('item')->references('id')->on('items');
             $table->foreign('booking')->references('id')->on('bookings');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

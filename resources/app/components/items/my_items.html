@@ -1,20 +1,27 @@
 <in-wrapper>
   <br><br>
+
   <div class = "row">
     <div class="col-md-10 offset-md-1">
       <table class="table table-hover col-md-12">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <h3>{{asso}} | Inventaire</h3>
             </div>
             <div class="form-group col-md-3 offset-md-2">
               <input ng-model="itemSearch" type="text" class="form-control search-list" placeholder="Rechercher un item...">
             </div>
-            <div class="col-md-1 offset-md-1">
+            <div class="col-md-2 offset-md-1">
               <h2 class="purple-text">
+                <a data-toggle="modal" data-target=".bd-example-modal-lg">
+                    <i class="fas fa-upload i-right"></i>
+                </a>
+                <a ng-click="export()">
+                  <i class="fas fa-download i-right i-left"></i>
+                </a>
                 <a ng-click="add()">
-                  <i class="fas fa-plus"></i>
+                  <i class="fas fa-plus i-left"></i>
                 </a>
               </h2>
             </div>
@@ -50,7 +57,7 @@
                 <span class="sort-item" ng-show="propertyName == 'quantity'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
               </th>
               <th ng-click="sortBy('caution')">
-                Caution  
+                Caution (à l'unité)
                 <span class="sort-item" ng-show="propertyName == 'caution'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
               </th>
               <th ng-click="sortBy('placeName')">
@@ -171,6 +178,63 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+   <div class="col-md-4 text-center">
+      <img ng-src="{{previewSrc}}" class="img-fluid">
+      <label ng-show="edit" class="btn-upload">
+          <span class="glyphicon glyphicon-pencil"></span> Nouvelle Image
+          <input type="file" accept="image/*" files-model="product.pic" style="display:none;">
+      </label>
+  </div>
+
+        
+  <!-- MODAL -->
+
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" ng-hide="import">
+        <div class="modal-header">
+          <h1 class="modal-title">Importer un fichier</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h3 class="title">Instructions</h3>
+          <br>
+          <p>Pour que l'import se passe dans les meilleures conditions un certain nombre de règles doivt être respecté.</p>
+          <h5>Règle générale</h5>
+          <p>Le fichier doit être au format CSV</p>
+          <h5>Colonnes</h5>
+          <p>Le fichier ne doit pas contenir le nom des colonnes. Dans l'ordre il faut remplir les champs suivants : <br><span class="font-weight-light">Nom / Catégorie / Quantité / Caution (à l'unité) / Localisation / Statut</span></p>
+          <h5>Catégorie</h5>
+          <p>Le champ Catégorie doit être rempli par un des termes suivants (à la majuscule près !) :<br><span ng-repeat="type in types" class="font-weight-light">{{type.name}}  / </span><br>
+          Si tu as fait de mnière différente, Ctrl+H est ton ami ;)</p>
+          <h5>Localisation</h5>
+          <p>Le champ Localisation doit être rempli par un des termes suivants (à la majuscule près !) :<br><span ng-repeat="place in places" class="font-weight-light">{{place.name}}  / </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grey" data-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-grey" ng-click="readImport()">J'ai lu !</button>
+        </div>
+      </div>
+      <div class="modal-content" ng-show="import">
+        <div class="modal-header">
+          <h1 class="modal-title">Importer un fichier</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>Télécharger votre fichier.</label>
+          <input class="col-md-6" type="file" class="form-control-file" files-model="file" ng-model="file">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grey" data-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-grey" ng-click="csvParse()">Importer</button>
+        </div>
+      </div>
     </div>
   </div>
 </in-wrapper>

@@ -29,6 +29,7 @@ class CreateItemsTable extends Migration
             $table->string('association');            
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

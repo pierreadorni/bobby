@@ -6,6 +6,9 @@ use App\Http\Requests\ItemRequest;
 use App\Http\Controllers\Controller;
 use App\Item;
 use Portail;
+use App\Exports\ItemsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ItemController extends Controller
 {
@@ -137,5 +140,13 @@ class ItemController extends Controller
             $item->edit = null;
         }
         return $items;
+    }
+
+    public function exportItem(){
+        //Excel::download(new DataExport, 'inventaire.xlsx');
+        //return Item::all();
+        //$ok = (new ItemsExport, 'data.xlsx');
+        //dd(Excel::download(new ItemsExport, 'items.xlsx'));
+        return Excel::download(new ItemsExport, 'items.xlsx');
     }
 }

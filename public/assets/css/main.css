@@ -81,3 +81,18 @@ tbody{
 .error{
 	border: 3px solid #e57373 !important;
 }
+
+/* MODAL */
+.modal-header{
+	background-color:#bdbdbd !important;
+	border-color: #bdbdbd !important;
+}
+
+/* Alignement pour OutWrapper*/
+
+.valign {
+  margin:auto;
+  text-align: center;
+  margin-top: 100px;
+  color : #414361;
+}

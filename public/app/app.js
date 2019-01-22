@@ -28,9 +28,11 @@ var app  = angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'angular-toArrayFilter'
+    'angular-toArrayFilter',
+    'ngFileSaver'
   ])
   .constant('__ENV', __ENV);
+  
 
 
 /**
