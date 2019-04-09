@@ -76,7 +76,7 @@ class LoginController extends Controller
 
                 $response = $http->get('user');
                 $userData = json_decode((string) $response->getBody(), true);
-
+                // dd($userData);
                 User::updateOrCreate([
                     'id' => $userData['id'],
                 ],[
@@ -102,8 +102,9 @@ class LoginController extends Controller
             'client_id' => env('CLIENT_ID'),
             'redirect_uri' => env('REDIRECT_URI'),
             'response_type' => 'code',
-            //'scope' => 'user-get-info-identity-email user-get-info-identity-type-contributorBde user-get-assos, user-get-roles-users',
-            'scope' =>  'user-get-info user-get-assos user-get-roles-users user-get-contacts-assos',
+            // 'scope' => 'user-get-info-identity-email user-get-info-identity-type-contributorBde user-get-assos, user-get-roles-users',
+            'scope' =>  'user-get-info-identity user-get-assos user-get-roles-users user-get-contacts-assos user-get-permissions',
+            // 'scope' =>  ''
         ]);
         return ["url" => env('BASE_URI').'/oauth/authorize?'.$query];
     }
