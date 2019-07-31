@@ -161,6 +161,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+
     ],
 
     /*
@@ -211,6 +213,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Portail' => App\Facade\Portail::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class, 
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 
     ],
 

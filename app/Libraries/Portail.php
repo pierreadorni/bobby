@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use App\Exceptions\BobbyException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\User;
 
 class Portail
 {
@@ -38,13 +39,20 @@ class Portail
     *   Public function to authenticate the user (token, associationss, permissions)
     *
     */
-    public function authenticateUser($token)
+    public function authenticateUser($payload)
     {
-        $this->setToken($token);
-        $this->setUser();
-        $this->setAssos();
-        $this->setPermissions();
+        // Retrieve user_id from payload and get user from database
+        $user_id = $payload->get('user_id');
+        $user = User::findOrFail($user_id);
+        // dd($user);
+        $this->user = $user;
+
+        // Retrieve token, permissions ans assos from payload
+        $this->token = 'Bearer '.$user->token;
+        $this->permissions = $payload->get('permissions');
+        $this->assos = $payload->get('assos');
     }
+
 
 
 
@@ -59,46 +67,9 @@ class Portail
     *   Set token
     *
     */
-    protected function setToken($token)
+    public function setToken($token)
     {
         $this->token = $token;
-    }
-
-
-    /**
-    *   Set user information based on token
-    *
-    */
-    protected function setUser()
-    {
-        if ($this->token) {
-            $this->user = $this->getPortalUserInformation();
-        } 
-    }
-
-
-    /**
-    *   Set associations the user belongs to
-    *
-    */
-    protected function setAssos()
-    {
-        if ($this->token) {
-            $this->assos = $this->getPortalUserAssociations();
-        }
-    }
-
-
-    /**
-    *   Set Permissions based on the user and the asociations the latter belongs to
-    *
-    */
-    protected function setPermissions()
-    {
-        // Ajouter attribut uid ou autre dans objet user
-        if ($this->token && $this->user) {
-            $this->permissions = $this->getPortalUserPermissions();
-        } 
     }
 
 
@@ -110,37 +81,39 @@ class Portail
     /////////////////////////////
 
 
+
+
     /**
     *   Get user information
     *
     */
     public function getUserInformation()
     {
-        $user = $this->user;
-        $user['assos'] = $this->assos;
+        // User 
+        $user = $this->getUser();
+        $this->user = $user;
+
+        // Assos
+        $assos = $this->getPortalUserAssociations();
+        $user['assos'] = $assos;
+        $this->assos = $assos;
+
+        // Permissions
+        $permissions = $this->getPortalUserPermissions();
+        $user['permissions'] = $permissions;
 
         return $user;
     }
 
-
     /**
-    *   Get user information
-    *
-    */
+     * 
+     */
+
     public function getUserAssociations()
     {
         return $this->assos;
     }
 
-
-    /**
-    *   Get user permissions
-    *
-    */
-    public function getPermissions()
-    {
-        return $this->permissions;
-    }
 
 
 
@@ -158,7 +131,8 @@ class Portail
     public function isAuthenticated()
     {
 
-        if ($this->user) {
+        $user = $this->getUserInformation();
+        if (!empty($user)) {
             return true;
         }
 
@@ -172,8 +146,10 @@ class Portail
     */
     public function isAssociationMember($asso_id){
 
+        $user_assos = $this->assos;
+
         $asso = array_filter(
-                $this->assos,
+                $user_assos,
                 function ($a) use (&$asso_id) {
                     return $a['id'] == $asso_id;
             }
@@ -194,14 +170,17 @@ class Portail
     */
     public function hasAssociationAdminPermission($asso_id){
 
+        $user_assos = $this->assos;
+        $user_permissions = $this->permissions;
+
         $assos = array_filter(
-                $this->assos,
+                $user_assos,
                 function ($a) use (&$asso_id) {
                     return $a['id'] == $asso_id;
             }
         );
         if ($assos) {
-            if (array_search(reset($assos)['login'].'-admin',$this->permissions)){
+            if (array_search(reset($assos)['login'].'-admin',$user_permissions)){
                 return true;
             }
         }
@@ -212,31 +191,34 @@ class Portail
 
 
     /**
-    *   Check if user is membre one of the associations
+    *   Check if user is member of one of the associations
     *
     */
     public function hasInAssociationsAdminPermission($asso_id1, $asso_id2){
 
+        $user_assos = $this->assos;
+        $user_permissions = $this->permissions;
+
         $assos = array_filter(
-                $this->assos,
-                function ($a) use (&$asso_id) {
+                $user_assos,
+                function ($a) use (&$asso_id1) {
                     return $a['id'] == $asso_id1;
             }
         );
         if ($assos) {
-            if (array_search(reset($assos)['login'].'-admin',$this->permissions)){
+            if (array_search(reset($assos)['login'].'-admin',$user_permissions)){
                 return true;
             }
         }
 
         $assos = array_filter(
-                $this->assos,
-                function ($a) use (&$asso_id) {
+                $user_assos,
+                function ($a) use (&$asso_id2) {
                     return $a['id'] == $asso_id2;
             }
         );
         if ($assos) {
-            if (array_search(reset($assos)['login'].'-admin',$this->permissions)){
+            if (array_search(reset($assos)['login'].'-admin',$user_permissions)){
                 return true;
             }
         }
@@ -269,13 +251,25 @@ class Portail
     /////////////////////////////
 
 
+    public function getUser()
+    {
+        return $this->request('user');
+    }
+
+
     /**
     *   Get all existing associations
     *
     */
     public function indexAsso()
     {
-        return $this->request('assos');
+        $assos_cached = \Cache::get('assos');
+        if ($assos_cached) {
+            return $assos_cached;
+        }
+        $assos = $this->request('assos');
+        \Cache::add('assos', $assos, 259200);
+        return $assos;
     }
 
 
@@ -285,7 +279,13 @@ class Portail
     */
     public function showAsso($uid)
     {
-        return $this->request('assos/'.$uid);
+        $asso_cached = \Cache::get('asso_'.$uid);
+        if ($asso_cached) {
+            return $asso_cached;
+        }
+        $asso = $this->request('assos/'.$uid);
+        \Cache::add('asso_'.$asso["id"], $asso, 259200);
+        return $asso;
     }
 
 

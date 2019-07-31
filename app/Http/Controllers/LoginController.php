@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use App\User;
+use Portail;
+use JWTFactory;
+use JWTAuth;
+
 
 class LoginController extends Controller
 {
@@ -67,27 +71,54 @@ class LoginController extends Controller
             try {
                 $token = $this->get_token($request);
 
-                $http = new Client([
-                    'base_uri' => env('BASE_URI').'/api/v1/',
-                    'headers' => [
-                        'Authorization' => $token['token_type'].' '.$token['access_token'],
-                    ],
-                ]);
+                // $http = new Client([
+                //     'base_uri' => env('BASE_URI').'/api/v1/',
+                //     'headers' => [
+                //         'Authorization' => $token['token_type'].' '.$token['access_token'],
+                //     ],
+                // ]);
 
-                $response = $http->get('user');
-                $userData = json_decode((string) $response->getBody(), true);
+                // $response = $http->get('user');
+                // $userData = json_decode((string) $response->getBody(), true);
                 // dd($userData);
+                // User::updateOrCreate([
+                //     'id' => $userData['id'],
+                // ],[
+                //     'email' => $userData['email'],
+                //     'firstname' => $userData['firstname'],
+                //     'lastname' => $userData['lastname'],
+                //     'token' => $token['access_token'],
+                //     'refresh_token' => $token['refresh_token'],
+                // ]);
+                // Authenticate the user based on the token
+                // Portail::authenticateUser($request, "Bearer ".$token['access_token'], $userData);
+                $portail_token = $token['token_type'].' '.$token['access_token'];
+                Portail::setToken($portail_token);
+                // $permissions = Portail::setPermissions($request, $token['token_type'].' '.$token['access_token'], $userData);
+                // $assos = Portail::getUserAssociations($request, $token['token_type'].' '.$token['access_token']);
+                $user = Portail::getUserInformation();
+
                 User::updateOrCreate([
-                    'id' => $userData['id'],
+                    'id' => $user['id'],
                 ],[
-                    'email' => $userData['email'],
-                    'firstname' => $userData['firstname'],
-                    'lastname' => $userData['lastname'],
+                    'email' => $user['email'],
+                    'firstname' => $user['firstname'],
+                    'lastname' => $user['lastname'],
                     'token' => $token['access_token'],
                     'refresh_token' => $token['refresh_token'],
                 ]);
 
-                return redirect('/#!/login?token='.$token["access_token"]);
+                // dd($user);
+                // Create a token
+                $payload = JWTFactory::user_id($user['id'])->permissions($user['permissions'])->assos($user['assos'])->make();
+                $jwt_token = JWTAuth::encode($payload);
+                // dd($token);
+
+                // dd($request->session()->all());
+                // dd(Portail::getUserAssociations);
+                // return response()->json($userData, 200);
+                // return ();
+                return redirect('/#!/login?token='.$jwt_token);
 
             } catch (ClientException $e) {
                 return redirect('/#!/error/500');
