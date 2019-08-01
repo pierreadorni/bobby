@@ -32,9 +32,8 @@ class BookingLineController extends Controller
 
     public function storeOne(Array $request)
     {
-        //dd($request);
+
         $b = Booking::findOrFail($request['booking']);
-        /*dd($b);*/
 
         $bookingline = new BookingLine();
         $bookingline->booking = $request['booking'];
@@ -67,7 +66,6 @@ class BookingLineController extends Controller
     public function show($id)
     {
         $bookingline = BookingLine::find($id);
-        //$bookingline->item = $bookingline->items()->get();
         
         $bookingline->item = Item::find($bookingline->item);
         if($bookingline)
