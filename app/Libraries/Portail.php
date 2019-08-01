@@ -105,15 +105,30 @@ class Portail
         return $user;
     }
 
+    public function getUser()
+    {
+        return $this->user;
+    }
+
     /**
      * 
      */
 
     public function getUserAssociations()
     {
-        return $this->assos;
+        // return $this->assos;
+        $userassos = [];
+        foreach ($this->assos as $asso_id) {
+            array_push($userassos, $this->showAsso($asso_id));
+        }
+        return $userassos;
     }
 
+
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
 
 
 
@@ -250,7 +265,7 @@ class Portail
     /////////////////////////////
 
 
-    public function getUser()
+    public function getPortalUser()
     {
         return $this->request('user');
     }
@@ -292,7 +307,7 @@ class Portail
     *   Get permissions from the user
     *
     */
-    protected function getPortalUserPermissions()
+    protected function getPortalUserPermissions($assos)
     {
         $permissions = [];
 
@@ -302,7 +317,7 @@ class Portail
             array_push($permissions, 'admin');
         }
 
-        foreach ($this->assos as $asso) {
+        foreach ($assos as $asso) {
             $permission_asso = $this->getPortalAssoPermissions($asso['id']);
             if (array_search("bobby", array_column($permission_asso, 'type'))){
                 array_push($permissions, $asso['login'].'-admin');
