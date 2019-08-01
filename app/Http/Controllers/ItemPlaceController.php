@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ItemPlaceRequest;
-
+use Portail;
 use App\Http\Controllers\Controller;
 use App\ItemPlace;
 
@@ -29,6 +29,8 @@ class ItemPlaceController extends Controller
      */
     public function store(ItemPlaceRequest $request)
     {
+        Portail::isAdmin();
+
         $item_place = ItemPlace::create($request->all());
         if($item_place)
         {
@@ -47,7 +49,7 @@ class ItemPlaceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    {        
         $item_place = ItemPlace::find($id);
         if($item_place)
             return response()->json($item_place, 200);
@@ -64,6 +66,8 @@ class ItemPlaceController extends Controller
      */
     public function update(ItemPlaceRequest $request, $id)
     {
+        Portail::isAdmin();
+
         $item_place = ItemPlace::find($id);
         if($item_place){
             $value = $item_place->update($request->input());
@@ -82,6 +86,7 @@ class ItemPlaceController extends Controller
      */
     public function destroy($id)
     {
+        Portail::isAdmin();
         
         $item_place = ItemPlace::find($id);
         if ($item_place)
