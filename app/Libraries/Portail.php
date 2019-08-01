@@ -131,8 +131,7 @@ class Portail
     public function isAuthenticated()
     {
 
-        $user = $this->getUserInformation();
-        if (!empty($user)) {
+        if (!empty($this->user)) {
             return true;
         }
 
