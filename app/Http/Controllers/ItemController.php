@@ -17,8 +17,10 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        Portail::isAdmin();
+
         $items = Item::get();
         return response()->json($items, 200);
     }
@@ -32,6 +34,8 @@ class ItemController extends Controller
 
     public function store(ItemRequest $request)
     {
+        Portail::hasAssociationAdminPermission($request->association);
+
         $item = Item::create($request->all());
         if($item)
         {
@@ -52,11 +56,12 @@ class ItemController extends Controller
 
     public function show($id)
     {
-        $item = Item::find($id);
-        if($item)
-            return response()->json($item, 200);
-        else
-            return response()->json(["message" => "Impossible de trouver l'objet"], 500);
+
+        // $item = Item::find($id);
+        // if($item)
+        //     return response()->json($item, 200);
+        // else
+        //     return response()->json(["message" => "Impossible de trouver l'objet"], 500);
     }
 
     /**
@@ -69,8 +74,11 @@ class ItemController extends Controller
 
     public function update(ItemRequest $request, $id)
     {
+
         $item = Item::find($id);
-        //dd($item);
+     
+        Portail::hasAssociationAdminPermission($item->association);
+
         if($item){
             $value = $item->update($request->input());
             if($value)
@@ -90,6 +98,10 @@ class ItemController extends Controller
     public function destroy($id)
     {
         $item = Item::find($id);
+
+        Portail::hasAssociationAdminPermission($item->association);
+
+
         if ($item)
         {
             $item->delete();
@@ -107,7 +119,7 @@ class ItemController extends Controller
             $items = $items->where('type', $categorie);
         }
         foreach ($items as $item) {
-            $item->association = Portail::showAsso($request, $item->association);
+            $item->association = Portail::showAsso($item->association);
             $item->placeName = $item->itemplaces->name;
             $item->typeName = $item->itemtypes->name;
         }
@@ -116,6 +128,9 @@ class ItemController extends Controller
 
     public function itemFromAssociation(Request $request, $uid)
     {
+
+        Portail::isAssociationMember($uid);
+
         $items = Item::all()->where('association', $uid);
         foreach ($items as $item) {
             if($item->type)
@@ -140,6 +155,7 @@ class ItemController extends Controller
             $item->edit = null;
         }
         return $items;
+
     }
 
     public function exportItem(){
@@ -147,6 +163,6 @@ class ItemController extends Controller
         //return Item::all();
         //$ok = (new ItemsExport, 'data.xlsx');
         //dd(Excel::download(new ItemsExport, 'items.xlsx'));
-        return Excel::download(new ItemsExport, 'items.xlsx');
+        // return Excel::download(new ItemsExport, 'items.xlsx');
     }
 }
