@@ -233,7 +233,7 @@ class Portail
     */
     public function isAdmin(){
 
-        if (array_search("admin", $this->permissions)){
+        if (array_search("admin", $this->permissions) !== false){
             return true;
         }
 
