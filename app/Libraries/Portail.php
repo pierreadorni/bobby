@@ -90,16 +90,20 @@ class Portail
     public function getUserInformation()
     {
         // User 
-        $user = $this->getUser();
+        $user = $this->getPortalUser();
         $this->user = $user;
 
         // Assos
+        $userassos = [];
         $assos = $this->getPortalUserAssociations();
-        $user['assos'] = $assos;
-        $this->assos = $assos;
+        foreach ($assos as $asso) {
+            array_push($userassos, $asso['id']);
+        }
+        $user['assos'] = $userassos;
+        // $this->assos = $assos;
 
         // Permissions
-        $permissions = $this->getPortalUserPermissions();
+        $permissions = $this->getPortalUserPermissions($assos);
         $user['permissions'] = $permissions;
 
         return $user;
