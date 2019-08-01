@@ -17,9 +17,7 @@ class UserController extends Controller
      */
     public function getUser(Request $request)
     {
-
-        $user = Portail::getInfoUser($request);
-
+        $user = Portail::getUser();
         return response()->json($user, 200);
     }
 
@@ -30,9 +28,21 @@ class UserController extends Controller
     */
     public function userAssociations(Request $request)
     {
-        $assos = Portail::getUserAssociation($request);
-
+        $assos = Portail::getUserAssociations();
         return response()->json($assos, 200);
+    }
+
+
+    /**
+    *   Récupérer les permissions d'un utilisateur sur une association
+    *
+    */
+    public function getPermissions(Request $request)
+    {
+
+        $permissions = Portail::getPermissions();
+        return response()->json($permissions, 200);
+
     }
 
 }
