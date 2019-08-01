@@ -16,10 +16,10 @@ class AssociationController extends Controller
      */
     public function index (Request $request)
     {
-        $assos = Portail::indexAsso($request);
-        //dd($assos);
 
+        $assos = Portail::indexAsso();
         return response()->json($assos, 200);
+
     }
 
 
@@ -32,9 +32,9 @@ class AssociationController extends Controller
     public function show(Request $request, $uid)
     {
 
-        $asso = Portail::showAsso($request, $uid);
-
+        $asso = Portail::showAsso($uid);
         return response()->json($asso, 200);
+    
     }
 
 }
