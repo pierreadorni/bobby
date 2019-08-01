@@ -21,13 +21,15 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
+        Portail::isAdmin();
+
         $bookings = Booking::all();
 
         if($bookings){
             foreach ($bookings as $booking) {
 
-                $booking->booker = Portail::showAsso($request, $booking->booker);
-                $booking->owner = Portail::showAsso($request, $booking->owner);
+                $booking->booker = Portail::showAsso($booking->booker);
+                $booking->owner = Portail::showAsso($booking->owner);
 
                 /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
                 $booking->user = User::find($booking->user);
@@ -77,6 +79,9 @@ class BookingController extends Controller
      */
     public function store(BookingRequest $request)
     {
+
+        Portail::hasAssociationAdminPermission($request->booker);
+
         $booking = Booking::create($request->all());
 
         if($booking)
@@ -97,7 +102,9 @@ class BookingController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $booking = Booking::find($id);    
+        $booking = Booking::find($id); 
+
+        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
 
         if($booking){
             //Récupération des informations liées à la réservation
@@ -133,8 +140,8 @@ class BookingController extends Controller
             }
 
             /*Requêtes pour les associations à changer avec Portail des assos*/
-            $booking->owner = Portail::showAsso($request, $booking->owner);
-            $booking->booker = Portail::showAsso($request, $booking->booker);
+            $booking->owner = Portail::showAsso($booking->owner);
+            $booking->booker = Portail::showAsso($booking->booker);
 
             /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
             $booking->user = User::find($booking->user);
@@ -184,6 +191,9 @@ class BookingController extends Controller
     public function update(BookingRequest $request, $id)
     {
         $booking = Booking::find($id);
+
+        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+        
         if($booking){
             $value = $booking->update($request->input());
             if($value)
@@ -201,15 +211,15 @@ class BookingController extends Controller
      */
     public function destroy($id)
     {
-       $booking = Booking::find($id);
+       // $booking = Booking::find($id);
 
-        if ($booking)
-        {
-            $booking->delete();
-            return response()->json([], 200);
-        }
-        else
-            return response()->json(["message" => "Impossible de trouver la réservation"], 500);
+       //  if ($booking)
+       //  {
+       //      $booking->delete();
+       //      return response()->json([], 200);
+       //  }
+       //  else
+       //      return response()->json(["message" => "Impossible de trouver la réservation"], 500);
     }
 
     public function calculCaution(Request $request){
@@ -222,6 +232,8 @@ class BookingController extends Controller
 
     public function indexAssociation(Request $request, $asso_id){
 
+        Portail::hasAssociationAdminPermission($asso_id);
+
         $bookings = [
             /* Réservation où l'association est propriétaire */
             "ownerBookings"     =>  Booking::all()->where('owner', $asso_id),
@@ -232,7 +244,7 @@ class BookingController extends Controller
         if($bookings['ownerBookings']){
             foreach ($bookings['ownerBookings'] as $booking) {
 
-                $booking->booker = Portail::showAsso($request, $booking->booker);
+                $booking->booker = Portail::showAsso($booking->booker);
 
                 $booking->user = User::find($booking->user);
 
@@ -247,7 +259,7 @@ class BookingController extends Controller
         if($bookings['bookerBookings']){
             foreach ($bookings['bookerBookings'] as $booking) {
 
-                $booking->owner = Portail::showAsso($request, $booking->owner);
+                $booking->owner = Portail::showAsso($booking->owner);
 
                 /*Requêtes pour les utilisateurs à changer avec Portail des assos*/
                 $booking->user = User::find($booking->user);
