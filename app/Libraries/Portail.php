@@ -222,25 +222,29 @@ class Portail
         $user_assos = $this->assos;
         $user_permissions = $this->permissions;
 
-        $assos = array_filter(
-                $user_assos,
-                function ($a) use (&$asso_id1) {
-                    return $a['id'] == $asso_id1;
-            }
-        );
-        if ($assos) {
+        $index = array_search($asso_id1, $user_assos);
+        // $assos = array_filter(
+        //         $user_assos,
+        //         function ($a) use (&$asso_id1) {
+        //             return $a['id'] == $asso_id1;
+        //     }
+        // );
+        if ($index !== false) {
+            $asso = $this->showAsso($user_assos[$index]);
             if (array_search(reset($assos)['login'].'-admin',$user_permissions)){
                 return true;
             }
         }
 
-        $assos = array_filter(
-                $user_assos,
-                function ($a) use (&$asso_id2) {
-                    return $a['id'] == $asso_id2;
-            }
-        );
-        if ($assos) {
+        $index = array_search($asso_id2, $user_assos);
+        // $assos = array_filter(
+        //         $user_assos,
+        //         function ($a) use (&$asso_id2) {
+        //             return $a['id'] == $asso_id2;
+        //     }
+        // );
+        if ($index != null) {
+            $asso = $this->showAsso($user_assos[$index]);
             if (array_search(reset($assos)['login'].'-admin',$user_permissions)){
                 return true;
             }
