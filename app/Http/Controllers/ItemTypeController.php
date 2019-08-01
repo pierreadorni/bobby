@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ItemTypeRequest;
-
+use Portail;
 use App\Http\Controllers\Controller;
 use App\ItemType;
 
@@ -29,6 +29,8 @@ class ItemTypeController extends Controller
      */
     public function store(ItemTypeRequest $request)
     {
+        Portail::isAdmin();
+
         $item_type = ItemType::create($request->all());
         if($item_type)
         {
@@ -64,6 +66,8 @@ class ItemTypeController extends Controller
      */
     public function update(ItemTypeRequest $request, $id)
     {
+        Portail::isAdmin();
+
         $item_type = ItemType::find($id);
         if($item_type){
             $value = $item_type->update($request->input());
@@ -82,6 +86,7 @@ class ItemTypeController extends Controller
      */
     public function destroy($id)
     {
+        Portail::isAdmin();
         
         $item_type = ItemType::find($id);
         if ($item_type)
