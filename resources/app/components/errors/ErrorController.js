@@ -6,6 +6,12 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
     $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
 
   }
+  else if ($routeParams.code && $routeParams.code == 403) {
+
+    $scope.errorCode = 403;
+    $scope.errorDesc = "Action interdite";
+
+  }
   else if ($routeParams.code && $routeParams.code == 404) {
 
     $scope.errorCode = 404;
@@ -15,7 +21,7 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
   else if ($routeParams.code && $routeParams.code == 500) {
 
     $scope.errorCode = 500;
-    $scope.errorDesc = "Erreur interne, veuillez contacter un administrateur.";
+    $scope.errorDesc = "Une erreur est survenue.";
 
   }
   else {
