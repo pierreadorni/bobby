@@ -84,6 +84,11 @@ class BookingController extends Controller
 
         $booking = Booking::create($request->all());
 
+        foreach ($request->bookingline["items"] as $bookingline) {
+            $bookingline["booking"] = $booking->id;
+            BookingLine::create($bookingline);
+        }
+
         if($booking)
         {
             return response()->json($booking, 200);
