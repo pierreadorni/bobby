@@ -29,7 +29,8 @@ var app  = angular
     'ngSanitize',
     'ngTouch',
     'angular-toArrayFilter',
-    'ngFileSaver'
+    'ngFileSaver',
+    'angularMoment'
   ])
   .constant('__ENV', __ENV);
   
