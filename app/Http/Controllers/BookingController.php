@@ -187,47 +187,55 @@ class BookingController extends Controller
             return response()->json(["message" => "Impossible de trouver la réservation"], 500);
     }
 
+
+   
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * Méthode pour annuler une réservation et les items présents dedans
      */
-    public function update(BookingRequest $request, $id)
+    public function cancelBooking(Request $request, $id)
     {
-        $booking = Booking::find($id);
+        $booking  = Booking::where('id', $id)->with('bookinglines')->get()->first();
 
         Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+
+        if ($booking && $booking->status < 3) {
+            $booking->status = 4;
+            $booking->save();
+
+            foreach ($booking->bookinglines as $bookingline) {
+                $bookingline->status = 4;
+                $bookingline->save();
+            }
+
+            return response()->json($booking, 201);
+        } 
+
+        return response()->json(["message" => "Une erreur est survenue."], 500);
         
-        if($booking){
-            $value = $booking->update($request->input());
-            if($value)
-                return response()->json($value, 201);
-            return response()->json(['message'=>'An error ocured'],500);
-        }
+
+    }
+
+    /**
+     * Méthode pour valider la réception de la caution
+     */
+    public function cautionReceived(Request $request, $id)
+    {
+        $booking  = Booking::find($id);
+
+        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+
+        if ($booking) {
+            $booking->cautionReceived = true;
+            $booking->save();
+            return response()->json($booking, 201);
+        } 
         return response()->json(["message" => "Impossible de trouver la réservation"], 500);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Booking  $booking
-     * @return \Illuminate\Http\Response
+     * Calcul de la caution d'une commande
      */
-    public function destroy($id)
-    {
-       // $booking = Booking::find($id);
-
-       //  if ($booking)
-       //  {
-       //      $booking->delete();
-       //      return response()->json([], 200);
-       //  }
-       //  else
-       //      return response()->json(["message" => "Impossible de trouver la réservation"], 500);
-    }
-
     public function calculCaution(Request $request){
         $caution = 0;
         foreach ($request->items as $item) {
