@@ -8,50 +8,47 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout, $window, $log, FileSaver) {
-
-    /*$scope.previewSrc = null;
-    $scope.product = {}
-
-    $scope.$watch("product.pic", function(newV, oldV) {
-      console.log("there");
-        if(newV !== oldV && newV instanceof File) {
-            $scope.previewSrc = $window.URL.createObjectURL(newV);
-        }
-    });*/
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $timeout, $window, $log, FileSaver, $rootScope) {
 
     /*Initialisation des boutons de confirmation*/
     $scope.addConfirmation = false;
     $scope.updateConfirmation = false;
     $scope.deleteConfirmation = false;
 
+    $scope.loading = true;
+
     $scope.asso_uid = $routeParams.asso_uid;
 
     var loadAssociation = function(){
-      $scope.loading=true;
       serviceAjax.get("associations/"+$scope.asso_uid).then(function(data){
         $scope.asso = data.data.shortname;
+        $scope.asso_login = data.data.login;
+        if (!$rootScope.isMemberAsso($scope.asso_login)) {
+          $location.path('/error/403')
+        }
+      }, function(error){
+        $location.path('/error/500')
       });
-      $scope.loading=false;
     }
     loadAssociation();
 
     var loadItemTypes = function(){
-        $scope.loading = true;
+      $scope.loading = true;
       serviceAjax.get("itemtypes").then(function(data){
             $scope.types=data.data;
             //Initialisation du type du nouvel item avec le premier élément des types
-            $scope.newItem.type = ""+$scope.types[0].id;
+            $scope.newItem.type_id = ""+$scope.types[0].id;
+            checkData();
         });
     };
     loadItemTypes();
 
     var loadItemPlaces = function(){
-        $scope.loading = true;
       serviceAjax.get("itemplaces").then(function(data){
             $scope.places=data.data;
             //Initialisation de la localisation du nouvel item avec le premier élément des localisations 
-            $scope.newItem.place = "" + $scope.places[0].id;
+            $scope.newItem.place_id = "" + $scope.places[0].id;
+            checkData();
         });
       
     };
@@ -63,27 +60,33 @@ angular.module('bobbyApp')
       $scope.loading=true;
       serviceAjax.get("association/items/"+$scope.asso_uid).then(function(data){
         $scope.items = data.data;
+        checkData();
+      });  
+    }
+    loadItem();
+
+    var checkData = function(){
+      if ($scope.items && $scope.places && $scope.items) {
         for (var i = $scope.items.length - 1; i >= 0; i--) {
           //Permet d'affecter au ng-model d'edition des éléments
           $scope.items[i].typeSection = $scope.types.filter((r)=>r.id == $scope.items[i].type)[0];
           $scope.items[i].placeSection = $scope.places.filter((r)=>r.id == $scope.items[i].place)[0];
           $scope.items[i].status = $scope.items[i].status.toString();
         }
-      });
-      $scope.loading=false;
-      
+        $scope.loading = false;
+      }
     }
-    loadItem();
 
     //Pour afficher le formulaire d'ajout d'un nouvel item
     $scope.addNewItem = false;
+    $scope.newitem_loading = false;
     
     var loadNewItem = function(){
       //Pour remplir le nouvel item
       $scope.newItem = {};
       //Paramètre par défaut
       $scope.newItem.status = "1";
-      $scope.newItem.association = $routeParams.asso_uid;
+      $scope.newItem.association_id = $routeParams.asso_uid;
     }
 
     loadNewItem();
@@ -100,7 +103,6 @@ angular.module('bobbyApp')
     /* Fonctions de gestions des items*/
 
     $scope.add = function(){
-      loadItem();
       $scope.addNewItem = true;
       $scope.focusInput = true;
     }
@@ -111,14 +113,12 @@ angular.module('bobbyApp')
     }
 
     $scope.update = function($item){
-      console.log($item);
-      if($item.typeSection)
-        $item.type = $item.typeSection.id;
-      if($item.placeSection)
-        $item.place = $item.placeSection.id;
+      if($item.type)
+        $item.type_id = $item.type.id;
+      if($item.place)
+        $item.place_id = $item.place.id;
       serviceAjax.put('items/'+ $item.id, $item).then(function(){
         $item.edit = !$item.edit;
-        loadItem();
         $scope.updateConfirmation = true;
         $timeout(function() {
            $scope.updateConfirmation = false;
@@ -132,27 +132,29 @@ angular.module('bobbyApp')
     }
 
     $scope.save = function(){
-      $scope.loading=true;
-      serviceAjax.post('items', $scope.newItem).then(function(){
-        loadItem();
+      $scope.newitem_loading=true;
+      serviceAjax.post('items', $scope.newItem).then(function(res){
+        var item = res.data;
+        item.place = $scope.places.filter((p) => p.id == item.place_id)[0];
+        item.type = $scope.types.filter((t) => t.id == item.type_id)[0];
+        $scope.items.push(item);
+        $scope.newitem_loading = false;
         $scope.addConfirmation = true;
         $timeout(function() {
            $scope.addConfirmation = false;
         }, 3000)
       })
-      
-      $scope.loading=false;
       $scope.addNewItem = false;
 
       loadNewItem();
-      $scope.newItem.type = ""+$scope.types[0].id;
-      $scope.newItem.place = "" + $scope.places[0].id;
+      $scope.newItem.type_id = ""+$scope.types[0].id;
+      $scope.newItem.place_id = "" + $scope.places[0].id;
     }
 
 
     $scope.delete = function($item){
       serviceAjax.delete('items/'+ $item.id).then(function(){
-        loadItem();
+        $scope.items = $scope.items.filter((i) => i.id != $item.id);
         $scope.deleteConfirmation = true;
         $timeout(function() {
            $scope.deleteConfirmation = false;
