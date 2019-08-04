@@ -3,17 +3,13 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 
   $scope.message = "Connexion";
 
-  console.log($routeParams);
 	
 	//Url avec token?=
 	if($routeParams.token){
 		$rootScope.auth.login($routeParams.token)
-		//.then(function(){
-			serviceAjax.get('user').then(function(data){
-			$location.path("/");
-			$location.url($location.path());  // Clear des paramètres
-		})
-	}
+		$location.path("/");
+		$location.url($location.path());  // Clear des paramètres
+}
 	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
 
 	    $scope.message = "Erreur de connexion";
