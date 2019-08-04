@@ -92,7 +92,13 @@ Route::prefix('v1')->group(function () {
         *
         */
 
-        Route::apiResource('bookinglines', 'BookingLineController');
+        Route::apiResource('bookinglines', 'BookingLineController')->only(['update']);
+
+        Route::get('bookinglines/accept/{id}', 'BookingLineController@acceptLine');
+
+        Route::get('bookinglines/cancel/{id}', 'BookingLineController@cancelLine');
+
+        Route::get('bookinglines/returned/{id}', 'BookingLineController@returnedLine');
 
 
 
