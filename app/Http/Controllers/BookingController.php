@@ -99,6 +99,7 @@ class BookingController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -235,6 +236,10 @@ class BookingController extends Controller
         return($caution);
     }
 
+
+    /**
+     * Index des commandes pour une association
+     */
     public function indexAssociation(Request $request, $asso_id){
 
         Portail::hasAssociationAdminPermission($asso_id);
