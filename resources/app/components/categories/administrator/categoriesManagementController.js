@@ -8,12 +8,16 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $location, $http, $timeout) {
+  .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $rootScope, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
 
     /*Initialisation des boutons de confirmation*/
     $scope.addConfirmation = false;
