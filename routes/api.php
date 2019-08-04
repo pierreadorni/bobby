@@ -78,9 +78,13 @@ Route::prefix('v1')->group(function () {
     
         Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 
-        Route::post('bookings/cancel/{id}', 'BookingController@cancelBooking');
-
         Route::post('bookings/caution/{id}', 'BookingController@cautionReceived');
+
+        Route::get('bookings/accept/{id}', 'BookingController@acceptBooking');
+
+        Route::get('bookings/cancel/{id}', 'BookingController@cancelBooking');
+
+        Route::get('bookings/returned/{id}', 'BookingController@returnedBooking');
 
 
         /**

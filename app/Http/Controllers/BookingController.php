@@ -188,32 +188,6 @@ class BookingController extends Controller
     }
 
 
-   
-    /**
-     * Méthode pour annuler une réservation et les items présents dedans
-     */
-    public function cancelBooking(Request $request, $id)
-    {
-        $booking  = Booking::where('id', $id)->with('bookinglines')->get()->first();
-
-        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
-
-        if ($booking && $booking->status < 3) {
-            $booking->status = 4;
-            $booking->save();
-
-            foreach ($booking->bookinglines as $bookingline) {
-                $bookingline->status = 4;
-                $bookingline->save();
-            }
-
-            return response()->json($booking, 201);
-        } 
-
-        return response()->json(["message" => "Une erreur est survenue."], 500);
-        
-
-    }
 
     /**
      * Méthode pour valider la réception de la caution
@@ -222,7 +196,7 @@ class BookingController extends Controller
     {
         $booking  = Booking::find($id);
 
-        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+        Portail::hasAssociationAdminPermission($booking->owner);
 
         if ($booking) {
             $booking->cautionReceived = true;
@@ -294,5 +268,99 @@ class BookingController extends Controller
             return response()->json($bookings, 200);
         }
         
+    }
+
+
+    /**
+     * Fonction pour accepter tous les items d'une commande
+     */
+    public function acceptBooking(Request $request, $id)
+    {
+
+        try {
+            $booking  = Booking::where('id', $id)->with('bookinglines')->get()->first();
+
+            Portail::hasAssociationAdminPermission($booking->owner);
+
+            if ($booking->status == 1) {
+                $booking->status = 2;
+            }
+            $booking->save();
+
+            foreach ($booking->bookinglines as $bookingline) {
+                if ($bookingline-> status == 1) {
+                    $bookingline->status = 2;
+                    $bookingline->save();
+                }
+            }
+
+            return response()->json([], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json(['message'=>'Une erreur s\'est produite.'],500);
+        }
+    }
+
+
+    /**
+     * Fonction pour refuser tous les items d'une commande
+     */
+    public function cancelBooking(Request $request, $id)
+    {
+
+        try {
+            $booking  = Booking::where('id', $id)->with('bookinglines')->get()->first();
+
+            Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+
+            $booking->status = 4;
+
+            foreach ($booking->bookinglines as $bookingline) {
+                if ($bookingline->status < 3) {
+                    $bookingline->status = 4;
+                    $bookingline->save();
+                } else {
+                    $booking->status = 3;
+                }
+            }
+
+            $booking->save();
+
+            return response()->json([], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json(['message'=>'Une erreur s\'est produite.'],500);
+        }
+    }
+
+
+    /**
+     * Fonction pour accepter tous les items d'une commande
+     */
+    public function returnedBooking(Request $request, $id)
+    {
+
+        try {
+            $booking  = Booking::where('id', $id)->with('bookinglines')->get()->first();
+
+            Portail::hasAssociationAdminPermission($booking->owner);
+            
+            if ($booking->status == 2) {
+                $booking->status = 3;
+            }
+            $booking->save();
+
+            foreach ($booking->bookinglines as $bookingline) {
+                if ($bookingline-> status == 2) {
+                    $bookingline->status = 3;
+                    $bookingline->save();
+                }
+            }
+
+            return response()->json([], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json(['message'=>'Une erreur s\'est produite.'],500);
+        }
     }
 }
