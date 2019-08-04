@@ -89,6 +89,11 @@ app.run(function($rootScope, PortailAuth) {
         controller : 'placesManagementCtrl',
         controllerAs : 'placesManagement'
       })
+      .when('/gestion/items',{
+        templateUrl : 'app/components/items/administrator/index_items.html',
+        controller : 'indexItemsCtrl',
+        controllerAs : 'indexItems'
+      })  
       .when('/gestion/bookings',{
         templateUrl : 'app/components/bookings/administrator/index_bookings.html',
         controller : 'indexBookingsCtrl',
