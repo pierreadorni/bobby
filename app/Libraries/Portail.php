@@ -43,14 +43,18 @@ class Portail
     {
         // Retrieve user_id from payload and get user from database
         $user_id = $payload->get('user_id');
-        $user = User::findOrFail($user_id);
-        // dd($user);
-        $this->user = $user;
+        $user = User::find($user_id);
+        if ($user) {
+        
+            $this->user = $user;
 
-        // Retrieve token, permissions ans assos from payload
-        $this->token = 'Bearer '.$user->token;
-        $this->permissions = $payload->get('permissions');
-        $this->assos = $payload->get('assos');
+            // Retrieve token, permissions ans assos from payload
+            $this->token = 'Bearer '.$user->token;
+            $this->permissions = $payload->get('permissions');
+            $this->assos = $payload->get('assos');
+        } else {
+            throw new HttpException(401, "User not found");
+        }
     }
 
 
