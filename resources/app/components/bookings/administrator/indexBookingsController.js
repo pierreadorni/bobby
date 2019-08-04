@@ -8,12 +8,16 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location) {
+  .controller('indexBookingsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
 
      //Recherche de la catégorie séléectionné
     var loadBookings = function(){
