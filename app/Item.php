@@ -9,6 +9,8 @@ class Item extends Model
 {
 	use SoftDeletes;
 
+	protected $table = 'items';
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -19,23 +21,24 @@ class Item extends Model
 
 
     protected $fillable = [
-		'name','description', 'quantity','place','status','caution','type','association',
+		'name','description', 'quantity','place_id','status','caution','type_id','association_id',
 	];
-	protected $table = 'items';
+	
 
 	public function associations()
 	{
-		return $this->belongsTo('App\Association', 'association');
+		// return $this->belongsTo('App\Association', 'association_id');
+		// return Portail::showAsso($this->association_id);
 	}
 
-	public function itemtypes()
+	public function type()
 	{
-		return $this->belongsTo('App\ItemType', 'type');
+		return $this->belongsTo('App\ItemType', 'type_id');
 	}
 
-	public function itemplaces()
+	public function place()
 	{
-		return $this->belongsTo('App\ItemPlace', 'place');
+		return $this->belongsTo('App\ItemPlace', 'place_id');
 	}
 
 }

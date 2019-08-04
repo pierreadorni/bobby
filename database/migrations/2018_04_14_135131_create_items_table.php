@@ -19,14 +19,14 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->integer('quantity')->unsigned();
-            $table->integer('place')->unsigned()->nullable();
-            $table->foreign('place')->references('id')->on('itemPlaces')->onDelete('set null')->onUpdate('cascade');
+            $table->integer('place_id')->unsigned()->nullable();
+            $table->foreign('place_id')->references('id')->on('itemPlaces')->onDelete('set null')->onUpdate('cascade');
             $table->boolean('status');
             $table->integer('caution')->unsigned();
-            $table->integer('type')->unsigned()->nullable();
-            $table->foreign('type')->references('id')->on('itemTypes')->onDelete('set null')->onUpdate('cascade');
+            $table->integer('type_id')->unsigned()->nullable();
+            $table->foreign('type_id')->references('id')->on('itemTypes')->onDelete('set null')->onUpdate('cascade');
             //Comportera l'uid de l'association sur le portial des assos
-            $table->string('association');            
+            $table->string('association_id');            
 
             $table->timestamps();
             $table->softDeletes();
