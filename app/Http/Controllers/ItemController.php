@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ItemController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -21,9 +22,10 @@ class ItemController extends Controller
     {
         Portail::isAdmin();
 
-        $items = Item::get();
+        $items = Item::with(['place', 'type'])->get();
         return response()->json($items, 200);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,11 +36,27 @@ class ItemController extends Controller
 
     public function store(ItemRequest $request)
     {
-        Portail::hasAssociationAdminPermission($request->association);
+        Portail::hasAssociationAdminPermission($request->association_id);
 
         $item = Item::create($request->all());
         if($item)
         {
+            switch ($item->status) {
+                case '1':
+                    $item->statusName = 'Visible';
+                    break;
+                case '2':
+                    $item->statusName = 'Visible et non empruntable';
+                    break;
+                case '3':
+                    $item->statusName = 'Invisible';
+                    break;
+
+                default:
+                    $item->statusName = 'Visible';
+                    break;
+            }
+            $item->edit = null;
             return response()->json($item, 200);
         }
         else
@@ -46,6 +64,7 @@ class ItemController extends Controller
             return response()->json(["message" => "Impossible de créer l'objet"], 500);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -64,6 +83,7 @@ class ItemController extends Controller
         //     return response()->json(["message" => "Impossible de trouver l'objet"], 500);
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -77,7 +97,7 @@ class ItemController extends Controller
 
         $item = Item::find($id);
      
-        Portail::hasAssociationAdminPermission($item->association);
+        Portail::hasAssociationAdminPermission($item->association_id);
 
         if($item){
             $value = $item->update($request->input());
@@ -87,6 +107,7 @@ class ItemController extends Controller
         }
         return response()->json(["message" => "Impossible de trouver l'objet"], 500);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -99,7 +120,7 @@ class ItemController extends Controller
     {
         $item = Item::find($id);
 
-        Portail::hasAssociationAdminPermission($item->association);
+        Portail::hasAssociationAdminPermission($item->association_id);
 
 
         if ($item)
@@ -110,33 +131,36 @@ class ItemController extends Controller
         else
             return response()->json(["message" => "Impossible de trouver l'objet"], 500);
     }
+    
 
-    //Quand on clique sur une catégorie
+    /**
+     * Items d'une catégorie
+     */
     public function itemFromCategorie(Request $request, $categorie)
     {
-        $items = Item::all()->where('status', '<', 3);
+        $items = Item::where('status', '<', 3)
+            ->with('type')        
+            ->select('id', 'name', 'description', 'quantity', 'association_id', 'type_id', 'status')
+            ->get();
         if($categorie>0){
-            $items = $items->where('type', $categorie);
+            $items = $items->where('type_id', $categorie);
         }
         foreach ($items as $item) {
-            $item->association = Portail::showAsso($item->association);
-            $item->placeName = $item->itemplaces->name;
-            $item->typeName = $item->itemtypes->name;
+            $item->association = Portail::showAsso($item->association_id);
         }
         return $items;
     }
 
+    /**
+     * Items d'une association
+     */
     public function itemFromAssociation(Request $request, $uid)
     {
 
-        Portail::isAssociationMember($uid);
+        // Portail::isAssociationMember($uid);
 
-        $items = Item::all()->where('association', $uid);
+        $items = Item::where('association_id', $uid)->with(['place', 'type'])->get();
         foreach ($items as $item) {
-            if($item->type)
-                $item->typeName = $item->itemtypes->name;
-            if($item->place)
-                $item->placeName = $item->itemplaces->name;
             switch ($item->status) {
                 case '1':
                     $item->statusName = 'Visible';

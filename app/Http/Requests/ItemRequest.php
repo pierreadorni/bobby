@@ -26,11 +26,11 @@ class ItemRequest extends FormRequest
         return [
             'name'          =>  'string|between:2,191'.($this->isMethod('put')?'':'|required'),
             'quantity'      =>  'integer|min:0|'.($this->isMethod('put')?'':'|required'),
-            'place'         =>  'exists:itemPlaces,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
+            'place_id'         =>  'exists:itemPlaces,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
             'status'        =>  'integer|min:1|max:3'.($this->isMethod('put')?'':'|required'),
             'caution'       =>  'integer|min:0'.($this->isMethod('put')?'':'|required'),
-            'type'          =>  'exists:itemTypes,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
-            'association'   =>  'string'.($this->isMethod('put')?'':'|required'),
+            'type_id'          =>  'exists:itemTypes,id|integer|min:0'.($this->isMethod('put')?'':'|required'),
+            'association_id'   =>  'string'.($this->isMethod('put')?'':'|required'),
         ];
     }
 
