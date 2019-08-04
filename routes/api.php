@@ -51,7 +51,8 @@ Route::prefix('v1')->group(function () {
         *
         */
 
-        Route::apiResource('bookings', 'BookingController');
+        Route::apiResource('bookings', 'BookingController')->only(['index',
+        'store', 'show']);
 
         Route::get('booking/assos/{asso_id}', function($asso_id){
             // Portail::hasAssociationAdminPermission($asso_id);
@@ -60,7 +61,11 @@ Route::prefix('v1')->group(function () {
 
         Route::get('booking/items/{asso_id}', function($asso_id){
             // Portail::isAuthenticated();
-            return $items = Item::all()->where('association', $asso_id)->where('status', 1);
+            return Item::where([
+                ['association_id', $asso_id],
+                ['status', 1]
+            ])->select('id', 'name', 'description', 'quantity', 'association_id')
+            ->get();
         });
 
         Route::get('booking/validation/item/{item_id}', function($item_id){
@@ -72,6 +77,10 @@ Route::prefix('v1')->group(function () {
         Route::post('booking/validation/items', 'BookingController@calculCaution');
     
         Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
+
+        Route::post('bookings/cancel/{id}', 'BookingController@cancelBooking');
+
+        Route::post('bookings/caution/{id}', 'BookingController@cautionReceived');
 
 
         /**
