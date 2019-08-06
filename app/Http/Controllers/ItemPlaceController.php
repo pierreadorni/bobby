@@ -92,6 +92,14 @@ class ItemPlaceController extends Controller
         if ($item_place)
         {
             $item_place->delete();
+
+            // Set null to all items belonging to the type
+            $items = $item_place->items()->get();
+            foreach ($items as $item) {
+                $item->place_id = null;
+                $item->save();
+            }
+
             return response()->json([], 200);
         }
         else
