@@ -31,7 +31,14 @@ class ItemTypeController extends Controller
     {
         Portail::isAdmin();
 
-        $item_type = ItemType::create($request->all());
+        $item_type = ItemType::onlyTrashed()->updateOrCreate(
+            ['name' => $request->name],
+            ['deleted_at' => NULL]);
+
+        if ($item_type->deleted_at) {
+            $item_type->restore();
+        }
+
         if($item_type)
         {
             return response()->json($item_type, 200);
