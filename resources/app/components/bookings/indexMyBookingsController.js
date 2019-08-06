@@ -63,10 +63,30 @@ angular.module('bobbyApp')
 
     //Pour modifier les nav-item actifs 
     $scope.isActive = function(nb){
+      if ($scope.status == 4) {
+        return $scope.status;
+      }
       return $scope.status == nb;
     }
     $scope.isActive2 = function(nb){
       return $scope.status2 == nb;
+    }
+
+    // Détermine si la commande doit être montrée
+    // Avec statut 4 on montre toutes les commandes
+    $scope.showBooking = function(booking){
+      if ($scope.status == 4) {
+        return true;
+      }
+      return booking.status == $scope.status;
+    }
+
+
+    $scope.showBooking2 = function(booking){
+      if ($scope.status2 == 4) {
+        return true;
+      }
+      return booking.status == $scope.status2;
     }
 
      //Recherche de la catégorie séléectionné
