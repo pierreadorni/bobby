@@ -8,38 +8,45 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('indexMyBookingsCtrl', function ($scope, serviceAjax, $location) {
+  .controller('indexMyBookingsCtrl', function ($scope, serviceAjax, Data, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
     $scope.data = {}
+    $scope.assos = [];
     $scope.singleAssociation = true;
 
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
-    $scope.loading = true;
-    //serviceAjax.get("userassos").then(function(data){
-    serviceAjax.get("associations").then(function(data){
-        $scope.singleAssociation = false;
-        $scope.assos=data.data;
+      $scope.loading = true;
+      //serviceAjax.get("userassos").then(function(data){
+      $scope.singleAssociation = false;
+      const assos = Data.loadUserAssos();
 
-        /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
-        if($scope.assos.length==1){
-          $scope.data.asso_id = $scope.assos[0].id;
-          //Pour empêcher le select des assos de s'afficher
-          $scope.singleAssociation = true;
-          loadBookings();
+      // Dans les associations rechercher des assos ou l'user est admin
+      for (let index = 0; index < assos.length; index++) {
+        if ($rootScope.isAdminAsso(assos[index].login)) {
+          $scope.assos.push(assos[index]);
         }
-      });
+      }
+      /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
+      if($scope.assos.length==1){
+        $scope.data.asso_id = $scope.assos[0].id;
+        //Pour empêcher le select des assos de s'afficher
+        $scope.singleAssociation = true;
+        loadBookings();
+      }
       $scope.loading=false;
     }
     loadAssociations();
 
     /* Listener sur la valeur de asso_id */
     $scope.$watch("data.asso_id", function(){
-      loadBookings();
+      if ($scope.data.asso_id) {
+        loadBookings();
+      }
     });
 
     /*Filtre en fonction du statut des réservations*/
@@ -48,7 +55,6 @@ angular.module('bobbyApp')
 
     $scope.changeStatus=function(nb){
       $scope.status = nb;
-      console.log('asso', $scope.blabla)
     }
 
     $scope.changeStatus2=function(nb){
@@ -68,7 +74,6 @@ angular.module('bobbyApp')
       $scope.loading = true;
       serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
         $scope.bookings = data.data;
-        console.log("donnees", $scope.bookings)
       })
     }
     //loadBookings();

@@ -8,12 +8,16 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, $timeout, $filter, $rootScope) {
+  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $filter, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
+
+    if (!$rootScope.canBook()) {
+      $location.path('/error/403')
+    }
 
     //Mail automatique envoyé à a la fin
     $scope.mail = {};
@@ -21,58 +25,83 @@ angular.module('bobbyApp')
     //Emprunt
     $scope.booking = {}
 
+    // Champ recherche
+    $scope.search = ""
+
     //Récupération de l'utilisateur
     $scope.user = $rootScope.auth.member;
 
     //Current date
     $scope.currentDate = new Date();
-    console.log("date", $scope.currentDate);
+
+    /*Chargement des associations d'un utilisateur*/
+    var loadAssociationsRequested = function(){
+      $scope.loading = true;
+      $scope.assosRequested=Data.loadAssociations();   
+      $scope.loading=false;
+    }
+
 
     /*Chargement des associations d'un utilisateur*/
     var loadAssociations = function(){
-    $scope.loading = true;
-    serviceAjax.get("associations").then(function(data){
-      //serviceAjax.get("userassos").then(function(data){
-      $scope.assosBooking=data.data;
-      console.log($scope.assosBooking);
+      $scope.loading = true;
+      const userassos = Data.loadUserAssos();
+      // $scope.assosBooking = data.data
+      $scope.assosBooking=[];
+      for (var i = userassos.length - 1; i >= 0; i--) {
+        if ($rootScope.isAdminAsso(userassos[i].login)) {
+          $scope.assosBooking.push(userassos[i])
+        } 
+      }
 
       if($scope.assosBooking.length==1){
         $scope.booking.assoRequesting = $scope.assosBooking[0];
-        loadAssociationsRequested();
       }
-    });
-    $scope.loading=false;
-  }
-  loadAssociations();
+      loadAssociationsRequested();
+    }
+
+    // Utilisation rootparams pour récupérer l'item et l'asso à qui l'item appartient
+    if ($routeParams.asso_id && $routeParams.item_id) {
+      const asso_id = $routeParams.asso_id;
+      const item_id = $routeParams.item_id;
+
+      serviceAjax.get("associations/" + asso_id).then(function(res){
+      $scope.booking.assoRequested = Data.loadAssociations();
+      serviceAjax.get("booking/items/" + asso_id).then(function(res){
+        $scope.items = res.data;
+        const requested_item = $scope.items.filter((i) => i.id == item_id)[0];
+        if (requested_item) {
+          const booking_item = {
+            'id': requested_item.id,
+            'name': requested_item.name,
+            'quantity': 1
+          }
+          $scope.bookingline.items.push(booking_item);
+        }
+        loadAssociations();
+      }, function(error){
+        loadAssociations();
+      })
+    }, function(error){
+        loadAssociations();
+      })
+    } else {
+      loadAssociations();
+    }
+
+    
 
   //Fonction pour la sélection de l'association demandant un item
   $scope.assoRequesting = function($id){
     $scope.booking.assoRequesting = $scope.assosBooking.filter((r)=>r.id == $id)[0];
-    console.log($scope.booking);
-    //Chargement des associations hormis celles sélectionnées
-    loadAssociationsRequested();
+    $scope.search = null
   }
 
-  /*Chargement des associations d'un utilisateur*/
-    var loadAssociationsRequested = function(){
-    $scope.loading = true;
-    serviceAjax.get("associations").then(function(data){
-        $scope.assosRequested=data.data;
-
-        //On retire l'association qui est déjà sélectionné en tant qu'emprunter
-        for (var i = $scope.assosRequested.length - 1; i >= 0; i--) {
-          if($scope.assosRequested[i].id==$scope.booking.assoRequesting.id){
-            $scope.assosRequested.splice(i,1);
-          }
-        }
-    });    
-    $scope.loading=false;
-  }
   
   //Fonction pour la sélection de l'association possédant les items à emprunter
   $scope.associationRequested = function($id){
     $scope.booking.assoRequested = $scope.assosRequested.filter((r)=>r.id == $id)[0];
-    console.log("id", $scope.booking.assoRequested.id)
+    $scope.search = null
     loadItem($scope.booking.assoRequested.id);
 
     //Chargement des associations hormis celles sélectionnées
