@@ -5,7 +5,6 @@ angular.module('bobbyApp')
         link: function (scope, element, attrs) {
           var model = $parse(attrs.focusMe);
           scope.$watch(model, function (value) {
-            console.log('value=', value);
             if (value === true) {
               $timeout(function () {
                 element[0].focus();
@@ -15,7 +14,6 @@ angular.module('bobbyApp')
           // to address @blesh's comment, set attribute value to 'false'
           // on blur event:
           element.bind('blur', function () {
-            console.log('blur');
             scope.$apply(model.assign(scope, false));
           });
         }
@@ -31,37 +29,51 @@ app.directive('inWrapper', function() {
         templateUrl: 'app/directives/inWrapper/in_wrapper.html',
     };
 })
-.controller('inWrapperCtrl', function($scope, serviceAjax, $http, $rootScope){
+.controller('inWrapperCtrl', function($scope, serviceAjax, Data){
 	this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
 
+	$scope.loading = true;
+
+    var checkLoading = function(){
+		if (!$scope.loading_assos && !$scope.loading_types) {
+			$scope.loading = false;
+		}
+	}
+
+
+    /** Chargement des différents catégories **/
+
 	var loadItemTypes = function(){
-		$scope.loading = true;
-		serviceAjax.get("itemtypes").then(function(data){
-	    	$scope.types=data.data;
-		});
-		$scope.loading = false;
+		$scope.loading_types = true
+		$scope.types = Data.loadItemTypes();
+		$scope.loading_types = false;
+		checkLoading();		
 	}
 
 	loadItemTypes();
 
-	var loadAssociations = function(){
-		$scope.loading = true;
-		//serviceAjax.get("userassos").then(function(data){
-		serviceAjax.get("associations").then(function(data){
-	    	$scope.assos=data.data;
 
-            if($scope.assos.length == 1){
-                /* Si l'utilisateur ne fait parti que d'une seule association */
-                $scope.singleAssociation = true;
-            }
-		});
-		$scope.loading=false;
+	/** Chargement des associations de l'utilisateur **/
+
+	var loadAssociations = function(){
+		$scope.loading_assos = true;
+		$scope.userassos = Data.loadUserAssos();
+
+		if($scope.userassos.length == 1){
+			/* Si l'utilisateur ne fait parti que d'une seule association */
+			$scope.singleAssociation = true;
+		}
+
+		$scope.loading_assos=false;
+		checkLoading();
 	}
+
 	loadAssociations();
+
 });
 
 
