@@ -1,6 +1,57 @@
 /**
  *  Gère l'authentification auprès de l'API
  */
+app.factory('Data', function(serviceAjax, localStorageService){
+  
+    factory = {}
+
+
+    // User Associations
+    factory.setUserAssos = function(userassos){
+        localStorageService.set('userassos', userassos);
+    }
+
+    factory.loadUserAssos = function(){
+        return localStorageService.get('userassos');
+    }
+
+
+    // Associations
+    factory.setAssociations = function(associations){
+        localStorageService.set('associations', associations);
+    }
+
+    factory.loadAssociations = function(){
+        return localStorageService.get('associations');
+    }
+
+
+    // Item Places
+    factory.setItemPlaces = function(itemplaces){
+        localStorageService.set('itemplaces', itemplaces);
+    }
+
+    factory.loadItemPlaces = function(){
+        return localStorageService.get('itemplaces');
+    }
+
+
+    // Itemp Types
+    factory.setItemTypes = function(itemtypes){
+        localStorageService.set('itemtypes', itemtypes);
+    }
+
+    factory.loadItemTypes = function(){
+        return localStorageService.get('itemtypes');
+    }
+    
+    return factory;
+
+  });
+  
+/**
+ *  Gère l'authentification auprès de l'API
+ */
 app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $rootScope, serviceAjax){
 
   var factory = {};
@@ -29,10 +80,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
    *  Enregistre les variables auth et token dans un cookie
    */
   factory.saveCookie = function() {
-      // Remove permissions, we don't need to save them into a cookie
-      /*var member = factory.member;
-      if (member.role)
-        member.role.permissions = null;*/
+
       $cookies.putObject('PortailAuth',
           {
             'auth' : factory.auth,
@@ -50,6 +98,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
       factory.auth = $cookies.getObject('PortailAuth').auth;
       factory.token = $cookies.getObject('PortailAuth').token;
       factory.member = $cookies.getObject('PortailAuth').member;
+      factory.refreshPermissions();
     }
   }
 
@@ -90,82 +139,68 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
      * Setter pour permissions
      * @param permissions
      */
-  /*factory.setPermissions = function(permissions) {
+  factory.setPermissions = function(permissions) {
     factory.permissions = permissions;
-  }*/
+  }
 
     /**
      * Refresh permissions list from the server
      */
-  /*factory.refreshPermissions = function () {
+  factory.refreshPermissions = function () {
 
-      var deferred = $q.defer();
 
       if (factory.auth) {
-          Users.selfPermissions({}).$promise
-              .then(function (data) {
-                  factory.setPermissions(data.data);
-                  deferred.resolve(data.data);
-              }).catch(function (error) {
-              deferred.reject(error);
-          });
+        serviceAjax.get('permissions').then(function(data){
+          factory.setPermissions(data.data)
+        })
       } else {
           factory.setPermissions([]);
-          deferred.resolve([]);
       }
 
-      return deferred.promise;
-  };*/
+  };
 
-  //factory.deferred = null;
 
-  // TODO : avoir proprement le role de l'utilisateur
-  /*$rootScope.isExtern = function() {
-      return $rootScope.auth.member.role_id == 8;
-  }*/
+  // Retourne vrai si un utilisateur est admin bobby
+  
+  factory.isAdmin = function() {
+      return factory.permissions.includes('admin');
+  }
 
-    /**
-     * Détermine si l'user courant a la permission attr
-     * @param attr
-     */
-  /*$rootScope.can = function(attr) {
-      if (factory.permissions == null) {
-          if (factory.deferred == null) {
-              factory.deferred = $q.defer();
-              factory.refreshPermissions()
-              .then(function () {
-                  factory.deferred.resolve(factory.hasPermission(attr));
-              }, function (error) {
-                  factory.deferred.reject(error);
-              });
-          }
+  $rootScope.isAdmin = function(){
+    return factory.isAdmin()
+  }
 
-          return factory.deferred.promise;
-      } else {
-          return factory.hasPermission(attr);
-      }
-  }*/
+  
+  // Retourne vrai si un utilisateur est admin bobby pour une asso
+  
+  factory.isAdminAsso = function(login){
+    return factory.permissions.includes(login + '-admin')
+  }
 
-    /**
-     * Détermine si permission est dans la liste des permission de PortailAuth
-     * @param permission
-     * @returns {boolean}
-     */
-  /*factory.hasPermission = function (permission) {
-      // Super admin is god
-      // A FAIRE : remmettre tous les droits au superadmin après dev
-      // if (permission != 'super-admin' && this.hasPermission('super-admin')) {
-      //     return true;
-      // }
+  $rootScope.isAdminAsso = function(login){
+    return factory.isAdminAsso(login)
+  }
 
-      var res = false;
-      angular.forEach(factory.permissions, function (perm) {
-          if (perm.slug == permission) {
-              res = true;
-          }
-      });
-      return res;
-  }*/
+  // Retourne vrai si un utilisateur est admin dans au moins une asso
+  factory.canBook = function(){
+    return factory.permissions.some(function(item){return (new RegExp(/-admin/).test(item))})
+  }
+
+  $rootScope.canBook = function(){
+    return factory.canBook()
+  }
+
+
+  // Retourne vrai si un utilisateur est membre d'une asso
+  
+  factory.isMemberAsso = function(login){
+    return factory.permissions.includes(login)
+  }
+
+  $rootScope.isMemberAsso = function(login){
+    return factory.isMemberAsso(login)
+  }
+
 
   /**
    *  Met à jour auth, token et member
@@ -175,21 +210,10 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
     factory.setAuth(true);
     // Récupération des données du membre
     serviceAjax.get('user').then(function(data){
-      factory.setMember(data.data);
+      var user = data.data;
+      factory.setMember(user);
+      factory.refreshPermissions();
     })
-    /*var deferred = $q.defer();
-
-    Users.self({}).$promise
-    .then(function(data){
-        factory.setMember(data.data);
-        return factory.refreshPermissions();
-    }).then(function (data) {
-        deferred.resolve(data);
-    }).catch(function (error) {
-        deferred.reject(error);
-    });
-
-    return deferred.promise;*/
   }
 
   /**
@@ -216,7 +240,7 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
   /**
    *  Redirige vers la page de logout CAS
    */
-  /*factory.goLogout = function() {
+  factory.goLogout = function() {
     $http.get(__ENV.apiUrl+'/logout')
       .success(function(data){
         factory.logout(); // On vide les infos auth et token de PortailAuth
@@ -224,13 +248,13 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
       }).error(function(error){
         // Gérer en cas d'erreur
       });
-  }*/
+  }
 
   // Avant de retourner la factory, on récupère les informations dans le cookie,
   // s'il existe, sinon on le créé
   if($cookies.getObject('PortailAuth')) {
       factory.loadCookie();
-      //factory.refreshPermissions();
+      // factory.refreshPermissions();
   } else {
       factory.saveCookie();
   }
