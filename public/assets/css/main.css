@@ -2,6 +2,20 @@
 	text-align: center;
 }
 
+.margin20{margin: 20px;}
+.margin_auto{margin: auto}
+.font_size_1rem{font-size: 1rem;}
+.center{text-align: center;}
+
+.no_decoration{
+	text-decoration: none;
+	text-decoration-color: none;
+	color:none;
+}
+
+.pointer{cursor: pointer;}
+
+
 /* TRI */
 .sortorder:after {
   content: '\0025B3';   // BLACK UP-POINTING TRIANGLE
@@ -41,14 +55,14 @@
 
 .btn-grey{
 	background-color: #bdbdbd;
-	margin-top: 8px;
-	margin-bottom: 8px;
+	margin: 8px;
+	/* margin-bottom: 8px; */
 }
 
 .btn-grey:hover{
 	background-color: #414361;
 	color: white;
-	margin-top: 8px;
+	/* margin-top: 8px; */
 }
 
 /* Pour icône Fontawesome */
@@ -95,4 +109,24 @@ tbody{
   text-align: center;
   margin-top: 100px;
   color : #414361;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }

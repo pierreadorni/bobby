@@ -2,9 +2,9 @@
 	text-align: center;
 }
 
-.margin20{
-	margin: 20px;
-}
+.margin20{margin: 20px;}
+.margin_auto{margin: auto}
+.font_size_1rem{font-size: 1rem;}
 .center{text-align: center;}
 
 .no_decoration{
@@ -14,6 +14,7 @@
 }
 
 .pointer{cursor: pointer;}
+
 
 /* TRI */
 .sortorder:after {
