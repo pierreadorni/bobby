@@ -11,7 +11,7 @@
 
     <!-- CONTENU -->
     <div class="row">
-        <div class="col-sm-12 col-md-5 offset-md-1" ng-hide="booking.assoRequesting">
+        <div class="col-md-10 offset-md-1 col-lg-5 offset-lg-1 margin20" ng-hide="booking.assoRequesting">
             <div class="card card-no-border">
                 <div class="card-header card-purple">
                     <h4>Étape 1</h4>
@@ -19,17 +19,17 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                            <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
+                            <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association" ng-value="search">
                     </div>
                     <div class="list-group">
-                        <a ng-repeat="asso in assosBooking | toArray:false | filter:assoSearch | orderBy : '+name'" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action">
-                            {{ asso.name }}
+                        <a ng-repeat="asso in assosBooking | toArray:false | filter:assoSearch | orderBy : '+shortname'" ng-click="assoRequesting(asso.id)" class="list-group-item list-group-item-action" >
+                            {{ asso.shortname }}
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-5 offset-md-1" ng-show="booking.assoRequesting && !booking.assoRequested">
+        <div class="col-md-10 offset-md-1 col-lg-5 offset-lg-1 margin20" ng-show="booking.assoRequesting && !booking.assoRequested">
             <div class="card card-no-border">
                 <div class="card-header card-purple">
                     <h4>Étape 2</h4>
@@ -39,15 +39,20 @@
                     <div class="form-group">
                             <input  ng-model="assoSearch" type="text" class="form-control" placeholder="Rechercher une association">
                     </div>
-                    <div class="list-group">
-                        <a ng-repeat="assoRequested in assosRequested | toArray:false | filter : assoSearch | orderBy : '+name'" ng-click="associationRequested(assoRequested.id)" class="list-group-item list-group-item-action">
-                            {{ assoRequested.name }}
+                    <div class="list-group" style="height:300px; overflow-y: scroll;">
+                        <a 
+                            ng-repeat="assoRequested in assosRequested | toArray:false | filter : assoSearch | orderBy : '+shortname'" 
+                            ng-click="associationRequested(assoRequested.id)" 
+                            class="list-group-item list-group-item-action"
+                            ng-if="assoRequested.id != booking.assoRequesting.id"
+                        >
+                            {{ assoRequested.shortname }}
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-5 offset-md-1" ng-show="booking.assoRequesting && booking.assoRequested && !booking.date">
+        <div class="col-md-10 offset-md-1 col-lg-5 offset-lg-1 margin20" ng-show="booking.assoRequesting && booking.assoRequested && !booking.date">
             <div class="card card-no-border">
                 <div class="card-header card-purple">
                     <h4>Étape 3</h4>
@@ -58,23 +63,23 @@
                         <br>
                         <div class="row">
                             <label class="form-label col-md-4">Date d'emprunt</label>
-                            <input class="form-control col-md-4" type="date" name="startDate" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-model="booking.startDate" required>
+                            <input class="form-control col-md-6" type="date" name="startDate" min="{{currentDate | date:'yyyy-MM-dd'}}" ng-model="booking.startDate" required>
                         </div>
                         <br>
                         <div class="row">
                             <label class="form-label col-md-4">Date de retour</label>
-                            <input class="form-control col-md-4" type="date" name="endDate" min="{{booking.startDate | date:'yyyy-MM-dd'}}" ng-model="booking.endDate" ng-disabled="!booking.startDate" required="">
+                            <input class="form-control col-md-6" type="date" name="endDate" min="{{booking.startDate | date:'yyyy-MM-dd'}}" ng-model="booking.endDate" ng-disabled="!booking.startDate" required="">
                         </div>
                         <br>
-                        <div class="row">
-                            <button class="btn btn-grey col-md-2 offset-md-5" ng-click="dateSave()" ng-disabled="!form.startDate.$valid || !form.endDate.$valid">Confirmer</button>
+                        <div class="row" style="text-align: center">
+                            <button class="btn btn-grey" ng-click="dateSave()" ng-disabled="!form.startDate.$valid || !form.endDate.$valid">Confirmer</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         
-        <div class="col-sm-12 col-md-5 offset-md-1" ng-show="booking.assoRequesting && booking.assoRequested && booking.date">
+        <div class="col-md-10 offset-md-1 col-lg-5 offset-lg-1 margin20" ng-show="booking.assoRequesting && booking.assoRequested && booking.date">
             <div class="card card-no-border">
                 <div class="card-header card-purple">
                     <h4>Étape 4</h4>
@@ -85,7 +90,7 @@
                     <div class="form-group">
                         <input ng-show="items" ng-model="itemSearch" type="text" class="form-control" placeholder="Rechercher un item">
                     </div>
-                    <div class="list-group">
+                    <div class="list-group" style="height:300px; overflow-y: scroll;">
                         <a ng-repeat="item in items | toArray:false | filter:itemSearch" ng-click="item.quantity>0 && addItem(item)" class="list-group-item list-group-item-action title">
                                 <p class="title">
                                     {{ item.name }}
@@ -99,7 +104,7 @@
         </div>
                 
         <!-- RESUME DE LA RESERVATION -->
-        <div class="col-sm-12 col-md-5">
+        <div class="col-md-10 offset-md-1 col-lg-5 offset-lg-0 margin20">
             <div class="card card-no-border">
                 <div class="card-header card-purple">
                     <h4 class="title">Résumé de la réservation</h4>
@@ -122,10 +127,11 @@
                                         <div ng-hide="booking.assoRequesting">
                                             <i>Vous n'avez pas choisi pour quelle association vous voulez emprunter du matériel.</i>
                                         </div>
-                                        <div ng-show="booking.assoRequesting">
-                                            <h6>{{ booking.assoRequesting.name }}</h6>
-                                            <p>{{ booking.assoRequesting.email }}</p>
-                                            <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequesting()">Modifier</button>
+                                        <div ng-show="booking.assoRequesting" style="text-align: center;">
+                                            <img ng-src={{booking.assoRequesting.image}} height="80px" style="border-radius: 5px; margin-bottom: 10px;">
+                                            <h6>{{ booking.assoRequesting.shortname }}</h6>
+                                            <button type="button" class="btn btn-grey" ng-click="changeAssoRequesting()" ng-if="assosBooking.length != 1">Modifier</button>
+                                            <br>
                                         </div>
                                     </div>
                                     <!-- ASSO REQUESTED -->
@@ -135,21 +141,27 @@
                                         <div ng-hide="booking.assoRequested">
                                             <i>Vous n'avez pas choisi l'association à qui vous demandez du matériel.</i>
                                         </div>
-                                        <div ng-show="booking.assoRequested">  
-                                            <h6>{{ booking.assoRequested.name }}</h6>
-                                            <p>{{ booking.assoRequested.email }}</p>
-                                            <button type="button" class="btn btn-grey col-md-4 offset-md-4" ng-click="changeAssoRequested()">Modifier</button>
+                                        <div ng-show="booking.assoRequested" style="text-align: center;">  
+                                            <img ng-src={{booking.assoRequested.image}} height="80px" style="border-radius: 5px; margin-bottom: 10px;">
+                                            <h6>{{ booking.assoRequested.shortname }}</h6>
+                                            <!-- <p>
+                                                {{ booking.assoRequested.name }}
+                                                <br>
+                                                {{ booking.assoRequested.email }}
+                                            </p> -->
+                                            <button type="button" class="btn btn-grey" ng-click="changeAssoRequested()">Modifier</button>
+                                            <br>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                    <hr>
+                    <hr>                    
 
                     <!-- ITEMS -->
                     
-                    
+                    <hr>
                     <div class="card" >
                         <div class="card-header">
                             <h5 class="title">Items</h5>
@@ -181,20 +193,20 @@
                                                 <!--<img src="assets/img/minus.png" width="12px"></a>-->
                                         </td>
                                         <td>
-                                            <div ng-show="!item.editStartDate">
+                                            <div ng-if="!item.editStartDate && item.startDateAngular">
                                                 {{ item.startDateAngular | date : "dd/MM/yyyy" }}
                                                 <a ng-click=editStartDate(item)><i class="fa fa-edit i-right" aria-hidden="true"></i></a>
                                             </div>
-                                            <div ng-show="item.editStartDate">
+                                            <div ng-if="item.editStartDate">
                                                 <input class="form-control" type="date" ng-model="item.startDate">
                                             </div>
                                         </td>
                                         <td>
-                                            <div ng-show="!item.editEndDate">
+                                            <div ng-if="!item.editEndDate && item.endDateAngular">
                                                 {{ item.endDateAngular | date : "dd/MM/yyyy" }}
                                                 <a ng-click=editEndDate(item)><i class="fa fa-edit i-right" aria-hidden="true"></i></a>
                                             </div>
-                                            <div ng-show="item.editEndDate">
+                                            <div ng-if="item.editEndDate">
                                                 <input class="form-control" type="date" ng-model="item.endDate">
                                             </div>
                                         </td>
@@ -216,9 +228,9 @@
                         </div>
                     </div>
                     <hr>
-                    <div>
+                    <div style="text-align: center">
                         <button ng-click="save()"
-                                type="button" class="btn btn-grey col-md-2 offset-md-5"
+                                type="button" class="btn btn-grey"
                                 ng-disabled="!booking.assoRequesting || !booking.assoRequested || !booking.date || !(bookingline.items.length > 0) || !formComment.inputComment.$valid">
                             Valider
                         </button>

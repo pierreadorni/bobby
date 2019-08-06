@@ -110,6 +110,10 @@ angular.module('bobbyApp')
   /***  ETAPE 3 ***/
   $scope.dateSave = function(){
     $scope.booking.date = true;
+    for (let index = 0; index < $scope.bookingline.items.length; index++) {
+      $scope.bookingline.items[index].startDateAngular = $scope.booking.startDate;
+      $scope.bookingline.items[index].endDateAngular = $scope.booking.endDate;      
+    }
   }
 
   /***  ETAPE 4 ***/
@@ -200,36 +204,53 @@ angular.module('bobbyApp')
     $scope.booking.booker = $scope.booking.assoRequesting.id;
     $scope.booking.status = 1;
     $scope.booking.cautionReceived = false;
+
+    for(var i = $scope.bookingline.items.length - 1; i >= 0; i--) {
+
+      $scope.bookingline.items[i].startDate = $filter('date')($scope.bookingline.items[i].startDateAngular, "yyyy-MM-dd");
+      $scope.bookingline.items[i].endDate = $filter('date')($scope.bookingline.items[i].endDateAngular, "yyyy-MM-dd");
+      $scope.bookingline.items[i].item = $scope.bookingline.items[i].id;
+      // $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
+      $scope.bookingline.items[i].status = 1;
+
+    }
+
+    $scope.booking.bookingline = $scope.bookingline;
+    // To Do voir validation
     serviceAjax.post("booking/validation/items", $scope.bookingline).then(function(data){
       $scope.booking.caution = data.data;
       serviceAjax.post('bookings', $scope.booking).then(function(data){
         $scope.callBackBooking = data.data;
+        $location.path('/booking/' + $scope.callBackBooking.id);
+
+        // TO DO 
+        // Envoie du mail (voir avec Samy)
         
         /* Envoi du mail automatique */
-        $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
-        $scope.mail.content = "L'association " + $scope.booking.assoRequesting.name + " vient de faire une demande de réservation de matériel à votre association." +  " En voici la liste :";
-        $scope.mail.bookinglines = [];
-        $scope.mail.association = $scope.booking.assoRequesting.name;
-        var bookinglines = []
-        var promises=[];
+      //   $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
+      //   $scope.mail.content = "L'association " + $scope.booking.assoRequesting.name + " vient de faire une demande de réservation de matériel à votre association." +  " En voici la liste :";
+      //   $scope.mail.bookinglines = [];
+      //   $scope.mail.association = $scope.booking.assoRequesting.name;
+      //   var bookinglines = []
+      //   var promises=[];
 
-        for(var i = $scope.bookingline.items.length - 1; i >= 0; i--) {
+      //   for(var i = $scope.bookingline.items.length - 1; i >= 0; i--) {
 
-          $scope.bookingline.items[i].startDate = $filter('date')($scope.bookingline.items[i].startDateAngular, "yyyy-MM-dd");
-          $scope.bookingline.items[i].endDate = $filter('date')($scope.bookingline.items[i].endDateAngular, "yyyy-MM-dd");
-          $scope.bookingline.items[i].item = $scope.bookingline.items[i].id;
-          $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
-          $scope.bookingline.items[i].status = 1;
+      //     $scope.bookingline.items[i].startDate = $filter('date')($scope.bookingline.items[i].startDateAngular, "yyyy-MM-dd");
+      //     $scope.bookingline.items[i].endDate = $filter('date')($scope.bookingline.items[i].endDateAngular, "yyyy-MM-dd");
+      //     $scope.bookingline.items[i].item = $scope.bookingline.items[i].id;
+      //     $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
+      //     $scope.bookingline.items[i].status = 1;
 
-        }
+      //   }
 
-        serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
-          console.log("response", data.data);
-          $scope.mail.bookinglines = data.data;
-          console.log($scope.mail);
-          //serviceAjax.post('send', $scope.mail);
-          $location.path('/booking/' + $scope.callBackBooking.id);
-        })
+      //   serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
+      //     console.log("response", data.data);
+      //     $scope.mail.bookinglines = data.data;
+      //     console.log($scope.mail);
+      //     //serviceAjax.post('send', $scope.mail);
+      //     $location.path('/booking/' + $scope.callBackBooking.id);
+      //   })
       });
     })
   }
