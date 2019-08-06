@@ -2,7 +2,7 @@
 
 	<br><br>
 	<div class="row">
-		<div class="col-md-10 offset-md-1 col-sm-12">
+		<div class="col-md-10 offset-md-1 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 			  		<h3 align="center">Résumé réservation</h3>
@@ -16,26 +16,66 @@
 					                <h5>Information générale</h5>
 					            </div>
 					            <div class="card-body">
-					                <p>Effectuée par : <i>{{booking.user.login}}</i></p>
+					                <p>Effectuée par : <i>{{booking.user.firstname}} {{booking.user.lastname}}</i></p>
 					                <p>Le : <i>{{ booking.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</i></p>
 					                <p>
 					                	Caution reçue ? 
 					                	<i style="margin-right: 10px">{{booking.cautionReceived}}</i>
-					                	<a ng-show="booking.cautionReceived=='Non' && booking.status!=4" ng-click="changeCaution()">
-					                		<span class="badge badge-pill badge-secondary" ng-show="memberAssoOwner">
+										<a 
+											class="pointer"
+											ng-if="booking.cautionReceived=='Non' && booking.status!=4 && $root.isAdminAsso(booking.owner.login)" 
+											ng-click="cautionReceived()"
+										>
+					                		<span class="badge badge-pill badge-secondary">
 					                			J'ai reçu la caution 
 					                			<i class="fas fa-check i-right" aria-hidden="true"></i> 
 					                		</span>
 					                	</a>
 					                </p>
-					               	<p>Statut : <i>{{booking.statusName}}</i></p>
-					               	<!-- <div class="row" ng-show="booking.status==1">
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="acceptAll()">Tout valider</button>
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelBooking()">Tout refuser</button>
+					               	<p>Statut : <strong><i>{{booking.statusName}}</i></strong></p>
+					               	<div class="row">
+										<div ng-if="booking.status==1">
+											<button 
+												class="btn btn-grey" 
+												ng-click="acceptBooking()"
+												ng-if="$root.isAdminAsso(booking.owner.login)"
+											>
+												Tout valider
+											</button>
+											<button 
+												class="btn btn-grey" 
+												ng-click="cancelBooking()"
+												ng-if="$root.isAdminAsso(booking.owner.login)"
+											>
+												Tout refuser
+											</button>
+										</div>
+										<div ng-if="booking.status==2">
+											<button 
+												class="btn btn-grey" 
+												ng-click="returnedBooking()"
+												ng-if="$root.isAdminAsso(booking.owner.login)"
+											>
+												Items rendus
+											</button>
+											<button 
+												class="btn btn-grey" 
+												ng-click="cancelBooking()"
+												ng-if="$root.isAdminAsso(booking.owner.login)"
+											>
+												Annuler
+											</button>
+										</div>
+										<div ng-if="booking.status < 3">
+											<button 
+												class="btn btn-grey" 
+												ng-click="cancelBooking()"
+												ng-if="$root.isAdminAsso(booking.booker.login)"
+											>
+												Annuler
+											</button>
+										</div>
 					                </div>
-					                <div class="row" ng-if="booking.status==2">
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBackAll()">Items rendus</button>
-					                </div> -->
 					            </div>
 					        </div>
 					    </div>
@@ -44,10 +84,12 @@
 				                <div class="card-header">
 				                    <h5>Propriétaire</h5>
 				                </div>
-				                <div class="card-body">
-				                    <p>{{booking.owner.name}}</p>
-				                    <p>{{booking.owner.mail}}</p>
-				                    <button class="btn btn-grey" ng-show="memberAssoBooker">Envoyer un mail</button>
+				                <div class="card-body center">
+									<img ng-src={{booking.owner.image}} height="80px" style="border-radius: 5px; margin-bottom: 10px;">
+				                    <p>
+										{{booking.owner.shortname}}<br>
+				                    	{{booking.owner.login}}@assos.utc.fr
+									</p>
 				                </div>
 				            </div>
 				        </div>
@@ -56,10 +98,12 @@
 				                <div class="card-header">
 				                    <h5>Emprunteur</h5>
 				                </div>
-				               	<div class="card-body">
-				                    <p>{{booking.booker.name}}</p>
-				                    <p>{{booking.booker.mail}}</p>
-				                    <button class="btn btn-grey" ng-show="memberAssoOwner">Envoyer un mail</button>
+				               	<div class="card-body center">
+									<img ng-src={{booking.booker.image}} height="80px" style="border-radius: 5px; margin-bottom: 10px;">
+				                    <p>
+										{{booking.booker.shortname}}<br>
+										{{booking.booker.login}}@assos.utc.fr
+									</p>
 				                </div>
 				            </div>
 				        </div>
@@ -70,57 +114,70 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-md-10 offset-md-1 col-sm-12">
+		<div class="col-md-10 offset-md-1 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 				    <h3 align="center">Matériel</h3>
 			  	</div>
 			  	<div class="card-body">
 			  		<div class="row">
-						<div class="col-md-4 col-sm-12" ng-repeat="bookingline in booking.bookinglines">
+						<div class="col-lg-4 col-md-6 col-sm-12" ng-repeat="bookingline in booking.bookinglines">
 							<div class="card">
 					            <div class="card-header">
 					                <h5>
 					                	{{bookingline.item.name}}
-					                	<a ng-click="edit(bookingline)" ng-show="memberAssoOwner">
+										<a 
+											ng-click="edit(bookingline)" 
+											ng-if="$root.isAdminAsso(booking.owner.login) && bookingline.status == 1 && !bookingline.edit" 
+											class="pointer"
+											data-toggle="tooltip" 
+											data-placement="top" 
+											title="Editer la demande pour cet item."
+										>
 					                		<i class="fa fa-edit i-right pull-right" aria-hidden="true"></i>
 					                	</a>
 					                </h5>
 					            </div>
 					            <div class="card-body">
 					            	<div class="row">
-						                <span class="col-md-4 offset-md-1">Quantité :</span> 
-					                	<span ng-show="!bookingline.edit" class="col-md-4"><i>{{bookingline.quantity}}</i></span>
-					                	<input class="form-control col-md-4" type="number" name="Q" ng-model="bookingline.quantity" required ng-show="bookingline.edit">
+						                <span class="col-sm-6">Quantité :</span> 
+					                	<span ng-show="!bookingline.edit" class="col-sm-6"><i>{{bookingline.quantity}}</i></span>
+					                	<input class="form-control col-md-4" type="number" name="Q" ng-model="bookingline.quantity" required ng-if="bookingline.edit">
 						            </div>
 						            <div class="row">
-							                <span class="col-md-4 offset-md-1">Du :</span> 
-						                	<span ng-show="!bookingline.edit" class="col-md-4">
-						                		<i>{{ bookingline.startDate.toString().replace(' ', 'T') | date : "dd/MM/yyyy" }}</i>
+							                <span class="col-sm-6">Du :</span> 
+						                	<span ng-show="!bookingline.edit" class="col-sm-6">
+						                		<i>{{ bookingline.startDateAngular | date : "dd/MM/yyyy" }}</i>
 						                	</span>
-						                	<input class="form-control col-md-6" type="date" ng-model="bookingline.startDate" ng-show="bookingline.edit">
+						                	<input class="form-control col-md-6" type="date" ng-model="bookingline.startDateAngular" ng-if="bookingline.edit">
 						            </div>
 						            <div class="row">
-					                	<span class="col-md-4 offset-md-1">Au :</span> 
-					                	<span ng-show="!bookingline.edit" class="col-md-4">
-					                		<i>{{ bookingline.endDate.toString().replace(' ', 'T') | date : "dd/MM/yyyy" }}</i>
+					                	<span class="col-sm-6">Au :</span> 
+					                	<span ng-show="!bookingline.edit" class="col-sm-6">
+					                		<i>{{ bookingline.endDateAngular | date : "dd/MM/yyyy" }}</i>
 					                	</span>
-					                	<input class="form-control col-md-6" type="date" ng-model="bookingline.endDate" ng-show="bookingline.edit">
+					                	<input class="form-control col-md-6" type="date" ng-model="bookingline.endDateAngular" ng-if="bookingline.edit">
 						            </div>
 						            <div class="row" ng-show="!bookingline.edit">
-						                <span class="col-md-4 offset-md-1">Statut :</span> 
-					                	<span class="col-md-4"><i>{{bookingline.statusName}}</i></span>
+						                <span class="col-sm-6">Statut :</span> 
+					                	<span class="col-sm-6"><i>{{bookingline.statusName}}</i></span>
 						            </div>
 
-					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit" ng-show="memberAssoOwner">
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="accept(bookingline)">Accepter</button>
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="cancelLine(bookingline)">Refuser</button>
+					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
+					                	<button class="btn btn-grey" ng-click="acceptLine(bookingline)">Accepter</button>
+					                	<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Refuser</button>
 					                </div>
-					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit" ng-show="memberAssoOwner">
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="getBack(bookingline)">Rendu</button>
+					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
+										<button class="btn btn-grey"ng-click="returnedLine(bookingline)">Rendu</button>
+										<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Annuler</button>
 					                </div>
-					                <div class="row" ng-if="bookingline.edit" ng-show="memberAssoOwner='true'>
-					                	<button class="btn btn-grey col-md-4" style="margin-left: 14px;" ng-click="update(bookingline)">Valider</button>
+					                <div class="row" ng-if="bookingline.edit && bookingline.status == 1 && $root.isAdminAsso(booking.owner.login)">
+										<button 
+											class="btn btn-grey" 
+											ng-click="updateItem(bookingline)"
+										>
+											Valider
+										</button>
 					                </div>
 					            </div>
 					        </div>
