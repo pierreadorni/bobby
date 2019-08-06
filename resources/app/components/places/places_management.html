@@ -12,7 +12,7 @@
               <input ng-model="placeSearch" type="text" class="form-control search-list" placeholder="Rechercher une localisation...">
             </div>
               <h3 class="purple-text col-md-1 offset-md-1 offset-sm-2 col-sm-2">
-                <a ng-click="add()">
+                <a ng-click="add()" class="pointer">
                   <i class="fas fa-plus"></i>
                 </a>
               </h3>
@@ -20,17 +20,27 @@
           </div>
         </div>
         <div class="row" ng-if="addConfirmation && !updateConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-success" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-success" role="alert">
             La localisation a bien été ajoutée.
           </div>
         </div>
         <div class="row" ng-if="updateConfirmation && !addConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-info" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-info" role="alert">
             La localisation a bien été mise à jour.
           </div>
         </div>
+        <div class="row" ng-if="error">
+          <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+            Une erreur est survenue.<br>
+            <ul>
+              <li ng-repeat="(input, errors) in inputErrors">
+                <span>{{ input }} : <span ng-repeat="error in errors">{{ error }} </span></span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="row" ng-if="deleteConfirmation && !addConfirmation && !updateConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-danger" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
             La localisation a bien été supprimée.
           </div>
         </div>
