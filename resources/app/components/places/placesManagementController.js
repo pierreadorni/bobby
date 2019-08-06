@@ -136,9 +136,12 @@ angular.module('bobbyApp')
     }
 
 
+    $scope.setDeleteAttribute = function(place){
+      $scope.elementToDelete = place;
+    }
 
-    $scope.delete = function($place){
-      serviceAjax.delete('itemplaces/'+ $place.id).then(function(){
+    $scope.delete = function(){
+      const place = $scope.elementToDelete
       place.loading = true;
       serviceAjax.delete('itemplaces/'+ place.id).then(function(){
         $scope.places = $scope.places.filter((p) => p.id != place.id);

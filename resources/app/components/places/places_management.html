@@ -73,7 +73,7 @@
                 <a ng-click="edit(place)">
                   <i class="fa fa-edit i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="delete(place)">
+                <a data-toggle="modal" data-target=".bd-example-modal-lg" ng-click="setDeleteAttribute(place)" class="pointer">
                   <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
                 </a>
               </p>
@@ -89,6 +89,22 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Confirmation</h3>
+        </div>
+        <div class="modal-body">
+          <p>Voulez-vous vraiment supprimer cette localisation?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grey" data-dismiss="modal" ng-click="setDeleteAttribute(null)">Annuler</button>
+          <button type="button" class="btn btn-grey" ng-click="delete()" data-dismiss="modal">Confirmation</button>
+        </div>
+      </div>
     </div>
   </div>
 </in-wrapper>
