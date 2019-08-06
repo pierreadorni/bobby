@@ -99,6 +99,14 @@ class ItemTypeController extends Controller
         if ($item_type)
         {
             $item_type->delete();
+
+            // Set null to all items belonging to the type
+            $items = $item_type->items()->get();
+            foreach ($items as $item) {
+                $item->type_id = null;
+                $item->save();
+            }
+
             return response()->json([], 200);
         }
         else
