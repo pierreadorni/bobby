@@ -24,7 +24,6 @@ angular.module('bobbyApp')
       $scope.loading = true;
       serviceAjax.get("bookings").then(function(data){
         $scope.bookings = data.data;
-        console.log($scope.bookings)
       })
     }
     loadBookings();
@@ -37,11 +36,6 @@ angular.module('bobbyApp')
       $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
       $scope.propertyName = propertyName;
     };
-
-    /* Ouverture d'une réservation */
-    $scope.open= function($id){
-      console.log($id);
-    }
 
   });
 
