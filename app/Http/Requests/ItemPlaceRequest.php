@@ -24,7 +24,7 @@ class ItemPlaceRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' =>  'string|between:2,191'.($this->isMethod('put')?'':'|required'),
+            'name' =>  'string|between:2,191|required|unique:itemplaces,name,'.\Request::instance()->id.',id,deleted_at,NULL',
         ];
     }
 }
