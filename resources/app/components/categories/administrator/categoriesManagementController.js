@@ -138,8 +138,8 @@ angular.module('bobbyApp')
       $scope.elementToDelete = type;
     }
 
-
-
+    $scope.delete = function(){
+      const categorie = $scope.elementToDelete;
       categorie.loading = true;
       serviceAjax.delete('itemtypes/'+ categorie.id).then(function(){
         categorie.loading = false;
