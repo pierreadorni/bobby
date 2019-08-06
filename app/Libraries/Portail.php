@@ -207,7 +207,7 @@ class Portail
         // );
         if ($index !== false) {
             $asso = $this->showAsso($user_assos[$index]);
-            if (array_search($asso['login'].'-admin',$user_permissions)){
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
                 return true;
             }
         }
@@ -229,7 +229,7 @@ class Portail
         $index = array_search($asso_id1, $user_assos);
         if ($index !== false) {
             $asso = $this->showAsso($user_assos[$index]);
-            if (array_search($asso['login'].'-admin',$user_permissions)){
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
                 return true;
             }
         }
@@ -237,7 +237,7 @@ class Portail
         $index = array_search($asso_id2, $user_assos);
         if ($index != null) {
             $asso = $this->showAsso($user_assos[$index]);
-            if (array_search($asso['login'].'-admin',$user_permissions)){
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
                 return true;
             }
         }
@@ -324,7 +324,7 @@ class Portail
 
         foreach ($assos as $asso) {
             $permission_asso = $this->getPortalAssoPermissions($asso['id']);
-            if (array_search("bobby", array_column($permission_asso, 'type'))){
+            if (array_search("bobby", array_column($permission_asso, 'type')) !== false){
                 array_push($permissions, $asso['login'].'-admin');
             }
             array_push($permissions, $asso['login']);
