@@ -54,13 +54,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('bookings', 'BookingController')->only(['index',
         'store', 'show']);
 
-        Route::get('booking/assos/{asso_id}', function($asso_id){
-            // Portail::hasAssociationAdminPermission($asso_id);
-            return $assos = Association::all()->where('id', '<>', $asso_id);
-        });
-
         Route::get('booking/items/{asso_id}', function($asso_id){
-            // Portail::isAuthenticated();
             return Item::where([
                 ['association_id', $asso_id],
                 ['status', 1]
@@ -69,7 +63,6 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('booking/validation/item/{item_id}', function($item_id){
-            // Portail::isAuthenticated();
             $item = Item::find($item_id)->caution;
             return($item);
         });
