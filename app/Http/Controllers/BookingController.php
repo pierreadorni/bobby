@@ -108,15 +108,16 @@ class BookingController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $booking = Booking::find($id); 
+        $booking = Booking::with('bookinglines')->get()->find($id); 
 
-        Portail::hasInAssociationsAdminPermission($booking->owner, $booking->booker);
+        Portail::hasInAssociationsAdminPermissionOrAdmin($booking->owner, $booking->booker);
 
         if($booking){
             //Récupération des informations liées à la réservation
-            $booking->bookinglines = $booking->bookinglines()->get();
             foreach ($booking->bookinglines as $bookingline) {
-                $bookingline->item = Item::find($bookingline->item);
+                $bookingline->item = [
+                    'name' => Item::withTrashed()->get()->find($bookingline->item)->name
+                ];
 
                 /*Gestion des status*/
                 switch ($bookingline->status) {
