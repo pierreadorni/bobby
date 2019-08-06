@@ -73,14 +73,34 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $item = Item::with(['place', 'type'])->get()->find($id);
 
-        // $item = Item::find($id);
-        // if($item)
-        //     return response()->json($item, 200);
-        // else
-        //     return response()->json(["message" => "Impossible de trouver l'objet"], 500);
+        Portail::hasAssociationAdminPermission($item->association_id);
+
+        if($item){
+
+            switch ($item->status) {
+                case '1':
+                    $item->statusName = 'Visible';
+                    break;
+                case '2':
+                    $item->statusName = 'Visible et non empruntable';
+                    break;
+                case '3':
+                    $item->statusName = 'Invisible';
+                    break;
+
+                default:
+                    $item->statusName = 'Visible';
+                    break;
+            }
+            return response()->json($item, 200);
+        }           
+        else{
+            return response()->json(["message" => "Impossible de trouver l'objet"], 500);
+        }
     }
 
 
