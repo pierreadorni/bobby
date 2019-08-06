@@ -130,6 +130,9 @@ gulp.task('vendor', function() {
     'resources/app/vendor/angular-route/angular-route.js',
     'resources/app/vendor/angular-sanitize/angular-sanitize.js',
     'resources/app/vendor/angular-touch/angular-touch.js',
+    'resources/app/vendor/angular-local-storage/angular-local-storage.min.js',
+    'resources/app/vendor/moment.min.js',
+    'resources/app/vendor/angular-moment.min.js',
   ];
   gulp.src(angular)
   .pipe(concat('angular.min.js'))
