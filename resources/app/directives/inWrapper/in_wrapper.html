@@ -1,100 +1,81 @@
 <div id="wrapper" ng-controller="inWrapperCtrl">
   <div class="header">
-    <nav   class="navbar navbar-expand-lg navbar-light navbar-fixed-top" style="background-color: #F7F9FA">
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-
-          <!-- Début fonction image -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <a class="navbar-brand" href="https://assos.utc.fr">
-            <img src="assets/img/bde.png" height="55" class="d-inline-block align-top" alt="logo BDE" style="margin-right: 20px">
+            <img src="assets/img/bde.png" height="40px" class="d-inline-block align-top" alt="logo BDE" style="margin-right: 20px">
           </a>
-          <!-- fin fonction image -->
+          <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
 
-          <!-- Début fonction accueil -->
-          <li class="nav-item">
-                 <a class="nav-link" href="#">Accueil<span class="sr-only">(current)</span></a>
-          </li>
-          <!-- fin fonction acceuil -->
-
-          <!-- boutons deroulants -->
-
-          <!-- bouton deroulant 1 -->
-          <div class="dropdown">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Catégories
+              <li class="nav-item">
+                <a class="nav-link" href="#">Accueil<span class="sr-only">(current)</span></a>
+              </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle pointer" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Catégories
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <div ng-repeat="type in types">
-                      <a class="dropdown-item" href="#!/categories/{{type.id}}">{{type.name}}</a>
-                  </div>
-                  <div>
-                    <a class="dropdown-item" href="#!/categories/0">Toutes</a>
-                  </div>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" ng-repeat="type in types" href="#!/categories/{{type.id}}">{{type.name}}</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#!/categories/0">Toutes</a>
                 </div>
-            </li>
-          </div>
+              </li>
 
-          <!-- bouton deroulant 2 -->
-
-          <!-- Si l'utilisateur fait parti d'une seule association -->
-          <div ng-show="singleAssociation" class="dropdown">
-            <li class="nav-item">
-               <a class="nav-link" href="#!/items/{{assos[0].id}}">Mon matériel</a>
-            </li>
-          </div>
-
-          <!-- Si l'utilisateur fait parti de plusieurs associations -->
-          <div ng-hide="singleAssociation" class="dropdown">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Mon matériel
+              <li class="nav-item" ng-if="singleAssociation">
+                <a class="nav-link" href="#!/items/{{assos[0].id}}"">Mon matériel</a>
+              </li>
+              <li class="nav-item dropdown" ng-if="!singleAssociation">
+                <a class="nav-link dropdown-toggle pointer" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mon matériel
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <div ng-repeat="asso in assos">
-                    <a class="dropdown-item" href="#!/items/{{asso.id}}">{{asso.shortname}}</a>
-                  </div>
-              </div>
-            </li>
-          </div>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a 
+                    class="dropdown-item" 
+                    ng-repeat="asso in userassos" 
+                    href="#!/items/{{asso.id}}" 
+                    ng-if="$root.isMemberAsso(asso.login)"
+                  >
+                   {{asso.shortname}}
+                  </a>
+                </div>
+              </li>
 
-          <!-- bouton deroulant 3 -->
-          <div class="dropdown">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Réservations
-              </a>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li class="nav-item dropdown" ng-if="$root.canBook()">
+                <a class="nav-link dropdown-toggle pointer" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Réservations
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="#!/booking">Réserver</a>
                   <a class="dropdown-item" href="#!/mybookings">Mes réservations</a>
-              </div>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              </div>
-            </li>
-          </div>
+                </div>
+              </li>
 
-          <!-- bouton deroulant 4 -->
-          <div class="dropdown">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Gestion administrative
-              </a>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#!/gestion/categories">Catégories</a>
-                <a class="dropdown-item" href="#!/gestion/places">Localisations</a>
-                <a class="dropdown-item" href="#">Matériels</a>
-                <a class="dropdown-item" href="#!/gestion/bookings">Réservations</a>
-              </div>
-            </li>
-          </div>
-        <!-- fin boutons déroulants -->
-        </ul>
-      </div>
-    </nav>
-  </div>
+              <li class="nav-item dropdown" ng-if="$root.isAdmin()">
+                <a class="nav-link dropdown-toggle pointer" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Gestion administrative
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#!/gestion/categories">Catégories</a>
+                  <a class="dropdown-item" href="#!/gestion/places">Localisations</a>
+                  <a class="dropdown-item" href="#!/gestion/items">Matériels</a>
+                  <a class="dropdown-item" href="#!/gestion/bookings">Réservations</a>
+                </div>
+              </li>
 
-  <div id="page-wrapper" ng-transclude>
-  </div>
+          </div>
+        </nav>
+    </div>
+    <div ng-if="loading" class="valign">
+      <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></p>
+    </div>
+    <div id="page-wrapper" ng-transclude ng-if="!loading">
+    </div>
     <!-- /#page-wrapper -->
   
 </div>
