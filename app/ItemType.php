@@ -24,6 +24,6 @@ class ItemType extends Model
 
 	public function items()
 	{
-		return $this->hasMany('App\Item', 'type');
+		return $this->hasMany('App\Item', 'type_id');
 	}
 }
