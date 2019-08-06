@@ -25,7 +25,7 @@ class ItemPlace extends Model
 
 	public function items()
 	{
-		return $this->hasMany('App\Item', 'place');
+		return $this->hasMany('App\Item', 'place_id');
 	}
 }
 
