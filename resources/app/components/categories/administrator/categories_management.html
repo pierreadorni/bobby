@@ -13,7 +13,7 @@
             </div>
             <div class="col-md-1 offset-md-1 col-sm-2 offset-sm-2">
               <h3 class="purple-text">
-                <a ng-click="add()">
+                <a class="pointer" ng-click="add()">
                   <i class="fas fa-plus"></i>
                 </a>
               </h3>
@@ -21,17 +21,27 @@
           </div>
         </div>
         <div class="row" ng-if="addConfirmation && !updateConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-success" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-success" role="alert">
             La catégorie a bien été ajoutée.
           </div>
         </div>
         <div class="row" ng-if="updateConfirmation && !addConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-info" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-info" role="alert">
             La catégorie a bien été mise à jour.
           </div>
         </div>
+        <div class="row" ng-if="error">
+          <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+            Une erreur est survenue.<br>
+            <ul>
+              <li ng-repeat="(input, errors) in inputErrors">
+                <span>{{ input }} : <span ng-repeat="error in errors">{{ error }} </span></span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="row" ng-if="deleteConfirmation && !addConfirmation && !updateConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-danger" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
             La catégorie a bien été supprimée.
           </div>
         </div>
@@ -47,44 +57,50 @@
         <tbody>
           <tr ng-show="addNewCategorie">
             <td>
-              <form novalidate name="formCateg">
-                <input type="text" name="inputCateg" ng-model="newCategorie.name" class="form-control" focus-me="focusInput" required ng-class="{error : !formCateg.inputCateg.$valid && formCateg.inputCateg.$dirty}">
+              <form>
+                <input type="text" name="inputCateg" ng-model="newCategorie.name" class="form-control" focus-me="focusInput" required>
               </form>
             </td>
             <td>
               <p class="purple-text">
-                <a ng-hide="formCateg.inputCateg.$valid">
+                <a ng-if="!newCategorie.name && !newCategorieLoading">
                   <i class="fas fa-check i-right invalid" aria-hidden="true"></i>
                 </a>
-                <a ng-show="formCateg.inputCateg.$valid" ng-click="save()">
+                <a class="pointer" ng-if="newCategorie.name && !newCategorieLoading" ng-click="save()">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a class="pointer" ng-click="cancel()" ng-if="!newCategorieLoading">
                   <i  class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a ng-if="newCategorieLoading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
           </tr>
           <tr ng-repeat="categorie in categories | toArray:false | filter:categorieSearch | orderBy:'name':reverse">
             <td>
-              <span ng-show="!categorie.edit">{{ categorie.name }}</span>
-              <input type="text" ng-model="categorie.name" ng-show="categorie.edit" class="form-control">
+              <span ng-if="!categorie.edit">{{ categorie.name }}</span>
+              <input type="text" ng-model="categorie.name" ng-if="categorie.edit" class="form-control">
             </td>
             <td>
-              <p ng-show="!categorie.edit" class="purple-text">
-                <a ng-click="edit(categorie)">
+              <p ng-if="!categorie.edit && !categorie.loading" class="purple-text">
+                <a ng-click="edit(categorie)" class="pointer">
                   <i class="fa fa-edit i-right" aria-hidden="true"></i>
                 </a>
                 <a data-toggle="modal" data-target=".bd-example-modal-lg" ng-click="setDeleteAttribute(categorie)" class="pointer">
                   <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
                 </a>
               </p>
-              <p ng-show="categorie.edit" class="purple-text">
-                <a ng-click="update(categorie)">
+              <p ng-if="categorie.edit" class="purple-text">
+                <a ng-click="update(categorie)" ng-if="!categorie.loading" class="pointer">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a ng-click="cancelCategorie(categorie)" ng-if="!categorie.loading" class="pointer">
                   <i class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a ng-if="categorie.loading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
