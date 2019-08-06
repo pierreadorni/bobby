@@ -29,7 +29,9 @@ var app  = angular
     'ngSanitize',
     'ngTouch',
     'angular-toArrayFilter',
-    'ngFileSaver'
+    'ngFileSaver',
+    'angularMoment',
+    'LocalStorageModule',
   ])
   .constant('__ENV', __ENV);
   
@@ -47,7 +49,11 @@ app.run(function($rootScope, PortailAuth) {
 
 });
 
-  app.config(function ($routeProvider) {
+  app.config(function ($routeProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('Bobby' + window.__env.webappUrl)
+    .setStorageType('sessionStorage')
+    .setNotify(false, false);
+
     $routeProvider
       .when('/', {
         templateUrl: 'app/components/dashboard/main.html',
@@ -88,6 +94,11 @@ app.run(function($rootScope, PortailAuth) {
         controller : 'placesManagementCtrl',
         controllerAs : 'placesManagement'
       })
+      .when('/gestion/items',{
+        templateUrl : 'app/components/items/administrator/index_items.html',
+        controller : 'indexItemsCtrl',
+        controllerAs : 'indexItems'
+      })  
       .when('/gestion/bookings',{
         templateUrl : 'app/components/bookings/administrator/index_bookings.html',
         controller : 'indexBookingsCtrl',
@@ -168,6 +179,12 @@ app.config(['$httpProvider', function($httpProvider) {
 
             $location.path("/error/401"); // L'utilisateur s'est identifié mais n'est pas autorisé, on le met sur la page d'erreur
 
+        }
+
+        else if(response.status == 403){
+
+          $location.path("/error/403");
+        
         }
 
         return $q.reject(response);

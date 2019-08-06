@@ -30,7 +30,8 @@ var app  = angular
     'ngTouch',
     'angular-toArrayFilter',
     'ngFileSaver',
-    'angularMoment'
+    'angularMoment',
+    'LocalStorageModule',
   ])
   .constant('__ENV', __ENV);
   
@@ -48,7 +49,11 @@ app.run(function($rootScope, PortailAuth) {
 
 });
 
-  app.config(function ($routeProvider) {
+  app.config(function ($routeProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('Bobby' + window.__env.webappUrl)
+    .setStorageType('sessionStorage')
+    .setNotify(false, false);
+
     $routeProvider
       .when('/', {
         templateUrl: 'app/components/dashboard/main.html',
@@ -174,6 +179,12 @@ app.config(['$httpProvider', function($httpProvider) {
 
             $location.path("/error/401"); // L'utilisateur s'est identifié mais n'est pas autorisé, on le met sur la page d'erreur
 
+        }
+
+        else if(response.status == 403){
+
+          $location.path("/error/403");
+        
         }
 
         return $q.reject(response);
