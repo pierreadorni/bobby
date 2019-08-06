@@ -38,7 +38,24 @@ class ItemController extends Controller
     {
         Portail::hasAssociationAdminPermission($request->association_id);
 
-        $item = Item::create($request->all());
+        $item = Item::onlyTrashed()->updateOrCreate(
+            [
+                'name'              => $request->name,
+                'association_id'    => $request->association_id
+            ],
+            [
+                'quantity'          => $request->quantity,
+                'place_id'          => $request->place_id,
+                'type_id'           => $request->type_id,
+                'status'            => $request->status,
+                'caution'           => $request->caution
+            ]
+        );
+
+        if ($item->deleted_at) {
+            $item->restore();
+        }
+        // $item = Item::create($request->all());
         if($item)
         {
             switch ($item->status) {
