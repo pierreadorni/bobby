@@ -248,6 +248,39 @@ class Portail
 
 
     /**
+    *   Check if user is member of one of the associations or if user is admin
+    *
+    */
+    public function hasInAssociationsAdminPermissionOrAdmin($asso_id1, $asso_id2)
+    {
+        $user_assos = $this->assos;
+        $user_permissions = $this->permissions;
+
+        if (array_search('admin', $user_permissions) !== false) {
+            return true;
+        }
+
+        $index = array_search($asso_id1, $user_assos);
+        if ($index !== false) {
+            $asso = $this->showAsso($user_assos[$index]);
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
+                return true;
+            }
+        }
+
+        $index = array_search($asso_id2, $user_assos);
+        if ($index != null) {
+            $asso = $this->showAsso($user_assos[$index]);
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
+                return true;
+            }
+        }
+
+        throw new HttpException(403, "Unauthorized access");
+    }
+
+
+    /**
     *   Check admin right
     *
     */
