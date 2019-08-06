@@ -1,14 +1,17 @@
 <in-wrapper>
   <br><br>
-  <div class = "row">
-    <div class="col-md-10 offset-md-1">
+  <div ng-if="loading" class="valign">
+    <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></p>
+  </div>
+  <div class = "row" ng-if="!loading">
+    <div class="col-sm-10 offset-sm-1 margin20">
       <table class="table table-hover col-md-12">
         <div class="panel-heading">
           <div class="row">
             <div class="col-md-5">
                 <h3>{{type}}</h3>
             </div>
-            <div class="form-group col-md-3 offset-md-4">
+            <div class="form-group col-md-5 offset-md-2">
               <input ng-model="itemSearch" type="text" class="form-control search-list" placeholder="Rechercher un item...">
             </div>
           </div>
@@ -27,9 +30,13 @@
               Propriétaire
               <span class="sort-item" ng-show="propertyName == 'association.shortname'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
             </th>
-            <th ng-show="categorie_id == 0" ng-click="sortBy('typeName')">
+            <th ng-if="categorie_id == 0" ng-click="sortBy('typeName')">
               Catégorie
               <span class="sort-item" ng-show="propertyName == 'typeName'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+            </th>
+            <th ng-if="$root.canBook()"class="center">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -38,7 +45,12 @@
               <td>{{ item.quantity }}</td>
               <td>{{ item.association.shortname }}</td>
               <td ng-show="categorie_id == 0"> 
-                {{ item.typeName }}
+                {{ item.type.name }}
+              </td>
+              <td ng-if="$root.canBook()" class="center">
+                <button class="btn btn-grey" ng-click="bookItem(item)" ng-disabled="item.status == 2">
+                    Réserver
+                </button>
               </td>
           </tr>
         </tbody>
