@@ -31,7 +31,14 @@ class ItemPlaceController extends Controller
     {
         Portail::isAdmin();
 
-        $item_place = ItemPlace::create($request->all());
+        $item_place = ItemPlace::onlyTrashed()->updateOrCreate(
+            ['name' => $request->name],
+            ['deleted_at' => NULL]);
+
+        if ($item_place->deleted_at) {
+            $item_place->restore();
+        }
+        
         if($item_place)
         {
             return response()->json($item_place, 200);
