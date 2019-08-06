@@ -1,18 +1,18 @@
 <in-wrapper>
   <br><br>
   <div class = "row">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 margin20">
       <table class="table table-hover col-md-12">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5 col-sm-12">
                 <h3>Gestion des localisations</h3>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-5 col-sm-8">
               <input ng-model="placeSearch" type="text" class="form-control search-list" placeholder="Rechercher une localisation...">
             </div>
-              <h3 class="purple-text">
-                <a ng-click="add()">
+              <h3 class="purple-text col-md-1 offset-md-1 offset-sm-2 col-sm-2">
+                <a ng-click="add()" class="pointer">
                   <i class="fas fa-plus"></i>
                 </a>
               </h3>
@@ -20,17 +20,27 @@
           </div>
         </div>
         <div class="row" ng-if="addConfirmation && !updateConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-success" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-success" role="alert">
             La localisation a bien été ajoutée.
           </div>
         </div>
         <div class="row" ng-if="updateConfirmation && !addConfirmation && !deleteConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-info" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-info" role="alert">
             La localisation a bien été mise à jour.
           </div>
         </div>
+        <div class="row" ng-if="error">
+          <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+            Une erreur est survenue.<br>
+            <ul>
+              <li ng-repeat="(input, errors) in inputErrors">
+                <span>{{ input }} : <span ng-repeat="error in errors">{{ error }} </span></span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="row" ng-if="deleteConfirmation && !addConfirmation && !updateConfirmation">
-          <div class="col-md-6 offset-md-3 alert alert-danger" role="alert">
+          <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
             La localisation a bien été supprimée.
           </div>
         </div>
@@ -44,51 +54,73 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-show="addNewPlace">
+          <tr ng-if="addNewPlace">
             <td>
-              <form novalidate name="formPlace">
-                <input type="text" name="inputPlace" ng-model="newPlace.name" class="form-control" focus-me="focusInput" required ng-class="{error : !formPlace.inputPlace.$valid && formPlace.inputPlace.$dirty}">
+              <form>
+                <input type="text" name="inputPlace" ng-model="newPlace.name" class="form-control" focus-me="focusInput" required>
               </form>
             <td>
               <p class="purple-text">
-                <a ng-hide="formPlace.inputPlace.$valid">
+                <a ng-if="!newPlace.name && !newPlaceLoading">
                   <i class="fas fa-check i-right invalid" aria-hidden="true"></i>
                 </a>
-                <a ng-show="formPlace.inputPlace.$valid" ng-click="save()">
+                <a ng-if="newPlace.name && !newPlaceLoading" ng-click="save()" class="pointer">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a ng-click="cancel()" ng-if="!newPlaceLoading" class="pointer">
                   <i  class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a  ng-if="newPlaceLoading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
           </tr>
           <tr ng-repeat="place in places | toArray:false | filter:placeSearch | orderBy:'name':reverse">
             <td>
-              <span ng-show="!place.edit">{{ place.name }}</span>
-              <input type="text" ng-model="place.name" ng-show="place.edit" class="form-control">
+              <span ng-if="!place.edit">{{ place.name }}</span>
+              <input type="text" ng-model="place.name" ng-if="place.edit" class="form-control">
             </td>
             <td>
-              <p ng-show="!place.edit" class="purple-text">
-                <a ng-click="edit(place)">
+              <p ng-if="!place.edit && !place.loading" class="purple-text">
+                <a ng-click="edit(place)" class="pointer">
                   <i class="fa fa-edit i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="delete(place)">
+                <a data-toggle="modal" data-target=".bd-example-modal-lg" ng-click="setDeleteAttribute(place)" class="pointer">
                   <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
                 </a>
               </p>
-              <p ng-show="place.edit" class="purple-text">
-                <a ng-click="update(place)">
+              <p ng-if="place.edit" class="purple-text">
+                <a ng-click="update(place)" ng-if="!place.loading" class="pointer">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a ng-click="cancelPlace(place)" ng-if="!place.loading" class="pointer">
                   <i class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a ng-if="place.loading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Confirmation</h3>
+        </div>
+        <div class="modal-body">
+          <p>Voulez-vous vraiment supprimer cette localisation?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grey" data-dismiss="modal" ng-click="setDeleteAttribute(null)">Annuler</button>
+          <button type="button" class="btn btn-grey" ng-click="delete()" data-dismiss="modal">Confirmation</button>
+        </div>
+      </div>
     </div>
   </div>
 </in-wrapper>

@@ -54,45 +54,51 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-show="addNewPlace">
+          <tr ng-if="addNewPlace">
             <td>
-              <form novalidate name="formPlace">
-                <input type="text" name="inputPlace" ng-model="newPlace.name" class="form-control" focus-me="focusInput" required ng-class="{error : !formPlace.inputPlace.$valid && formPlace.inputPlace.$dirty}">
+              <form>
+                <input type="text" name="inputPlace" ng-model="newPlace.name" class="form-control" focus-me="focusInput" required>
               </form>
             <td>
               <p class="purple-text">
-                <a ng-hide="formPlace.inputPlace.$valid">
+                <a ng-if="!newPlace.name && !newPlaceLoading">
                   <i class="fas fa-check i-right invalid" aria-hidden="true"></i>
                 </a>
-                <a ng-show="formPlace.inputPlace.$valid" ng-click="save()">
+                <a ng-if="newPlace.name && !newPlaceLoading" ng-click="save()" class="pointer">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a ng-click="cancel()" ng-if="!newPlaceLoading" class="pointer">
                   <i  class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a  ng-if="newPlaceLoading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
           </tr>
           <tr ng-repeat="place in places | toArray:false | filter:placeSearch | orderBy:'name':reverse">
             <td>
-              <span ng-show="!place.edit">{{ place.name }}</span>
-              <input type="text" ng-model="place.name" ng-show="place.edit" class="form-control">
+              <span ng-if="!place.edit">{{ place.name }}</span>
+              <input type="text" ng-model="place.name" ng-if="place.edit" class="form-control">
             </td>
             <td>
-              <p ng-show="!place.edit" class="purple-text">
-                <a ng-click="edit(place)">
+              <p ng-if="!place.edit && !place.loading" class="purple-text">
+                <a ng-click="edit(place)" class="pointer">
                   <i class="fa fa-edit i-right" aria-hidden="true"></i>
                 </a>
                 <a data-toggle="modal" data-target=".bd-example-modal-lg" ng-click="setDeleteAttribute(place)" class="pointer">
                   <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
                 </a>
               </p>
-              <p ng-show="place.edit" class="purple-text">
-                <a ng-click="update(place)">
+              <p ng-if="place.edit" class="purple-text">
+                <a ng-click="update(place)" ng-if="!place.loading" class="pointer">
                   <i class="fas fa-check i-right" aria-hidden="true"></i>
                 </a>
-                <a ng-click="cancel()">
+                <a ng-click="cancelPlace(place)" ng-if="!place.loading" class="pointer">
                   <i class="fas fa-times i-left" aria-hidden="true"></i>
+                </a>
+                <a ng-if="place.loading" class="valign">
+                  <p><i class="fa fa-spinner fa-pulse fa fa-fw"></i></p>
                 </a>
               </p>
             </td>
