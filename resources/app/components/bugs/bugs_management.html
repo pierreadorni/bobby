@@ -1,0 +1,54 @@
+<in-wrapper>
+        <br><br>
+        <div class = "row">
+          <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 margin20">
+            <table class="table table-hover col-md-12">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-sm-12">
+                      <h3>Gestion des bugs</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="row" ng-if="error">
+                <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+                  Une erreur est survenue.<br>
+                </div>
+              </div>
+              <div class="row" ng-if="deleteConfirmation">
+                <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+                  Le bug a bien été supprimée.
+                </div>
+              </div>
+              <thead>
+                <tr>
+                    <th>
+                      Titre  
+                    </th>
+                    <th>
+                      Description  
+                    </th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="bug in bugs | toArray:false | orderBy:'title':reverse">
+                  <td>
+                    <span>{{ bug.title }}</span>
+                  </td>
+                  <td>
+                    <span>{{ bug.comment }}</span>
+                  </td>
+                  <td>
+                    <p class="purple-text">
+                        <a ng-click="delete(bug)" class="pointer">
+                          <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
+                        </a>
+                      </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </in-wrapper>

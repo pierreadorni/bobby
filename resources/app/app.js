@@ -103,7 +103,12 @@ app.run(function($rootScope, PortailAuth) {
         templateUrl : 'app/components/bookings/administrator/index_bookings.html',
         controller : 'indexBookingsCtrl',
         controllerAs : 'indexBookings'
-      })      
+      })    
+      .when('/gestion/bugs',{
+        templateUrl : 'app/components/bugs/bugs_management.html',
+        controller : 'bugsManagementCtrl',
+        controllerAs : 'bugsManagement'
+      })     
       .when('/login',{
         templateUrl : 'app/components/login/login.html',
         controller : 'loginCtrl',
