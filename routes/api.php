@@ -85,6 +85,14 @@ Route::prefix('v1')->group(function () {
         Route::get('bookinglines/cancel/{id}', 'BookingLineController@cancelLine');
 
         Route::get('bookinglines/returned/{id}', 'BookingLineController@returnedLine');
+
+
+        /**
+         *  BUG
+         * 
+         */
+
+        Route::apiResource('bugs', 'BugController')->only(['index', 'store', 'destroy']);
         
 
 
