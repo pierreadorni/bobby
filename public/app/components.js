@@ -528,65 +528,6 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.error = false;
-    $scope.deleteConfirmation = false;
-
-
-    // Chargement des bugs
-    var loadBugs = function(){
-      $scope.loading = true;
-      serviceAjax.get('bugs').then(function(res){
-        $scope.bugs = res.data;
-        for (let index = 0; index < $scope.bugs.length; index++) {
-          $scope.bugs[index].loading = false;
-        }
-      })
-    }
-    loadBugs();
-
-    
-    $scope.delete = function(bug){
-      $scope.loading = true;
-      serviceAjax.delete('bugs/'+ bug.id).then(function(){
-        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
-        $scope.loading = false;
-        $scope.deleteConfirmation = true;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-      }, function(){
-        $scope.loading = false;
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-      })
-    }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -672,6 +613,38 @@ angular.module('bobbyApp')
     $scope.prenom = $rootScope.auth.member.firstname;
 
   });
+
+app.controller('errorCtrl', function($scope, $routeParams, $location) {
+
+  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
+
+    $scope.errorCode = 401;
+    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 403) {
+
+    $scope.errorCode = 403;
+    $scope.errorDesc = "Action interdite";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 404) {
+
+    $scope.errorCode = 404;
+    $scope.errorDesc = "Page demandée introuvable";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 500) {
+
+    $scope.errorCode = 500;
+    $scope.errorDesc = "Une erreur est survenue.";
+
+  }
+  else {
+    $location.path("/");
+  }
+
+});
 
 'use strict';
 
@@ -978,37 +951,113 @@ FileSaver.saveAs(file);*/
   });
 
 
-app.controller('errorCtrl', function($scope, $routeParams, $location) {
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax) {
 
-  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
 
-    $scope.errorCode = 401;
-    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+  $scope.message = "Connexion";
 
-  }
-  else if ($routeParams.code && $routeParams.code == 403) {
+	
+	//Url avec token?=
+	if($routeParams.token){
+		$rootScope.auth.login($routeParams.token)
+		serviceAjax.get('userassos').then(function(res){
+			Data.setUserAssos(res.data);
+			serviceAjax.get('associations').then(function(res){
+				Data.setAssociations(res.data);
+				serviceAjax.get('itemplaces').then(function(res){
+					Data.setItemPlaces(res.data);
+					serviceAjax.get('itemtypes').then(function(res){
+						Data.setItemTypes(res.data);
+						$location.path("/");
+						$location.url($location.path());  // Clear des paramètres
+					})
+				})
+			})
+		})
+		
+	}
+	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
 
-    $scope.errorCode = 403;
-    $scope.errorDesc = "Action interdite";
+	    $scope.message = "Erreur de connexion";
 
-  }
-  else if ($routeParams.code && $routeParams.code == 404) {
+	    // On redirige vers la page d'erreur 401
+	    $location.path("/error/401");
+	    $location.url($location.path());  // Clear des paramètres
 
-    $scope.errorCode = 404;
-    $scope.errorDesc = "Page demandée introuvable";
+	}
 
-  }
-  else if ($routeParams.code && $routeParams.code == 500) {
-
-    $scope.errorCode = 500;
-    $scope.errorDesc = "Une erreur est survenue.";
-
-  }
-  else {
-    $location.path("/");
-  }
-
+	else {
+	  	PortailAuth.goLogin();
+	}
 });
+
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.error = false;
+    $scope.deleteConfirmation = false;
+
+
+    // Chargement des bugs
+    var loadBugs = function(){
+      $scope.loading = true;
+      serviceAjax.get('bugs').then(function(res){
+        $scope.bugs = res.data;
+        for (let index = 0; index < $scope.bugs.length; index++) {
+          $scope.bugs[index].loading = false;
+        }
+      })
+    }
+    loadBugs();
+
+    
+    $scope.delete = function(bug){
+      $scope.loading = true;
+      serviceAjax.delete('bugs/'+ bug.id).then(function(){
+        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
+        $scope.loading = false;
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+      }, function(){
+        $scope.loading = false;
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+      })
+    }
+
+  });
+
 
 'use strict';
 
@@ -1179,55 +1228,6 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax) {
-
-
-  $scope.message = "Connexion";
-
-	
-	//Url avec token?=
-	if($routeParams.token){
-		$rootScope.auth.login($routeParams.token)
-		serviceAjax.get('userassos').then(function(res){
-			Data.setUserAssos(res.data);
-			serviceAjax.get('associations').then(function(res){
-				Data.setAssociations(res.data);
-				serviceAjax.get('itemplaces').then(function(res){
-					Data.setItemPlaces(res.data);
-					serviceAjax.get('itemtypes').then(function(res){
-						Data.setItemTypes(res.data);
-						$location.path("/");
-						$location.url($location.path());  // Clear des paramètres
-					})
-				})
-			})
-		})
-		
-	}
-	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-	    $scope.message = "Erreur de connexion";
-
-	    // On redirige vers la page d'erreur 401
-	    $location.path("/error/401");
-	    $location.url($location.path());  // Clear des paramètres
-
-	}
-
-	else {
-	  	PortailAuth.goLogin();
-	}
-});
-
-app.controller('logoutCtrl', function($scope, PortailAuth) {
-
-
-    $scope.message = "Déconnexion";
-  
-    PortailAuth.goLogout();
-    
-});
-  
 'use strict';
 
 /**
