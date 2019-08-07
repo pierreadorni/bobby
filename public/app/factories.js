@@ -241,11 +241,11 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
    *  Redirige vers la page de logout CAS
    */
   factory.goLogout = function() {
-    $http.get(__ENV.apiUrl+'/logout')
-      .success(function(data){
+    serviceAjax.get('logout')
+      .then(function(data){
         factory.logout(); // On vide les infos auth et token de PortailAuth
-        $window.location.href = data.url; // Vers le logout CAS
-      }).error(function(error){
+        $window.location.href = data.data.url; // Vers le logout CAS
+      },function(error){
         // Gérer en cas d'erreur
       });
   }

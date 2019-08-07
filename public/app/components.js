@@ -8,7 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $filter, $rootScope) {
+  .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $filter, $rootScope, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -33,6 +33,9 @@ angular.module('bobbyApp')
 
     //Current date
     $scope.currentDate = new Date();
+
+    // Erreur
+    $scope.error = false;
 
     /*Chargement des associations d'un utilisateur*/
     var loadAssociationsRequested = function(){
@@ -123,9 +126,14 @@ angular.module('bobbyApp')
     $scope.loading=true;
     serviceAjax.get("booking/items/" + $id).then(function(data){
       $scope.items = data.data;  
+      $scope.loading=false;
+    }, function(error){
+      $scope.error = true;
+      $scope.loading = false;
+      $timeout(function() {
+        $scope.error = false;
+      }, 20000)
     });
-    $scope.loading=false;
-    
   }  
 
   //Items réservés 
@@ -146,7 +154,7 @@ angular.module('bobbyApp')
               startDateAngular : $scope.booking.startDate,
               endDateAngular : $scope.booking.endDate
           })
-      }else {
+      } else {
           var itemBooked = $scope.bookingline.items[index];
           itemBooked.quantity += 1;
       }
@@ -216,43 +224,21 @@ angular.module('bobbyApp')
     }
 
     $scope.booking.bookingline = $scope.bookingline;
-    // To Do voir validation
-    serviceAjax.post("booking/validation/items", $scope.bookingline).then(function(data){
-      $scope.booking.caution = data.data;
-      serviceAjax.post('bookings', $scope.booking).then(function(data){
-        $scope.callBackBooking = data.data;
-        $location.path('/booking/' + $scope.callBackBooking.id);
 
-        // TO DO 
-        // Envoie du mail (voir avec Samy)
-        
-        /* Envoi du mail automatique */
-      //   $scope.mail.subject = "Demande de réservation - " + $scope.booking.assoRequested.name;
-      //   $scope.mail.content = "L'association " + $scope.booking.assoRequesting.name + " vient de faire une demande de réservation de matériel à votre association." +  " En voici la liste :";
-      //   $scope.mail.bookinglines = [];
-      //   $scope.mail.association = $scope.booking.assoRequesting.name;
-      //   var bookinglines = []
-      //   var promises=[];
+    serviceAjax.post('bookings', $scope.booking).then(function(data){
+      $scope.callBackBooking = data.data;
+      $location.path('/booking/' + $scope.callBackBooking.id);
 
-      //   for(var i = $scope.bookingline.items.length - 1; i >= 0; i--) {
-
-      //     $scope.bookingline.items[i].startDate = $filter('date')($scope.bookingline.items[i].startDateAngular, "yyyy-MM-dd");
-      //     $scope.bookingline.items[i].endDate = $filter('date')($scope.bookingline.items[i].endDateAngular, "yyyy-MM-dd");
-      //     $scope.bookingline.items[i].item = $scope.bookingline.items[i].id;
-      //     $scope.bookingline.items[i].booking = $scope.callBackBooking.id;
-      //     $scope.bookingline.items[i].status = 1;
-
-      //   }
-
-      //   serviceAjax.post("bookinglines", $scope.bookingline).then(function(data){
-      //     console.log("response", data.data);
-      //     $scope.mail.bookinglines = data.data;
-      //     console.log($scope.mail);
-      //     //serviceAjax.post('send', $scope.mail);
-      //     $location.path('/booking/' + $scope.callBackBooking.id);
-      //   })
-      });
-    })
+      // TO DO 
+      // Envoie du mail (voir avec Samy)
+      
+    }, function(error){
+      $scope.error = true;
+      $scope.loading = false;
+      $timeout(function() {
+        $scope.error = false;
+      }, 20000)
+    });
   }
 });
 
@@ -436,6 +422,14 @@ angular.module('bobbyApp')
     $scope.assos = [];
     $scope.singleAssociation = true;
 
+    //Recherche de la catégorie séléectionné
+    var loadBookings = function(){
+      $scope.loading = true;
+      serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
+        $scope.bookings = data.data;
+      })
+    }
+
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
       $scope.loading = true;
@@ -507,14 +501,6 @@ angular.module('bobbyApp')
       return booking.status == $scope.status2;
     }
 
-     //Recherche de la catégorie séléectionné
-    var loadBookings = function(){
-      $scope.loading = true;
-      serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
-        $scope.bookings = data.data;
-      })
-    }
-    //loadBookings();
 
     /* Gestion des tries des items*/
     $scope.propertyName = 'booker';
@@ -527,28 +513,6 @@ angular.module('bobbyApp')
 
   });
 
-
-
-    'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('MainCtrl', function ($scope, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    
-    $scope.prenom = $rootScope.auth.member.firstname;
-
-  });
 
 'use strict';
 
@@ -621,6 +585,28 @@ angular.module('bobbyApp')
     $scope.bookItem = function(item){
       window.location.href = "#!/booking?item_id=" + item.id + "&asso_id=" + item.association_id
     }
+
+  });
+
+
+    'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MainCtrl', function ($scope, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    
+    $scope.prenom = $rootScope.auth.member.firstname;
 
   });
 
@@ -1001,6 +987,15 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}
 });
 
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
 'use strict';
 
 /**
