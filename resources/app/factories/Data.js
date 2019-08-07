@@ -1,7 +1,7 @@
 /**
  *  Gère l'authentification auprès de l'API
  */
-app.factory('Data', function(serviceAjax, localStorageService){
+app.factory('Data', function(localStorageService){
   
     factory = {}
 

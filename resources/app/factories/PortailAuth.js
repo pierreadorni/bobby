@@ -1,7 +1,7 @@
 /**
  *  Gère l'authentification auprès de l'API
  */
-app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $rootScope, serviceAjax){
+app.factory('PortailAuth', function($window, $cookies, $q, $rootScope, serviceAjax, localStorageService){
 
   var factory = {};
 
@@ -30,25 +30,33 @@ app.factory('PortailAuth', function($http, $window, $location, $cookies, $q, $ro
    */
   factory.saveCookie = function() {
 
-      $cookies.putObject('PortailAuth',
-          {
-            'auth' : factory.auth,
-            'token' : factory.token,
-            'member' : factory.member,
-          }
-      );
+    localStorageService.set('auth', factory.auth);
+    localStorageService.set('token', factory.token);
+    localStorageService.set('member', factory.member);
+
+      // $cookies.putObject('PortailAuth',
+      //     {
+      //       'auth' : factory.auth,
+      //       'token' : factory.token,
+      //       'member' : factory.member,
+      //     }
+      // );
   }
 
   /**
    *  Charge les variables auth et token depuis un cookie
    */
   factory.loadCookie = function() {
-    if($cookies.getObject('PortailAuth')) {
-      factory.auth = $cookies.getObject('PortailAuth').auth;
-      factory.token = $cookies.getObject('PortailAuth').token;
-      factory.member = $cookies.getObject('PortailAuth').member;
-      factory.refreshPermissions();
-    }
+    factory.auth = localStorageService.get('auth');
+    factory.token = localStorageService.get('token');
+    factory.member = localStorageService.get('member');
+    factory.refreshPermissions();
+    // if($cookies.getObject('PortailAuth')) {
+    //   factory.auth = $cookies.getObject('PortailAuth').auth;
+    //   factory.token = $cookies.getObject('PortailAuth').token;
+    //   factory.member = $cookies.getObject('PortailAuth').member;
+    //   factory.refreshPermissions();
+    // }
   }
 
   /**
