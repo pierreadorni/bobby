@@ -151,6 +151,10 @@ angular.module('bobbyApp')
       item.endDate = $filter('date')(item.endDateAngular, "yyyy-MM-dd")
       serviceAjax.put("bookinglines/"+item.id, item).then(function(res){
         item.edit = false;
+        if ($rootScope.isAdminAsso($scope.booking.owner.login)) {
+          // Si c'est le propriétaire qui a fait la validation on valide l'item
+          $scope.acceptLine(item);
+        }
       })
     }
 
