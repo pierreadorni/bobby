@@ -342,6 +342,20 @@ class Portail
 
 
     /**
+     *  Check that an association exists
+     */
+    public function assoExists($uid)
+    {
+        $asso = $this->showAsso($uid);
+        if ($asso) {
+            return;
+        }
+
+        throw HttpException(409, "Association introuvale");
+    }
+
+
+    /**
     *   Get permissions from the user
     *
     */
