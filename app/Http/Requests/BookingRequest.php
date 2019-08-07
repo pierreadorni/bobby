@@ -24,12 +24,11 @@ class BookingRequest extends FormRequest
     public function rules()
     {
         return [
-            'owner'             =>  'string'.($this->isMethod('put')?'':'|required'),
-            'booker'            =>  'string'.($this->isMethod('put')?'':'|required'),
-            'user'              =>  'string'.($this->isMethod('put')?'':'|required'),
-            'status'            =>  'integer|min:1|max:4'.($this->isMethod('put')?'':'|required'),
-            'cautionReceived'   =>  'boolean'.($this->isMethod('put')?'':'|required'),
-            'caution'           =>  'integer|min:0'.($this->isMethod('put')?'':'|required'),
+            'owner'             =>  'string|required',
+            'booker'            =>  'string|required',
+            'user'              =>  'string|required|exists:users,id',
+            'status'            =>  'integer|min:1|max:1|required',
+            'cautionReceived'   =>  'boolean|required',
         ];
     }
 }

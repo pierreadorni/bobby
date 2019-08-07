@@ -82,21 +82,39 @@ class BookingController extends Controller
 
         Portail::hasAssociationAdminPermission($request->booker);
 
-        $booking = Booking::create($request->all());
+        try {
+            
+            Portail::assoExists($request->booker);
+            Portail::assoExists($request->owner);
 
-        foreach ($request->bookingline["items"] as $bookingline) {
-            $bookingline["booking"] = $booking->id;
-            BookingLine::create($bookingline);
+            // Retrieve caution from items
+            $caution = 0;
+            foreach ($request->bookingline["items"] as $item) {
+                $caution += Item::find($item['id'])->caution*$item['quantity'];
+            }
+            
+            $booking = Booking::create(array_merge($request->all(), ['caution' => $caution]));
+
+            if($booking)
+            {
+                // Bookingline creation
+                foreach ($request->bookingline["items"] as $bookingline) {
+                    $bookingline["booking"] = $booking->id;
+                    BookingLine::create($bookingline);
+                }
+
+                return response()->json($booking, 200);
+            }
+            else
+            {
+                return response()->json(["message" => "Impossible de créer la réservation"], 500);
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json(["message" => "Une erreur est survenue."], 500);
         }
 
-        if($booking)
-        {
-            return response()->json($booking, 200);
-        }
-        else
-        {
-            return response()->json(["message" => "Impossible de créer la réservation"], 500);
-        }
+            
     }
 
 
