@@ -18,6 +18,14 @@ angular.module('bobbyApp')
     $scope.assos = [];
     $scope.singleAssociation = true;
 
+    //Recherche de la catégorie séléectionné
+    var loadBookings = function(){
+      $scope.loading = true;
+      serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
+        $scope.bookings = data.data;
+      })
+    }
+
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
       $scope.loading = true;
@@ -89,14 +97,6 @@ angular.module('bobbyApp')
       return booking.status == $scope.status2;
     }
 
-     //Recherche de la catégorie séléectionné
-    var loadBookings = function(){
-      $scope.loading = true;
-      serviceAjax.get("bookings/asso/" + $scope.data.asso_id).then(function(data){
-        $scope.bookings = data.data;
-      })
-    }
-    //loadBookings();
 
     /* Gestion des tries des items*/
     $scope.propertyName = 'booker';
