@@ -233,11 +233,15 @@ class BookingController extends Controller
 
         Portail::hasAssociationAdminPermission($asso_id);
 
+        // Get date 6 month ago
+        $date = date("Y-m-d", mktime(0, 0, 0, date("m")-6, date("d"),   date("Y")));
+
+        // Retrieve all bookings that are no more than 6 months old
         $bookings = [
             /* Réservation où l'association est propriétaire */
-            "ownerBookings"     =>  Booking::all()->where('owner', $asso_id),
+            "ownerBookings"     =>  Booking::whereDate('created_at', '>=', $date.' 00:00:00')->where('owner', $asso_id)->with('bookinglines')->get(),
             /* Réservation demandée par l'association */
-            "bookerBookings"    =>  Booking::all()->where('booker', $asso_id),
+            "bookerBookings"    =>  Booking::whereDate('created_at', '>=', $date.' 00:00:00')->where('booker', $asso_id)->get(),
         ];
 
         if($bookings['ownerBookings']){
@@ -253,7 +257,22 @@ class BookingController extends Controller
                 else
                     $booking->cautionReceived = "Non";
             }
-                }
+
+            // Recherche des items en cours d'emprunt ou à venir
+            $owner_bookings = $bookings['ownerBookings'];
+            $bookinglines = [];
+            foreach ($owner_bookings as $booking) {
+                foreach ($booking->bookinglines as $bookingline) {
+                    if (($bookingline['startDate'] >= date('Y-m-d') || $bookingline['endDate'] >= date('Y-m-d')) && ($bookingline["status"] == 2 || $bookingline["status"] == 3)) {
+                        $bookingline["item"] = Item::withTrashed()->find($bookingline["item"]);
+                        array_push($bookinglines, $bookingline);
+                    }
+                } 
+            }
+
+            $bookings = array_merge($bookings, ['bookinglines' => $bookinglines]);
+
+        }
 
         if($bookings['bookerBookings']){
             foreach ($bookings['bookerBookings'] as $booking) {
