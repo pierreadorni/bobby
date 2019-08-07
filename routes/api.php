@@ -61,13 +61,6 @@ Route::prefix('v1')->group(function () {
             ])->select('id', 'name', 'description', 'quantity', 'association_id')
             ->get();
         });
-
-        Route::get('booking/validation/item/{item_id}', function($item_id){
-            $item = Item::find($item_id)->caution;
-            return($item);
-        });
-
-        Route::post('booking/validation/items', 'BookingController@calculCaution');
     
         Route::get('bookings/asso/{asso_id}', 'BookingController@indexAssociation');
 
@@ -92,7 +85,7 @@ Route::prefix('v1')->group(function () {
         Route::get('bookinglines/cancel/{id}', 'BookingLineController@cancelLine');
 
         Route::get('bookinglines/returned/{id}', 'BookingLineController@returnedLine');
-
+        
 
 
         /**
