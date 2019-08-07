@@ -109,6 +109,11 @@ app.run(function($rootScope, PortailAuth) {
         controller : 'loginCtrl',
         controllerAs : 'login'
       }) 
+      .when('/logout',{
+        templateUrl : 'app/components/logout/logout.html',
+        controller : 'logoutCtrl',
+        controllerAs : 'logout'
+      }) 
       // Page de gestion des erreurs
       .when("/error/:code", {
         templateUrl : "app/components/errors/error.html"
