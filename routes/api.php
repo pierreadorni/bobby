@@ -118,12 +118,22 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('itemtypes', 'ItemTypeController');
 
 
+
+        /**
+        *   LOGOUT
+        *
+        */
+
+        Route::get('logout', 'LoginController@logout');
+
+
+
         /**
         *   MAIL
         *
         */
 
-        Route::post('/send', 'MailController@send');
+        Route::post('send', 'MailController@send');
 
 
         /**
