@@ -5,93 +5,119 @@
 		<p class="title"><i>Tu trouveras sur cette page de quoi t'aider pour prendre l'applicaton en main.</i></p>
 	</div>
 	<div class="row">
-		<div class="col-md-5 offset-md-1 col-sm-12">
+		<div class="col-md-5 offset-md-1 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 					<h5>Catégories</h5>
 				</div>
 				<div class="card-body">
-					<ul>
-						<li>Affichage des éléments selon leur catégorie</li>
-						<li>Onglet "Toutes" affiche tous les éléments</li>
-					</ul>
+					<p>
+						Cette partie permet de faire des recherches d'items.<br><br>
+						Tous les items de la MDE sont rangés par catégorie. 
+						Il est alors possible d'afficher les items par catégorie ou de tous 
+						les afficher. L'onglet offre une fonctionnalité de recherche permettant 
+						de retrouver simplement un item. <br>
+						Enfin un bouton permet d'entamer une démarche 
+						de réservation. Si le bouton n'est pas disponible pour un item cela signifie
+						qu'il est visible mais non réservable. Tu peux contacter l'association pour 
+						plus d'informations.
+					</p>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-5 col-sm-12">
+		<div class="col-md-5 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 					<h5>Mon matériel</h5>
 				</div>
 				<div class="card-body">
-					<ul>
-						<li>Ajout de matériel pour une et une seule association</li>
-						<li>Mise à jour du matériel</li>
-						<li>Suppression du matériel</li>
-						<li>Recherche du matériel</li>
-						<li>Lien entre la catégorie entrée et l'onglet "Catégorie"</li>
-					</ul>
+					<p>
+						Cet onglet permet de gérer le matériel des associations dont tu fais partie. 
+						Si tu n'as pas un poste de responsable au sein de l'association tu n'auras 
+						accès qu'à la fonctionnalité d'affichage des items.<br>
+						Si tu es responsable tu pourras ajouter de nouveaux items, modifier un item 
+						existant ou même le supprimer.<br>
+						A noter qu'en cliquant sur les noms des colonnes tu peux trier les items. 
+						Par défaut ils sont triés par ordre alphabétique.<br>
+						Tu peux également accéder a l'onglet d'import/export depuis cet onglet.
+					</p>
 				</div>
 			</div>
 		</div>
 	</div>
 	<br>
-	<div class="row">
-		<div class="col-md-5 offset-md-1 col-sm-12">
+	<div class="row" ng-if="$root.canBook()">
+		<div class="col-md-5 offset-md-1 col-sm-12 offset-sm-0 margin20s">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 					<h5>Réservations \ Réserver</h5>
 				</div>
 				<div class="card-body">
-					<p>Dans cet espace de réservation, vous faites partis de toutes les associations de la base comme dans "Mon matériel"</p>
-					<ul>
-						<li>Réservation pour une association à une association différente</li>
-						<li>Date de la réservation cohérente</li>
-						<li>Nécessité d'avoir rempli tous les chants pour valider</li>
-						<li>Modification des dates pour un item</li>
-						<li>Modification d'une des deux associations en cours de route</li>
-						<li>Modification des quantités</li>
-					</ul>
+					<p>
+						Cet onglet est uniquement accessible aux étudiants ayant un poste de responsable dans une association.<br>
+						Il y a plusieurs étapes a réaliser pour faire une demande de réservation : 
+						<ul>
+							<li>
+								Choisir l'association pour qui l'emprunt est effectué. Si tu as des responsabilités 
+								dans une seule association cette étape sera passée.
+							</li>
+							<li>
+								Choisir l'association à qui tu veux emprunter du matériel.
+							</li>
+							<li>
+								Choisir une date de début et de fin. A noter que tu pourras modifier ces dates 
+								pour chaque item emprunté par la suite.
+							</li>
+							<li>
+								Choisir le ou les items a emprunter et leur quantité.
+							</li>
+							<li>
+								Compléter la case expliquant ton besoin de matériel pour le justifier auprès de l'association.
+							</li>
+						</ul>
+						Tu as également accès à un résumé de ta commande te 
+						permettant de modifier les associations choisies, d'éditer les quantités d'items 
+						demandées et les dates d'emprunt pour chaque item.<br>
+						Une fois validée, la demande d'emprunt est envoyée a l'association qui pourra la refuser, 
+						l'accepter ou modifier les quantités/dates. C'est seulement après cette validation que la demande 
+						d'emprunt est validée et que tu recevras un mail pour t'avertir de la caution a fournir. 
+						L'association propriétaire du matériel aura la responsabilité de rentrer le fait que la caution 
+						a été reçue et que le matériel a bien été rendu. En cas de contretemps les deux associations 
+						peuvent annuler l'emprunt sur l'interface.</p>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-5 col-sm-12">
+		<div class="col-md-5 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
 					<h5>Réservations \ Mes réservations</h5>
 				</div>
 				<div class="card-body">
-					<p>Dans cet espace, vous faites partis de toutes les associations pour les tableaux récapitulatifs des réservations.
-					<br>Cependant lors de l'affichage d'une réservation, vous êtes par défaut membre de l'association Intégration et administrateur
-					<br>Administrateur => Possibilité de voir une réservation entre BDE et IF sans rien faire
-					<br>Intégration => Variation de l'affichage si vous êtes l'association qui demande l'emprunt ou celle qui reçoit la deamnde</p>
-					<ul>
-						<li>Affichage correct des demandes de réservation selon les associations</li>
-						<li>Dans une réservation en particulier
-							<ul>
-								<li>En tant que propriétaire du matériel, possibilité de valider ou de refuser des items, puis de déclarer le matériel rendu</li>
-								<li>En tant que propriétaire du matériel, possibilité d'éditer un item (dans le but de réduire les dates d'emprunt ou les quantités par exemple)</li>
-								<li>L'onglet mail n'est pas encore fonctionnel, oups !</li>
-							</ul>
-						</li>
-					</ul>
+					<p>
+						Cet onglet est uniquement accessible aux étudiants ayant un poste de responsable dans une association.<br>
+						Il permet de consulter les réservations en cours, terminées et annulées des 6 derniers mois. 
+						Il y a 2 types de réservations, celles concernant le matériel de ton association et celles 
+						concernant le matériel que tu as demandé à d'autres associations. Cela correspond à 2 tableaux distincts.<br>
+						Enfin un dernier tableau permet d'avoir un récapitulatif de tes items actuellement empruntés 
+						ou devant l'être dans le futur. Cela peut permettre de déterminer si un item est disponible 
+						quand une réservation t'est faite.
+					</p>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-10 offset-md-1 col-sm-12">
+	<div class="row" ng-if="$root.canBook()">
+		<div class="col-md-5 offset-md-1 col-sm-12 offset-sm-0 margin20">
 			<div class="card card-no-border">
 				<div class="card-header card-purple">
-					<h5>Gestion administratives</h5>
+					<h5>Export / Import</h5>
 				</div>
 				<div class="card-body">
-					<ul>
-						<li>Gestion des catégories</li>
-						<li>Gestion des localisations</li>
-						<li>Onglet Items pas fonctionnel encore</li>
-						<li>Vue d'ensemble des réservations</li>
-					</ul>
+					<p>
+						Cet onglet permet de récupérer un fichier <i>xlxs</i> des items de ton association (export) ou 
+						de renseigner a l'application via un fichier <i>xlxs</i> les items que ton association possède (import).<br>
+						Toutes les règles sont expliquées dans l'onglet pour l'import, merci de <strong>bien les lire</strong> !!
+					</p>
 				</div>
 			</div>
 		</div>
