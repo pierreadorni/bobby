@@ -194,7 +194,7 @@ class ItemController extends Controller
     public function itemFromAssociation(Request $request, $uid)
     {
 
-        // Portail::isAssociationMember($uid);
+        Portail::isAssociationMember($uid);
 
         $items = Item::where('association_id', $uid)->with(['place', 'type'])->get();
         foreach ($items as $item) {
