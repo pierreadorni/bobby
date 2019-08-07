@@ -77,6 +77,7 @@
 				</div>
 			</div>
 		</div>
+		<hr>
 		<div class="offset-sm-1 col-sm-10 margin20">
 			<div class="row">
 			  	<h5 class="col-md-9">Réservations effectuées par votre association</h5>
@@ -133,8 +134,55 @@
 									</a>
 								</td>
 							</tr>
-		            	</tbody>
-		            </table>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="offset-sm-1 col-sm-10 margin20">
+			<div class="row">
+				<h5 class="col-md-9">Emprunt en cours ou à venir</h5>
+				<div class="form-group col-md-3">
+				<input ng-model="bookinglineSearch" type="text" class="form-control search-list" placeholder="Rechercher...">
+			</div>
+			</div>
+			<div class="card text-center">
+				<div class="card-body">
+					<table class="table table-hover">
+							<thead>
+							<tr>
+								<th scope="col">Nom</th>
+								<th scope="col">Quantité</th>
+								<th scope="col">Début</th>
+								<th scope="col">Fin</th>
+								<th scope="col"></th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr 
+								ng-repeat="bookingline in bookings.bookinglines | toArray:false | filter:bookinglineSearch | orderBy:propertyName:reverse" 
+							>
+								<td>
+									<span>{{ bookingline.item.name }}</span>
+								</td>
+								<td>
+									<span>{{ bookingline.quantity }}</span>
+								</td>
+								<td>
+									<span>{{ bookingline.startDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
+								</td>
+								<td>
+									<span>{{ bookingline.endDate.toString().replace(' ', 'T') | date :  "dd/MM/yyyy" }}</span>
+								</td>
+								<td style="text-align: center">
+									<a href="#!/booking/{{bookingline.booking}}" target="_blank">
+										<button type="button" class="btn btn-grey">Consulter</button>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
