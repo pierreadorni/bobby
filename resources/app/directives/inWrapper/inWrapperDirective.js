@@ -17,6 +17,8 @@ app.directive('inWrapper', function() {
 
 	$scope.loading = true;
 
+	$scope.bug = {}
+
     var checkLoading = function(){
 		if (!$scope.loading_assos && !$scope.loading_types) {
 			$scope.loading = false;
@@ -52,6 +54,10 @@ app.directive('inWrapper', function() {
 	}
 
 	loadAssociations();
+
+	$scope.sendBug = function(){
+		serviceAjax.post('bugs', $scope.bug);
+	}
 
 });
 
