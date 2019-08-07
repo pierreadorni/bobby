@@ -227,18 +227,6 @@ class BookingController extends Controller
 
 
     /**
-     * Calcul de la caution d'une commande
-     */
-    public function calculCaution(Request $request){
-        $caution = 0;
-        foreach ($request->items as $item) {
-            $caution+=Item::find($item['id'])->caution*$item['quantity'];
-        }
-        return($caution);
-    }
-
-
-    /**
      * Index des commandes pour une association
      */
     public function indexAssociation(Request $request, $asso_id){
