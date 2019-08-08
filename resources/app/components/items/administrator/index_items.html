@@ -19,6 +19,10 @@
                       <span class="sort-item" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
                     </th>
                     <th ng-click="sort()">
+                      Association  
+                      <span class="sort-item" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
+                    </th>
+                    <th ng-click="sort()">
                       Localisation  
                       <span class="sort-item" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
                     </th>
@@ -40,6 +44,9 @@
                 <tr ng-repeat="item in items | toArray:false | filter:itemSearch | orderBy:'name':reverse">
                   <td>
                     <span>{{ item.name }}</span>
+                  </td>
+                  <td>
+                    <span>{{ item.association.shortname }}</span>
                   </td>
                   <td>
                     <span>{{ item.place.name }}</span>
