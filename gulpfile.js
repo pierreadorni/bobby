@@ -162,58 +162,7 @@ gulp.task('vendor', function() {
   gulp.src('resources/app/vendor/angular-toArrayFilter/toArrayFilter.js')
   .pipe(gulp.dest(dist + '/app/vendor/toArrayFilter/'))
 
-  // CSS
-  /*var bootstrap_css = [
-    'resources/assets/vendor/bootstrap/css/bootstrap.min.css',
-    'resources/assets/vendor/bootstrap/css/bootstrap.simplex.min.css'
-  ];*/
 
-  /*gulp.src(bootstrap_css)
-  .pipe(concat('bootstrap.min.css'))
-  .pipe(gulp.dest(dist + '/assets/vendor/bootstrap/css'))*/
-
-	// Fonts
-/*	gulp.src('resources/assets/vendor/bootstrap/fonts/*')
-  .pipe(gulp.dest(dist + '/assets/vendor/bootstrap/fonts'))*/
-
-  // JS
-  /*gulp.src('resources/assets/vendor/bootstrap/js/bootstrap.min.js')
-  .pipe(concat('bootstrap.min.js'))
-  .pipe(gulp.dest(dist + '/assets/vendor/bootstrap/js'))*/
-
-  /*
-   *  Angular
-   */
-
-/*
-  var angular = [
-    'resources/app/vendor/angular.min.js',
-    'resources/app/vendor/angular-animate.min.js',
-    'resources/app/vendor/angular-cookies.min.js',
-    'resources/app/vendor/angular-resource.min.js',
-    'resources/app/vendor/angular-route.min.js',
-    'resources/app/vendor/angular-sanitize.min.js',
-    'resources/app/vendor/angular-touch.min.js',
-    'resources/app/vendor/ui-bootstrap-2.2.0.min.js',
-    'resources/app/vendor/ui-codemirror.min.js'
-  ];
-
-  gulp.src(angular)
-  .pipe(concat('angular.min.js'))
-  .pipe(gulp.dest(dist + '/app/vendor/angular'))
-*/
-
-  /*
-   *  metisMenu
-   */
-
-  // CSS
-  /*gulp.src('resources/assets/vendor/metisMenu/metisMenu.min.css')
-  .pipe(gulp.dest(dist + '/assets/vendor/metisMenu'))*/
-
-  // JS
-  /*gulp.src('resources/assets/vendor/metisMenu/metisMenu.min.js')
-  .pipe(gulp.dest(dist + '/assets/vendor/metisMenu'))*/
 
   /*
    *  Font Awesome
@@ -227,33 +176,6 @@ gulp.task('vendor', function() {
   gulp.src('resources/app/vendor/fontawesome/webfonts/*')
   .pipe(gulp.dest(dist + '/vendor/fontawesome/webfonts'))
 
-  /*
-   *  Code Mirror
-   */
-
-  // JS
- /* var codemirror_js = [
-    'resources/assets/vendor/CodeMirror-5.21.0/lib/codemirror.js',
-    'resources/assets/vendor/CodeMirror-5.21.0/mode/javascript/javascript.js',
-    'resources/assets/vendor/CodeMirror-5.21.0/addon/selection/active-line.js',
-    'resources/assets/vendor/CodeMirror-5.21.0/addon/edit/closebrackets.js',
-    'resources/assets/vendor/CodeMirror-5.21.0/addon/edit/matchbrackets.js'
-  ];
-
-  gulp.src(codemirror_js)
-  .pipe(concat('codemirror.min.js'))
-  .pipe(gulp.dest(dist + '/assets/vendor/codemirror'))*/
-
-  // CSS
-  /*var codemirror_css = [
-    'resources/assets/vendor/CodeMirror-5.21.0/lib/codemirror.css',
-    'resources/assets/vendor/CodeMirror-5.21.0/theme/monokai.css'
-  ];*/
-
-  /*gulp.src(codemirror_css)
-  .pipe(concat('codemirror.min.css'))
-  .pipe(gulp.dest(dist + '/assets/vendor/codemirror'))
-*/
   /*
    *  Libs diverses
    */
