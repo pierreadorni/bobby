@@ -23,6 +23,11 @@ class ItemController extends Controller
         Portail::isAdmin();
 
         $items = Item::with(['place', 'type'])->get();
+
+        foreach ($items as $item) {
+            $item->association = Portail::showAsso($item->association_id);
+        }
+
         return response()->json($items, 200);
     }
 
