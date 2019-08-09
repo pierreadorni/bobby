@@ -1,0 +1,51 @@
+<in-wrapper>
+	<br><br>
+	<div ng-hide="singleAssociation">
+		<p class="title">Sélectionne une association</p>
+		<select class="col-md-2 offset-md-5 form-control" ng-model="data.asso_id">
+	        <option ng-repeat="asso in assos" value="{{asso.id}}">
+	        	<a ng-click="selectAsso(asso)">{{asso.name}}</a>
+	        </option>
+	     </select>
+	     <br>
+	     <hr>
+	</div>
+	<div ng-show="selectedAsso.id" class="row">
+		<div class="offset-sm-1 col-sm-10 margin20">
+			<div class="row">
+			  	<h3 class="col-sm-12">Export / Import</h3>
+		    </div>
+            <br>
+		  	<div class="card text-center">
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs">
+						<li class="nav-item">
+							<a class="nav-link" ng-click="use('export')" ng-class="{ active : isActive('export')}">Export</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" ng-click="use('import')" ng-class="{ active : isActive('import')}">Import</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div ng-if="export">
+                        <h4>Export</h4>
+                        <br>
+                        <p>
+                            Tu peux télécharger ici l'inventaire des items possédés par ton association : {{ selectedAsso.shortname }}
+                        </p>
+                    </div>
+                    <div ng-if="import">
+                        <h4>Import</h4>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div ng-if="export">
+                        <button type="button" class="btn btn-grey" ng-click="download()">Télécharger</button>
+                    </div>
+                    
+                </div>
+			</div>
+		</div>
+    </div>
+</in-wrapper>
