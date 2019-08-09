@@ -181,9 +181,9 @@ gulp.task('vendor', function() {
    */
 
   var tools = [
+    'resources/app/vendor/FileSaver/FileSaver.js',
     'resources/app/vendor/Blob/Blob.js',
     'resources/app/vendor/esprima/esprima.js',
-    'resources/app/vendor/FileSaver/FileSaver.js',
     'resources/app/vendor/underscore/underscore.min.js',
     'resources/app/vendor/papaparse.min.js'
   ];
