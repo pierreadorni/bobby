@@ -14,9 +14,15 @@ angular.module('bobbyApp')
       'AngularJS',
       'Karma'
     ];
+    
+    if (!$rootScope.canBook()) {
+      $location.path('/error/403')
+    }
+    
     $scope.data = {}
     $scope.assos = [];
     $scope.singleAssociation = true;
+    
 
     //Recherche de la catégorie séléectionné
     var loadBookings = function(){
