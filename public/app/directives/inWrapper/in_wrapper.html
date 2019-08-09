@@ -43,6 +43,13 @@
                   >
                    {{asso.shortname}}
                   </a>
+                  <a 
+                    class="dropdown-item" 
+                    href="#!/data" 
+                    ng-if="$root.canBook()"
+                  >
+                    Export / Import
+                  </a>
                 </div>
               </li>
 

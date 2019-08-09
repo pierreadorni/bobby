@@ -108,7 +108,12 @@ app.run(function($rootScope, PortailAuth) {
         templateUrl : 'app/components/bugs/bugs_management.html',
         controller : 'bugsManagementCtrl',
         controllerAs : 'bugsManagement'
-      })     
+      })  
+      .when('/data',{
+        templateUrl : 'app/components/data/data.html',
+        controller : 'dataCtrl',
+        controllerAs : 'data'
+      })    
       .when('/login',{
         templateUrl : 'app/components/login/login.html',
         controller : 'loginCtrl',
