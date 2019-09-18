@@ -260,12 +260,7 @@ app.factory('PortailAuth', function($window, $cookies, $q, $rootScope, serviceAj
 
   // Avant de retourner la factory, on récupère les informations dans le cookie,
   // s'il existe, sinon on le créé
-  if($cookies.getObject('PortailAuth')) {
-      factory.loadCookie();
-      // factory.refreshPermissions();
-  } else {
-      factory.saveCookie();
-  }
+  factory.loadCookie();
 
   return factory;
 });
