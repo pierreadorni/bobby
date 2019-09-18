@@ -64,8 +64,8 @@ angular.module('bobbyApp')
     });
 
     /*Filtre en fonction du statut des réservations*/
-    $scope.status = 1;
-    $scope.status2 = 1;
+    $scope.status = 4;
+    $scope.status2 = 4;
 
     $scope.changeStatus=function(nb){
       $scope.status = nb;
@@ -77,9 +77,6 @@ angular.module('bobbyApp')
 
     //Pour modifier les nav-item actifs 
     $scope.isActive = function(nb){
-      if ($scope.status == 4) {
-        return $scope.status;
-      }
       return $scope.status == nb;
     }
     $scope.isActive2 = function(nb){

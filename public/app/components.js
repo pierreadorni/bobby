@@ -8,6 +8,65 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
+  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.error = false;
+    $scope.deleteConfirmation = false;
+
+
+    // Chargement des bugs
+    var loadBugs = function(){
+      $scope.loading = true;
+      serviceAjax.get('bugs').then(function(res){
+        $scope.bugs = res.data;
+        for (let index = 0; index < $scope.bugs.length; index++) {
+          $scope.bugs[index].loading = false;
+        }
+      })
+    }
+    loadBugs();
+
+    
+    $scope.delete = function(bug){
+      $scope.loading = true;
+      serviceAjax.delete('bugs/'+ bug.id).then(function(){
+        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
+        $scope.loading = false;
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+      }, function(){
+        $scope.loading = false;
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+      })
+    }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
   .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $filter, $rootScope, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -472,8 +531,8 @@ angular.module('bobbyApp')
     });
 
     /*Filtre en fonction du statut des réservations*/
-    $scope.status = 1;
-    $scope.status2 = 1;
+    $scope.status = 4;
+    $scope.status2 = 4;
 
     $scope.changeStatus=function(nb){
       $scope.status = nb;
@@ -485,9 +544,6 @@ angular.module('bobbyApp')
 
     //Pour modifier les nav-item actifs 
     $scope.isActive = function(nb){
-      if ($scope.status == 4) {
-        return $scope.status;
-      }
       return $scope.status == nb;
     }
     $scope.isActive2 = function(nb){
@@ -598,65 +654,6 @@ angular.module('bobbyApp')
 
   });
 
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.error = false;
-    $scope.deleteConfirmation = false;
-
-
-    // Chargement des bugs
-    var loadBugs = function(){
-      $scope.loading = true;
-      serviceAjax.get('bugs').then(function(res){
-        $scope.bugs = res.data;
-        for (let index = 0; index < $scope.bugs.length; index++) {
-          $scope.bugs[index].loading = false;
-        }
-      })
-    }
-    loadBugs();
-
-    
-    $scope.delete = function(bug){
-      $scope.loading = true;
-      serviceAjax.delete('bugs/'+ bug.id).then(function(){
-        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
-        $scope.loading = false;
-        $scope.deleteConfirmation = true;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-      }, function(){
-        $scope.loading = false;
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-      })
-    }
-
-  });
-
-
 
     'use strict';
 
@@ -749,10 +746,12 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Export
 
     $scope.download = function(){
-        $http.get(__ENV.apiUrl + '/export/items', {responseType : "blob"}).then(function(res){
+        $http.get(__ENV.apiUrl + '/export/items/' + $scope.selectedAsso.id, {responseType : "blob"}).then(function(res){
             FileSaver.saveAs(res.data, 'inventaire.xlsx');
         });
     }
+
+    // Import
 
 });
   
@@ -798,7 +797,7 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $timeout, $window, $log, FileSaver, $rootScope) {
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $timeout, $rootScope) {
 
     /*Initialisation des boutons de confirmation*/
     $scope.addConfirmation = false;
