@@ -2,15 +2,15 @@
 	<br><br>
 	<div ng-hide="singleAssociation">
 		<p class="title">Sélectionne une association</p>
-		<select class="col-md-2 offset-md-5 form-control" ng-model="data.asso_id">
+		<select class="col-md-2 offset-md-5 form-control" ng-model="asso_id">
 	        <option ng-repeat="asso in assos" value="{{asso.id}}">
-	        	<a ng-click="selectAsso(asso)">{{asso.name}}</a>
+	        	<a>{{asso.name}}</a>
 	        </option>
 	     </select>
 	     <br>
 	     <hr>
 	</div>
-	<div ng-show="selectedAsso.id" class="row">
+	<div ng-if="asso_id" class="row">
 		<div class="offset-sm-1 col-sm-10 margin20">
 			<div class="row">
 			  	<h3 class="col-sm-12">Export / Import</h3>
@@ -32,7 +32,7 @@
                         <h4>Export</h4>
                         <br>
                         <p>
-                            Tu peux télécharger ici l'inventaire des items possédés par ton association : {{ selectedAsso.shortname }}
+                            Tu peux télécharger ici l'inventaire des items possédés par ton association
                         </p>
                     </div>
                     <div ng-if="import">

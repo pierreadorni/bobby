@@ -11,7 +11,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Chargement realtifs aux associations de l'utilisateur
 
     $scope.assos = [];
-    $scope.selectedAsso = {};
+    $scope.asso_id = null;
 
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
@@ -28,17 +28,13 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         }
         /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
         if($scope.assos.length==1){
-          $scope.selectedAsso = $scope.assos[0];
+            $scope.asso_id = $scope.assos[0].id
           //Pour empêcher le select des assos de s'afficher
           $scope.singleAssociation = true;
         }
         $scope.loading=false;
     }
     loadAssociations();
-
-    $scope.selectAsso = function(asso){
-        $scope.selectedAsso = asso;
-    }
 
 
     // Navigation entre onglet Export et Import
@@ -68,10 +64,12 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Export
 
     $scope.download = function(){
-        $http.get(__ENV.apiUrl + '/export/items', {responseType : "blob"}).then(function(res){
+        $http.get(__ENV.apiUrl + '/export/items/' + $scope.selectedAsso.id, {responseType : "blob"}).then(function(res){
             FileSaver.saveAs(res.data, 'inventaire.xlsx');
         });
     }
+
+    // Import
 
 });
   
