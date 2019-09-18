@@ -224,11 +224,8 @@ class ItemController extends Controller
 
     }
 
-    public function exportItem(){
-        //Excel::download(new DataExport, 'inventaire.xlsx');
-        //return Item::all();
-        //$ok = (new ItemsExport, 'data.xlsx');
-        //dd(Excel::download(new ItemsExport, 'items.xlsx'));
-        // return Excel::download(new ItemsExport, 'items.xlsx');
+    public function exportItem(Request $request, $asso_id){
+        Portail::hasAssociationAdminPermission($asso_id);
+        return Excel::download(new ItemsExport($asso_id), 'data.xlsx');
     }
 }

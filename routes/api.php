@@ -107,7 +107,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('items/categories/{categorie}', 'ItemController@itemFromCategorie');
 
-        Route::get('export/items', 'ItemController@exportItem');
+        Route::get('export/items/{asso_id}', 'ItemController@exportItem');
 
 
         /**
