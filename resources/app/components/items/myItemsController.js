@@ -8,7 +8,7 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $timeout, $window, $log, FileSaver, $rootScope) {
+  .controller('MyItemsCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $timeout, $rootScope) {
 
     /*Initialisation des boutons de confirmation*/
     $scope.addConfirmation = false;
