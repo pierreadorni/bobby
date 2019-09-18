@@ -80,7 +80,7 @@
                 Statut  
                 <span class="sort-item" ng-if="propertyName == 'statusName'" ng-class="{reverse: reverse}"><i class="fas fa-sort"></i></span>
               </th>
-              <th>Actions</th>
+              <th ng-if="$root.isAdminAsso(asso_login)">Actions</th>
           </tr>
         </thead>
         <tbody ng-if="!loading">          
@@ -166,7 +166,7 @@
                     <option value="3">Invisible</option>
                 </select>
               </td>
-              <td>
+              <td ng-if="$root.isAdminAsso(asso_login)">
                 <p ng-if="!item.edit && !item.loading" class="purple-text">
                   
                   <a ng-click="edit(item)" class="pointer">
