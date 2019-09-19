@@ -185,7 +185,7 @@ gulp.task('vendor', function() {
     'resources/app/vendor/Blob/Blob.js',
     'resources/app/vendor/esprima/esprima.js',
     'resources/app/vendor/underscore/underscore.min.js',
-    'resources/app/vendor/papaparse.min.js'
+    'resources/app/vendor/papaparse/papaparse.min.js'
   ];
 
   gulp.src(tools)

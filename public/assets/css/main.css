@@ -16,6 +16,10 @@
 
 .pointer{cursor: pointer;}
 
+.underline{text-decoration: underline}
+
+.textleft{text-align: left !important};
+
 
 /* TRI */
 .sortorder:after {
