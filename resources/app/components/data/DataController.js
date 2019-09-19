@@ -68,7 +68,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Export
 
     $scope.download = function(){
-        $http.get(__ENV.apiUrl + '/export/items/' + $scope.selectedAsso.id, {responseType : "blob"}).then(function(res){
+        $http.get(__ENV.apiUrl + '/export/items/' + $scope.asso_id, {responseType : "blob"}).then(function(res){
             FileSaver.saveAs(res.data, 'inventaire.xlsx');
         });
     }
