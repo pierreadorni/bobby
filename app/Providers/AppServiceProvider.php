@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Libraries\Portail;
 use App;
-
+use App\Libraries\MailSender;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
     {
         App::singleton('Portail', function() {
             return new Portail();
+        });
+
+        App::singleton('MailSender', function() {
+            return new MailSender();
         });
     }
 }

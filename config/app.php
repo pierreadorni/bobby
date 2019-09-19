@@ -212,6 +212,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Portail' => App\Facade\Portail::class,
+        'MailSender' => App\Facade\MailSender::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class, 

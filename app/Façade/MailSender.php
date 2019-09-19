@@ -1,14 +1,13 @@
 <?php
 
-
 namespace App\Facade;
 
 use Illuminate\Support\Facades\Facade;
 
-class Portail extends Facade
+class MailSender extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'Portail';
+        return 'MailSender';
     }
 }
