@@ -206,7 +206,6 @@ angular.module('bobbyApp')
 
   //Validation de la commande
   $scope.save = function(){
-    $scope.mail.comment = $scope.comment;
     $scope.booking.user = $scope.user.id;
     $scope.booking.owner = $scope.booking.assoRequested.id;
     $scope.booking.booker = $scope.booking.assoRequesting.id;
@@ -228,10 +227,6 @@ angular.module('bobbyApp')
     serviceAjax.post('bookings', $scope.booking).then(function(data){
       $scope.callBackBooking = data.data;
       $location.path('/booking/' + $scope.callBackBooking.id);
-
-      // TO DO 
-      // Envoie du mail (voir avec Samy)
-      
     }, function(error){
       $scope.error = true;
       $scope.loading = false;
