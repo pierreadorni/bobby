@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Item;
 use Portail;
 use App\Exports\ItemsExport;
+use App\ItemPlace;
+use App\ItemType;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -60,7 +62,7 @@ class ItemController extends Controller
         if ($item->deleted_at) {
             $item->restore();
         }
-        // $item = Item::create($request->all());
+
         if($item)
         {
             switch ($item->status) {
@@ -227,5 +229,54 @@ class ItemController extends Controller
     public function exportItem(Request $request, $asso_id){
         Portail::hasAssociationAdminPermission($asso_id);
         return Excel::download(new ItemsExport($asso_id), 'data.xlsx');
+    }
+
+
+    public function importItem(Request $request, $asso_id){
+        Portail::hasAssociationAdminPermission($asso_id);
+
+        # To DO , vérification ?
+
+        # Suppression des items existants
+        $items = Item::where('association_id', $asso_id)->get();
+        foreach ($items as $item) {
+            $item->delete();
+        }
+
+        # Ajout des nouveaux items ou update avec restore si le nom existe déjà
+        foreach ($request->items as $item) {
+
+            # Récupération des données manquantes avant création
+            $item['type_id'] = ItemType::where('name', $item['typeName'])->get()->first()->id;
+            $item['place_id'] = ItemPlace::where('name', $item['placeName'])->get()->first()->id;
+            if ($item['statusName'] == "Visible") {
+                $item['status'] = 1;
+            }
+            else if ($item['statusName'] == "Visible et non empruntable"){
+                $item['status'] = 2;
+            } else {
+                $item['status'] = 3;
+            }
+
+            $item = Item::withTrashed()->updateOrCreate(
+                [
+                    'name'              => $item['name'],
+                    'association_id'    => $asso_id,
+                ],
+                [
+                    'quantity'          => $item['quantity'],
+                    'place_id'          => $item['place_id'],
+                    'type_id'           => $item['type_id'],
+                    'status'            => $item['status'],
+                    'caution'           => $item['caution']
+                ]
+            );
+    
+            if ($item->deleted_at) {
+                $item->restore();
+            }
+
+        }
+        return response()->json();
     }
 }

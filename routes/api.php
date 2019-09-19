@@ -109,6 +109,8 @@ Route::prefix('v1')->group(function () {
 
         Route::get('export/items/{asso_id}', 'ItemController@exportItem');
 
+        Route::post('import/items/{asso_id}', 'ItemController@importItem');
+
 
         /**
         *   ITEMPLACE
