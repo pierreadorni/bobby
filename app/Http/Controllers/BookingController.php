@@ -11,6 +11,7 @@ use App\Association;
 use App\Item;
 use App\BookingLine;
 use Portail;
+use MailSender;
 
 class BookingController extends Controller
 {
@@ -103,6 +104,9 @@ class BookingController extends Controller
                     BookingLine::create($bookingline);
                 }
 
+                MailSender::send_new_booking($request->bookingline["items"], $request->comment, $request->assoRequested, $request->assoRequesting);
+                MailSender::confirm_new_booking($request->bookingline["items"], $request->assoRequested, $request->assoRequesting);
+  
                 return response()->json($booking, 200);
             }
             else
