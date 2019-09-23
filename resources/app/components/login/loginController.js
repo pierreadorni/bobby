@@ -1,4 +1,4 @@
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax) {
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
 
 
   $scope.message = "Connexion";
@@ -6,6 +6,7 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	
 	//Url avec token?=
 	if($routeParams.token){
+
 		$rootScope.auth.login($routeParams.token)
 		serviceAjax.get('userassos').then(function(res){
 			Data.setUserAssos(res.data);
@@ -15,8 +16,14 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 					Data.setItemPlaces(res.data);
 					serviceAjax.get('itemtypes').then(function(res){
 						Data.setItemTypes(res.data);
-						$location.path("/");
-						$location.url($location.path());  // Clear des paramètres
+						let redirection_url = "/"
+						// Si une URL de redirection est présente dans le local storage on la récupère
+						const url_in_storage = localStorageService.get('redirect_url')
+						if (url_in_storage) {
+							redirection_url = url_in_storage
+						}	
+						// Redirection de l'utilisateur
+						$window.location.href = redirection_url
 					})
 				})
 			})
