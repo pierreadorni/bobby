@@ -223,7 +223,12 @@ class BookingController extends Controller
 
         if ($booking) {
             $booking->cautionReceived = true;
+
+            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "L'association a indiqué que vous aviez bien remis la caution.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
+            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "Nous vous confirmons que vous avez indiqué avoir reçu la caution.", $request->assoRequested['shortname']."@assos.utc.fr"); 
+
             $booking->save();
+
             return response()->json($booking, 201);
         } 
         return response()->json(["message" => "Impossible de trouver la réservation"], 500);
@@ -315,14 +320,19 @@ class BookingController extends Controller
             if ($booking->status == 1) {
                 $booking->status = 2;
             }
-            $booking->save();
 
             foreach ($booking->bookinglines as $bookingline) {
                 if ($bookingline-> status == 1) {
                     $bookingline->status = 2;
                     $bookingline->save();
                 }
+                $bookingline = $this->getBookinglineInformation($bookingline);
             }
+
+            MailSender::change_booking_status(True, True, True, $request->assoRequested, $request->assoRequesting, $booking->bookinglines, $booking->id, $booking->caution);
+            MailSender::change_booking_status(False, False, False, $request->assoRequested, $request->assoRequesting, $booking->bookinglines, $booking->id, null);
+
+            $booking->save();
 
             return response()->json([], 201);
 
@@ -352,7 +362,16 @@ class BookingController extends Controller
                 } else {
                     $booking->status = 3;
                 }
+                $bookingline = $this->getBookinglineInformation($bookingline);
             }
+
+            $assoOwnerDidUpdate = false;
+            if (Portail::isUserAdminAsso($booking->owner)) {
+                $assoOwnerDidUpdate = true;
+            }
+
+            MailSender::change_booking_status($assoOwnerDidUpdate, False, True, $request->assoRequested, $request->assoRequesting, $booking->bookinglines, $booking->id, null);
+            MailSender::change_booking_status($assoOwnerDidUpdate, False, False, $request->assoRequested, $request->assoRequesting, $booking->bookinglines, $booking->id, null);
 
             $booking->save();
 
@@ -365,7 +384,7 @@ class BookingController extends Controller
 
 
     /**
-     * Fonction pour accepter tous les items d'une commande
+     * Fonction pour noter tous les items d'une commande comme rendu
      */
     public function returnedBooking(Request $request, $id)
     {
@@ -387,10 +406,45 @@ class BookingController extends Controller
                 }
             }
 
+            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "L'association a indiqué vous aviez bien rendu le matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
+            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "Nous vous confirmons que vous avez indiqué avoir reçu votre matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
+
             return response()->json([], 201);
 
         } catch (\Throwable $th) {
             return response()->json(['message'=>'Une erreur s\'est produite.'],500);
         }
+    }
+
+    protected function getBookinglineInformation($bookingline){
+
+        $bookingline->item = [
+            'name' => Item::withTrashed()->get()->find($bookingline->item)->name
+        ];
+
+        /*Gestion des status*/
+        switch ($bookingline->status) {
+            case '1':
+                $bookingline->statusName = "En cours";
+                break;
+
+            case '2':
+                $bookingline->statusName = "Validé";
+                break;
+
+            case '3':
+                $bookingline->statusName = "Rendu";
+                break;
+
+            case '4':
+                $bookingline->statusName = "Annulé";
+                break;
+            
+            default:
+                $bookingline->statusName = "";
+                break;
+        }
+
+        return $bookingline;
     }
 }
