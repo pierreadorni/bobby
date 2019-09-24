@@ -236,9 +236,14 @@
                     <div style="text-align: center">
                         <button ng-click="save()"
                                 type="button" class="btn btn-grey"
-                                ng-disabled="!booking.assoRequesting || !booking.assoRequested || !booking.date || !(bookingline.items.length > 0) || !formComment.inputComment.$valid">
-                            Valider
+                                ng-disabled="!booking.assoRequesting || !booking.assoRequested || !booking.date || !(bookingline.items.length > 0) || !formComment.inputComment.$valid"
+                                ng-if="!emailSending"    
+                            >
+                                Valider
                         </button>
+                        <span ng-if="emailSending" class="margin_ato">
+                            <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                        </span>
                     </div>
                 </div>
             </div>

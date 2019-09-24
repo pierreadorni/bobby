@@ -37,6 +37,8 @@ angular.module('bobbyApp')
     // Erreur
     $scope.error = false;
 
+    $scope.emailSending = false;
+
     /*Chargement des associations d'un utilisateur*/
     var loadAssociationsRequested = function(){
       $scope.loading = true;
@@ -206,6 +208,7 @@ angular.module('bobbyApp')
 
   //Validation de la commande
   $scope.save = function(){
+    $scope.emailSending = true;
     $scope.booking.user = $scope.user.id;
     $scope.booking.owner = $scope.booking.assoRequested.id;
     $scope.booking.booker = $scope.booking.assoRequesting.id;
@@ -229,9 +232,10 @@ angular.module('bobbyApp')
       $location.path('/booking/' + $scope.callBackBooking.id);
     }, function(error){
       $scope.error = true;
-      $scope.loading = false;
+      $scope.emailSending = false;
       $timeout(function() {
         $scope.error = false;
+        $scope.emailSending = false;
       }, 20000)
     });
   }
