@@ -86,7 +86,7 @@
                 <a ng-click="edit(place)" class="pointer">
                   <i class="fa fa-edit i-right" aria-hidden="true"></i>
                 </a>
-                <a data-toggle="modal" data-target=".bd-example-modal-lg" ng-click="setDeleteAttribute(place)" class="pointer">
+                <a data-dismiss="modal" data-toggle="modal" data-target="#confirmModal" ng-click="setDeleteAttribute(place)" class="pointer">
                   <i class="fas fa-trash-alt i-left" aria-hidden="true"></i>
                 </a>
               </p>
@@ -107,7 +107,7 @@
       </table>
     </div>
   </div>
-  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+  <div id="confirmModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">

@@ -78,7 +78,7 @@
                     Mon profil
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" data-toggle="modal" data-target=".bd-example-modal-lg">
+                  <a class="dropdown-item" data-dismiss="modal" data-toggle="modal" data-target="#bugModal">
                     <!-- <i class="fas fa-cogs left10" aria-hidden="true"></i> -->
                     Un bug?
                   </a>
@@ -97,7 +97,7 @@
     </div>
     <div id="page-wrapper" ng-transclude ng-if="!loading">
     </div>
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg" id="bugModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
