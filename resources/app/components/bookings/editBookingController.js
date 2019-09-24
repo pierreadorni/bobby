@@ -40,6 +40,7 @@ angular.module('bobbyApp')
       $scope.loading = true;
       serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
         $scope.booking = data.data;
+        $scope.loading = false;
 
         //On vérifie que l'utilisateur est admin d'une association (déjà vérifié dans l'API) 
         // L'user peut etre admin
@@ -49,7 +50,7 @@ angular.module('bobbyApp')
           }
         }  
         loadDates();       
-      })
+      }, function(error){$scope.error = true;})
     }
     loadBookings();
 
@@ -59,38 +60,47 @@ angular.module('bobbyApp')
     //Remise de la caution
     $scope.cautionReceived = function(){
       $scope.booking.cautionReceived = "Oui";
-      serviceAjax.post('bookings/caution/' + $scope.booking.id);
+      $scope.loading = true;
+      serviceAjax.post('bookings/caution/' + $scope.booking.id).then(function(){
+        $scope.loading = false;
+      }, function(error){$scope.error = true;});
     }
 
 
     //Validation de tous les items de la commande
     $scope.acceptBooking = function(){
+      $scope.loading = true;
       serviceAjax.get("bookings/accept/" + $scope.booking_id).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Annulation de la réservation
     $scope.cancelBooking = function(){
+      $scope.loading = true;
       serviceAjax.get('bookings/cancel/' + $scope.booking.id, $scope.booking).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Validation du rendu du matériel pour tous les items
     $scope.returnedBooking = function(){
+      $scope.loading = true;
       serviceAjax.get('bookings/returned/' + $scope.booking.id, $scope.booking).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
 
@@ -103,6 +113,7 @@ angular.module('bobbyApp')
 
     //Accepter un item
     $scope.acceptLine =function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/accept/' + bookingline.id).then(function(res){
         bookingline.status = 2;
         bookingline.statusName = "Validé"
@@ -112,12 +123,14 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Annuler un item
     $scope.cancelLine=function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/cancel/' + bookingline.id).then(function(res){
         bookingline.status = 4;
         bookingline.statusName = "Annulé"
@@ -127,12 +140,14 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false;
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Item rendu
     $scope.returnedLine=function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/returned/' + bookingline.id).then(function(res){
         bookingline.status = 3;
         bookingline.statusName = "Rendu"
@@ -142,21 +157,24 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false;
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Mise à jour d'un item et validation
     $scope.updateItem=function(item){
+      $scope.loading = true;
       item.startDate = $filter('date')(item.startDateAngular, "yyyy-MM-dd")
       item.endDate = $filter('date')(item.endDateAngular, "yyyy-MM-dd")
       serviceAjax.put("bookinglines/"+item.id, item).then(function(res){
         item.edit = false;
+        $scope.loading = false;
         if ($rootScope.isAdminAsso($scope.booking.owner.login)) {
           // Si c'est le propriétaire qui a fait la validation on valide l'item
           $scope.acceptLine(item);
         }
-      })
+      }, function(error){$scope.error = true;})
     }
 
   });

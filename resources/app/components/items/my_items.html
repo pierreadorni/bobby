@@ -192,6 +192,9 @@
           </div>
         </tbody>
       </table>
+      <p class="center" ng-if="!loading && items.length == 0">
+        Pas de matériel enregistré pour cette association ...
+      </p>
       <div ng-if="loading" class="valign">
         <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></p>
       </div>

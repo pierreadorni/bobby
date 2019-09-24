@@ -261,7 +261,8 @@ angular.module('bobbyApp')
 
     //Current date
     $scope.currentDate = new Date();
-
+    $scope.loading = true;
+    $scope.error = false;
     $scope.booking_id = $routeParams.id;
 
     var loadDates = function(){
@@ -279,6 +280,7 @@ angular.module('bobbyApp')
       $scope.loading = true;
       serviceAjax.get("bookings/" + $scope.booking_id).then(function(data){
         $scope.booking = data.data;
+        $scope.loading = false;
 
         //On vérifie que l'utilisateur est admin d'une association (déjà vérifié dans l'API) 
         // L'user peut etre admin
@@ -288,7 +290,7 @@ angular.module('bobbyApp')
           }
         }  
         loadDates();       
-      })
+      }, function(error){$scope.error = true;})
     }
     loadBookings();
 
@@ -298,38 +300,47 @@ angular.module('bobbyApp')
     //Remise de la caution
     $scope.cautionReceived = function(){
       $scope.booking.cautionReceived = "Oui";
-      serviceAjax.post('bookings/caution/' + $scope.booking.id);
+      $scope.loading = true;
+      serviceAjax.post('bookings/caution/' + $scope.booking.id).then(function(){
+        $scope.loading = false;
+      }, function(error){$scope.error = true;});
     }
 
 
     //Validation de tous les items de la commande
     $scope.acceptBooking = function(){
+      $scope.loading = true;
       serviceAjax.get("bookings/accept/" + $scope.booking_id).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Annulation de la réservation
     $scope.cancelBooking = function(){
+      $scope.loading = true;
       serviceAjax.get('bookings/cancel/' + $scope.booking.id, $scope.booking).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Validation du rendu du matériel pour tous les items
     $scope.returnedBooking = function(){
+      $scope.loading = true;
       serviceAjax.get('bookings/returned/' + $scope.booking.id, $scope.booking).then(function(){
         serviceAjax.get("bookings/" + $scope.booking_id).then(function(res){
           $scope.booking = res.data;
+          $scope.loading = false;
           loadDates();
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
 
@@ -342,6 +353,7 @@ angular.module('bobbyApp')
 
     //Accepter un item
     $scope.acceptLine =function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/accept/' + bookingline.id).then(function(res){
         bookingline.status = 2;
         bookingline.statusName = "Validé"
@@ -351,12 +363,14 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Annuler un item
     $scope.cancelLine=function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/cancel/' + bookingline.id).then(function(res){
         bookingline.status = 4;
         bookingline.statusName = "Annulé"
@@ -366,12 +380,14 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false;
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Item rendu
     $scope.returnedLine=function(bookingline){
+      $scope.loading = true;
       serviceAjax.get('bookinglines/returned/' + bookingline.id).then(function(res){
         bookingline.status = 3;
         bookingline.statusName = "Rendu"
@@ -381,21 +397,24 @@ angular.module('bobbyApp')
             $scope.booking.status = res.data.status;
             $scope.booking.statusName = res.data.statusName;
           }
+          $scope.loading = false;
         })
-      })
+      }, function(error){$scope.error = true;})
     }
 
     //Mise à jour d'un item et validation
     $scope.updateItem=function(item){
+      $scope.loading = true;
       item.startDate = $filter('date')(item.startDateAngular, "yyyy-MM-dd")
       item.endDate = $filter('date')(item.endDateAngular, "yyyy-MM-dd")
       serviceAjax.put("bookinglines/"+item.id, item).then(function(res){
         item.edit = false;
+        $scope.loading = false;
         if ($rootScope.isAdminAsso($scope.booking.owner.login)) {
           // Si c'est le propriétaire qui a fait la validation on valide l'item
           $scope.acceptLine(item);
         }
-      })
+      }, function(error){$scope.error = true;})
     }
 
   });
@@ -575,6 +594,38 @@ angular.module('bobbyApp')
   });
 
 
+app.controller('errorCtrl', function($scope, $routeParams, $location) {
+
+  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
+
+    $scope.errorCode = 401;
+    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 403) {
+
+    $scope.errorCode = 403;
+    $scope.errorDesc = "Action interdite";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 404) {
+
+    $scope.errorCode = 404;
+    $scope.errorDesc = "Page demandée introuvable";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 500) {
+
+    $scope.errorCode = 500;
+    $scope.errorDesc = "Une erreur est survenue.";
+
+  }
+  else {
+    $location.path("/");
+  }
+
+});
+
 'use strict';
 
 /**
@@ -646,28 +697,6 @@ angular.module('bobbyApp')
     $scope.bookItem = function(item){
       window.location.href = "#!/booking?item_id=" + item.id + "&asso_id=" + item.association_id
     }
-
-  });
-
-
-    'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('MainCtrl', function ($scope, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    
-    $scope.prenom = $rootScope.auth.member.firstname;
 
   });
 
@@ -755,7 +784,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         const config = {
             header: false,
             dynamicTyping: true,
-            encoding: "ISO-8859-1"
+            encoding : "UTF8"
         }
         config.complete = function onComplete(result) {
             if (config.rejectOnError && result.errors.length) {
@@ -850,36 +879,51 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
 });
   
-app.controller('errorCtrl', function($scope, $routeParams, $location) {
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
 
-  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
 
-    $scope.errorCode = 401;
-    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+  $scope.message = "Connexion";
 
-  }
-  else if ($routeParams.code && $routeParams.code == 403) {
+	
+	//Url avec token?=
+	if($routeParams.token){
 
-    $scope.errorCode = 403;
-    $scope.errorDesc = "Action interdite";
+		$rootScope.auth.login($routeParams.token)
+		serviceAjax.get('userassos').then(function(res){
+			Data.setUserAssos(res.data);
+			serviceAjax.get('associations').then(function(res){
+				Data.setAssociations(res.data);
+				serviceAjax.get('itemplaces').then(function(res){
+					Data.setItemPlaces(res.data);
+					serviceAjax.get('itemtypes').then(function(res){
+						Data.setItemTypes(res.data);
+						let redirection_url = "/"
+						// Si une URL de redirection est présente dans le local storage on la récupère
+						const url_in_storage = localStorageService.get('redirect_url')
+						if (url_in_storage) {
+							redirection_url = url_in_storage
+						}	
+						// Redirection de l'utilisateur
+						$window.location.href = redirection_url
+					})
+				})
+			})
+		})
+		
+	}
+	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
 
-  }
-  else if ($routeParams.code && $routeParams.code == 404) {
+	    $scope.message = "Erreur de connexion";
 
-    $scope.errorCode = 404;
-    $scope.errorDesc = "Page demandée introuvable";
+	    // On redirige vers la page d'erreur 401
+	    $location.path("/error/401");
+	    $location.url($location.path());  // Clear des paramètres
 
-  }
-  else if ($routeParams.code && $routeParams.code == 500) {
+	}
 
-    $scope.errorCode = 500;
-    $scope.errorDesc = "Une erreur est survenue.";
-
-  }
-  else {
-    $location.path("/");
-  }
-
+	else {
+	  	PortailAuth.goLogin();
+	}
 });
 
 'use strict';
@@ -1101,52 +1145,27 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
 
+    'use strict';
 
-  $scope.message = "Connexion";
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MainCtrl', function ($scope, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    
+    $scope.prenom = $rootScope.auth.member.firstname;
 
-	
-	//Url avec token?=
-	if($routeParams.token){
-
-		$rootScope.auth.login($routeParams.token)
-		serviceAjax.get('userassos').then(function(res){
-			Data.setUserAssos(res.data);
-			serviceAjax.get('associations').then(function(res){
-				Data.setAssociations(res.data);
-				serviceAjax.get('itemplaces').then(function(res){
-					Data.setItemPlaces(res.data);
-					serviceAjax.get('itemtypes').then(function(res){
-						Data.setItemTypes(res.data);
-						let redirection_url = "/"
-						// Si une URL de redirection est présente dans le local storage on la récupère
-						const url_in_storage = localStorageService.get('redirect_url')
-						if (url_in_storage) {
-							redirection_url = url_in_storage
-						}	
-						// Redirection de l'utilisateur
-						$window.location.href = redirection_url
-					})
-				})
-			})
-		})
-		
-	}
-	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-	    $scope.message = "Erreur de connexion";
-
-	    // On redirige vers la page d'erreur 401
-	    $location.path("/error/401");
-	    $location.url($location.path());  // Clear des paramètres
-
-	}
-
-	else {
-	  	PortailAuth.goLogin();
-	}
-});
+  });
 
 app.controller('logoutCtrl', function($scope, PortailAuth) {
 
@@ -1378,6 +1397,49 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
+  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.items = []
+
+
+     //Recherche de la catégorie séléectionné
+    var loadItems = function(){
+      $scope.loading = true;
+      serviceAjax.get("items").then(function(data){
+        $scope.items = data.data;
+      })
+    }
+    loadItems();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
+    };
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
   .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $rootScope, $timeout, Data) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -1531,49 +1593,6 @@ angular.module('bobbyApp')
       })
 
     }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.items = []
-
-
-     //Recherche de la catégorie séléectionné
-    var loadItems = function(){
-      $scope.loading = true;
-      serviceAjax.get("items").then(function(data){
-        $scope.items = data.data;
-      })
-    }
-    loadItems();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
 
   });
 
