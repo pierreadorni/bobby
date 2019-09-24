@@ -21,7 +21,7 @@ class MailSender extends Model
         }
 
         Mail::send('mail',['content' => $content, 'bookinglines' => $bookinglines, 'comment' => $comment], function($message) use ($subject, $receiver) {
-            $message->to('josselin.pennors@hotmail.fr');
+            $message->to($receiver);
             $message->from(env('MAIL_ADDRESS'));
             $message->subject($subject);
         });
