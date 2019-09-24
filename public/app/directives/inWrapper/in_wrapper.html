@@ -21,9 +21,9 @@
                     Catégories
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" ng-repeat="type in types" href="#!/categories/{{type.id}}">{{type.name}}</a>
+                  <a class="dropdown-item pointer" ng-repeat="type in types" href="#!/categories/{{type.id}}">{{type.name}}</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#!/categories/0">Toutes</a>
+                  <a class="dropdown-item pointer" href="#!/categories/0">Toutes</a>
                 </div>
               </li>
 
@@ -41,7 +41,7 @@
                    {{asso.shortname}}
                   </a>
                   <a 
-                    class="dropdown-item" 
+                    class="dropdown-item pointer" 
                     href="#!/data" 
                     ng-if="$root.canBook()"
                   >
@@ -55,8 +55,8 @@
                     Réservations
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#!/booking">Réserver</a>
-                  <a class="dropdown-item" href="#!/mybookings">Mes réservations</a>
+                  <a class="dropdown-item pointer" href="#!/booking">Réserver</a>
+                  <a class="dropdown-item pointer" href="#!/mybookings">Mes réservations</a>
                 </div>
               </li>
 
@@ -65,11 +65,11 @@
                     Gestion administrative
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#!/gestion/categories">Catégories</a>
-                  <a class="dropdown-item" href="#!/gestion/places">Localisations</a>
-                  <a class="dropdown-item" href="#!/gestion/items">Matériels</a>
-                  <a class="dropdown-item" href="#!/gestion/bookings">Réservations</a>
-                  <a class="dropdown-item" href="#!/gestion/bugs">Bugs</a>
+                  <a class="dropdown-item pointer" href="#!/gestion/categories">Catégories</a>
+                  <a class="dropdown-item pointer" href="#!/gestion/places">Localisations</a>
+                  <a class="dropdown-item pointer" href="#!/gestion/items">Matériels</a>
+                  <a class="dropdown-item pointer" href="#!/gestion/bookings">Réservations</a>
+                  <a class="dropdown-item pointer" href="#!/gestion/bugs">Bugs</a>
                 </div>
               </li>
 
@@ -78,11 +78,11 @@
                     Mon profil
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" data-dismiss="modal" data-toggle="modal" data-target="#bugModal">
+                  <a class="dropdown-item pointer" data-dismiss="modal" data-toggle="modal" data-target="#bugModal">
                     <!-- <i class="fas fa-cogs left10" aria-hidden="true"></i> -->
                     Un bug?
                   </a>
-                  <a class="dropdown-item" href="#!/logout">
+                  <a class="dropdown-item pointer" href="#!/logout">
                     <!-- <i class="fas fa-sign-out-alt left10" aria-hidden="true"></i> -->
                     Se déconnecter
                   </a>
