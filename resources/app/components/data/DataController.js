@@ -82,7 +82,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         const config = {
             header: false,
             dynamicTyping: true,
-            encoding: "ISO-8859-1"
+            encoding : "UTF8"
         }
         config.complete = function onComplete(result) {
             if (config.rejectOnError && result.errors.length) {
