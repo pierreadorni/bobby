@@ -21,7 +21,8 @@ angular.module('bobbyApp')
 
     //Current date
     $scope.currentDate = new Date();
-
+    $scope.loading = true;
+    $scope.error = false;
     $scope.booking_id = $routeParams.id;
 
     var loadDates = function(){

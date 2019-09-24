@@ -9,6 +9,11 @@
 			  	</div>
 			  	
 			  	<div class="card-body">
+					<div class="row" ng-if="error">
+						<div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+							Une erreur est survenue. Veuillez <strong>reporter</strong> l'erreur via l'onglet "Mon profil", "Bug ?".<br>
+						</div>
+					</div>
 			  		<div class="row">
 						<div class="col-md-4 col-sm-12">
 							<div class="card">
@@ -33,7 +38,7 @@
 					                	</a>
 					                </p>
 					               	<p>Statut : <strong><i>{{booking.statusName}}</i></strong></p>
-					               	<div class="row">
+					               	<div class="row" ng-if="!loading">
 										<div ng-if="booking.status==1">
 											<button 
 												class="btn btn-grey" 
@@ -75,7 +80,12 @@
 												Annuler
 											</button>
 										</div>
-					                </div>
+									</div>
+									<div class="row" ng-if="loading">
+										<span class="margin_auto">
+											<i class="fa fa-spinner fa-pulse fa-fw"></i>
+										</span>
+									</div>
 					            </div>
 					        </div>
 					    </div>
@@ -163,22 +173,29 @@
 					                	<span class="col-sm-6"><i>{{bookingline.statusName}}</i></span>
 						            </div>
 
-					                <div class="row" ng-if="bookingline.status==1 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
-					                	<button class="btn btn-grey" ng-click="acceptLine(bookingline)">Accepter</button>
-					                	<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Refuser</button>
-					                </div>
-					                <div class="row" ng-if="bookingline.status==2 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
-										<button class="btn btn-grey"ng-click="returnedLine(bookingline)">Rendu</button>
-										<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Annuler</button>
-					                </div>
-					                <div class="row" ng-if="bookingline.edit && bookingline.status == 1 && $root.isAdminAsso(booking.owner.login)">
-										<button 
-											class="btn btn-grey" 
-											ng-click="updateItem(bookingline)"
-										>
-											Valider
-										</button>
-					                </div>
+									<div ng-if="!loading">
+										<div class="row" ng-if="bookingline.status==1 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
+											<button class="btn btn-grey" ng-click="acceptLine(bookingline)">Accepter</button>
+											<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Refuser</button>
+										</div>
+										<div class="row" ng-if="bookingline.status==2 && !bookingline.edit && $root.isAdminAsso(booking.owner.login)">
+											<button class="btn btn-grey"ng-click="returnedLine(bookingline)">Rendu</button>
+											<button class="btn btn-grey" ng-click="cancelLine(bookingline)">Annuler</button>
+										</div>
+										<div class="row" ng-if="bookingline.edit && bookingline.status == 1 && $root.isAdminAsso(booking.owner.login)">
+											<button 
+												class="btn btn-grey" 
+												ng-click="updateItem(bookingline)"
+											>
+												Valider
+											</button>
+										</div>
+									</div>
+									<div ng-if="loading" class="row">
+										<span class="margin_auto">
+											<i class="fa fa-spinner fa-pulse fa-fw"></i>
+										</span>
+									</div>
 					            </div>
 					        </div>
 					    </div>
