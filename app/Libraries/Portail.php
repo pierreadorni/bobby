@@ -281,6 +281,25 @@ class Portail
 
 
     /**
+     * Boolean method to know if user is admin of an association
+    */
+    public function isUserAdminAsso($asso_id){
+
+        $user_assos = $this->assos;
+        $user_permissions = $this->permissions;
+
+        $index = array_search($asso_id, $user_assos);
+        if ($index !== false) {
+            $asso = $this->showAsso($user_assos[$index]);
+            if (array_search($asso['login'].'-admin',$user_permissions) !== false){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
     *   Check admin right
     *
     */
