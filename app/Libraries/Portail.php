@@ -235,7 +235,7 @@ class Portail
         }
 
         $index = array_search($asso_id2, $user_assos);
-        if ($index != null) {
+        if ($index !== false) {
             $asso = $this->showAsso($user_assos[$index]);
             if (array_search($asso['login'].'-admin',$user_permissions) !== false){
                 return true;
@@ -269,7 +269,7 @@ class Portail
         }
 
         $index = array_search($asso_id2, $user_assos);
-        if ($index != null) {
+        if ($index !== false) {
             $asso = $this->showAsso($user_assos[$index]);
             if (array_search($asso['login'].'-admin',$user_permissions) !== false){
                 return true;
