@@ -169,9 +169,15 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
     $scope.csvImport = function(){
         serviceAjax.post('import/items/' + $scope.asso_id, {'items': $scope.data.items}).then(function(res){
-
+            $scope.data.checked = false;
+            $scope.data.errors = [];
+            $scope.data.parsed = false;
+            $scope.data.headers = [];
+            $scope.data.items = [];
+            $scope.data.file = null;
+            $scope.data.importSuccessfully = true;
         }, function(error){
-
+            $scope.data.importError = true;
         })
     }
 
@@ -181,6 +187,8 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         $scope.data.parsed = false;
         $scope.data.headers = [];
         $scope.data.items = [];
+        $scope.data.importSuccessfully = false;
+        $scope.data.importError = false;
     }
 
 });

@@ -817,7 +817,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
                     items[i-1] = {}
                     items[i-1].name = csvLines[i][0]
                     items[i-1].quantity = csvLines[i][1]
-                    items[i-1].statusName = csvLines[i][2]
+                    items[i-1].status = csvLines[i][2]
                     items[i-1].caution = csvLines[i][3]
                     items[i-1].typeName = csvLines[i][4]
                     items[i-1].placeName = csvLines[i][5]
@@ -843,11 +843,11 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             } else if (!angular.isNumber(element.quantity)){
                 errors.push("La propriété quantité de l'élément n°" + (index+1) + " doit être un entier.");
             }
-            const statusName = ['Visible', 'Visible et non empruntable', 'Invisible'];
+            const status = ['1','2','3'];
 
-            if (!element.statusName) {
+            if (!element.status) {
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " est requise.");
-            } else if (!statusName.find(value => value == element.statusName)){
+            } else if (!status.find(value => value == element.status)){
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             if (!element.caution) {
@@ -874,9 +874,15 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
     $scope.csvImport = function(){
         serviceAjax.post('import/items/' + $scope.asso_id, {'items': $scope.data.items}).then(function(res){
-
+            $scope.data.checked = false;
+            $scope.data.errors = [];
+            $scope.data.parsed = false;
+            $scope.data.headers = [];
+            $scope.data.items = [];
+            $scope.data.file = null;
+            $scope.data.importSuccessfully = true;
         }, function(error){
-
+            $scope.data.importError = true;
         })
     }
 
@@ -886,6 +892,8 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         $scope.data.parsed = false;
         $scope.data.headers = [];
         $scope.data.items = [];
+        $scope.data.importSuccessfully = false;
+        $scope.data.importError = false;
     }
 
 });
@@ -1418,49 +1426,6 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.items = []
-
-
-     //Recherche de la catégorie séléectionné
-    var loadItems = function(){
-      $scope.loading = true;
-      serviceAjax.get("items").then(function(data){
-        $scope.items = data.data;
-      })
-    }
-    loadItems();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $rootScope, $timeout, Data) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -1614,6 +1579,49 @@ angular.module('bobbyApp')
       })
 
     }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.items = []
+
+
+     //Recherche de la catégorie séléectionné
+    var loadItems = function(){
+      $scope.loading = true;
+      serviceAjax.get("items").then(function(data){
+        $scope.items = data.data;
+      })
+    }
+    loadItems();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
+    };
 
   });
 

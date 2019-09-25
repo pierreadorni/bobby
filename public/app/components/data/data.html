@@ -78,8 +78,14 @@
 						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.checked && data.errors.length == 0">
 							Vérification des données effectuée avec succès 
 						</div>
+						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importSuccessfully">
+							Import effectué avec succès 
+						</div>
+						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importError">
+							Une erreur est survenue.
+						</div>
 						<button type="button" class="btn btn-grey" ng-click="cancelImport()" ng-if="data.parsed">Annuler</button>
-						<button type="button" class="btn btn-grey" ng-click="csvParse()" ng-hide="data.parsed">Valider</button>
+						<button type="button" class="btn btn-grey" ng-click="csvParse()" ng-hide="data.parsed">Parser CSV</button>
 						<button type="button" class="btn btn-grey" ng-click="csvSave()" ng-if="data.parsed && !data.checked">Vérifier les données</button>
 						<button type="button" class="btn btn-grey" ng-click="csvImport()" ng-if="data.checked && data.errors.length == 0">Importer</button>
 						<table class="table table-hover col-md-12" ng-if="data.items.length > 0">
