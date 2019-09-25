@@ -53,7 +53,13 @@
 							<h6 class="underline">Localisation</h6>
 							<p>Le champ Localisation doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="place in places">{{place.name}}  / </span></strong></p>
 							<h6 class="underline">Statut</h6>
-							<p>Le champ Statut doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span>Visible / Visible et non empruntable / Invisible</span></strong><br></p>
+							<p>Le champ Statut doit être rempli par un terme suivant : <br><strong><span>1 / 2 / 3</span></strong>
+								<ul>
+									<li>1 correspond à : Visible</li>
+									<li>2 correspond à : Visible et non empruntable</li>
+									<li>3 correspond à : Invisible</li>
+								</ul>
+							</p>
 						</div>
 					</div>
                 </div>
@@ -91,7 +97,7 @@
 									<td>{{ $index + 1 }}</td>
 									<td>{{item.name}}</td>
 									<td>{{item.quantity}}</td>
-									<td>{{item.statusName}}</td>
+									<td>{{item.status}}</td>
 									<td>{{item.caution}}</td>
 									<td>{{item.typeName}}</td>
 									<td>{{item.placeName}}</td>

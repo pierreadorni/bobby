@@ -112,7 +112,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
                     items[i-1] = {}
                     items[i-1].name = csvLines[i][0]
                     items[i-1].quantity = csvLines[i][1]
-                    items[i-1].statusName = csvLines[i][2]
+                    items[i-1].status = csvLines[i][2]
                     items[i-1].caution = csvLines[i][3]
                     items[i-1].typeName = csvLines[i][4]
                     items[i-1].placeName = csvLines[i][5]
@@ -138,11 +138,11 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             } else if (!angular.isNumber(element.quantity)){
                 errors.push("La propriété quantité de l'élément n°" + (index+1) + " doit être un entier.");
             }
-            const statusName = ['Visible', 'Visible et non empruntable', 'Invisible'];
+            const status = ['1','2','3'];
 
-            if (!element.statusName) {
+            if (!element.status) {
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " est requise.");
-            } else if (!statusName.find(value => value == element.statusName)){
+            } else if (!status.find(value => value == element.status)){
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             if (!element.caution) {
