@@ -5,7 +5,7 @@
 		<p>Bonjour,</p>
         <p>{{$content}}</p>
         <p>La réservation est disponible dans vos réservations à l'adresse suivant  : 
-            <a href="https://assos.utc.fr/bobby/#!/my_bookings">assos.utc.fr/bobby/my_bookings</a>.
+            <a href="https://assos.utc.fr/bobby/#!/mybookings">assos.utc.fr/bobby/my_bookings</a>.
         </p>
 		<p>Ceci est un mail automatique généré depuis la plateforme <a href="https://assos.utc.fr/bobby">assos.utc.fr/bobby</a> 
 			visant à favoriser le partage de matériel entre les associations.</p>

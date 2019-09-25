@@ -29,7 +29,7 @@
 			<h4>Comment procéder?</h4>
 		@endif
 			<p>La réservation est disponible dans vos réservations à l'adresse suivant  : 
-				<a href="https://assos.utc.fr/#/my_bookings">assos.utc.fr/bobby/my_bookings</a>.
+				<a href="https://assos.utc.fr/#/mybookings">assos.utc.fr/bobby/my_bookings</a>.
 			</p>
 		@if($comment)
 	        <p>
