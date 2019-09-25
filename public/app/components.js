@@ -1149,15 +1149,6 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('logoutCtrl', function($scope, PortailAuth) {
-
-
-    $scope.message = "Déconnexion";
-  
-    PortailAuth.goLogout();
-    
-});
-  
 app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
 
 
@@ -1205,6 +1196,15 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}
 });
 
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
 'use strict';
 
 /**

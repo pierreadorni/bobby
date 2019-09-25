@@ -147,7 +147,7 @@ app.run( function($rootScope, $location, $route, localStorageService) {
           && next.templateUrl != "app/components/errors/error.html") {  // S'il se dirige vers une page d'erreur, on ne le redirige pas
         // On garde dans le local storage l'url vers laquelle rediriger l'utilisateur une fois connecté
         // localStorageService.set('redirect_url', window.location.href);
-        localStorageService.set('redirect_url', env('APP_URL') + '/' + window.location.hash);
+        localStorageService.set('redirect_url', window.__env.webappUrl + '/' + window.location.hash);
         $location.path("/login");
       }
 
