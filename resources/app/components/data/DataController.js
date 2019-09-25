@@ -175,5 +175,13 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
         })
     }
 
+    $scope.cancelImport = function(){
+        $scope.data.checked = false;
+        $scope.data.errors = [];
+        $scope.data.parsed = false;
+        $scope.data.headers = [];
+        $scope.data.items = [];
+    }
+
 });
   
