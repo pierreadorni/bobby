@@ -5,14 +5,14 @@ namespace App\Libraries;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 
-class MailSender extends Model
+class MailSender
 {
 
 	public function send_new_booking($bookinglines, $comment, $assoRequested, $assoRequesting)
     {
         //On récupère le contenu du mail, le sujet et le destinataire
         $content = "Une nouvelle demande de réservation vous a été adressée par l'association ".$assoRequesting["shortname"];
-        $subject = "Bobby - Demande de réservation de matériel";
+        $subject = "[Bobby] Demande de réservation de matériel";
         $bookinglines = $bookinglines;
         $comment = $comment;
         $receiver = $assoRequested["login"]."@assos.utc.fr";
@@ -31,7 +31,7 @@ class MailSender extends Model
     {
         $content = "Nous vous confirmons votre demande de réversation à l'association ".$assoRequested["shortname"].".\n Votre demande est en cours,
         vous recevrez un mail lorsque l'association répondra à votre demande.";
-        $subject = "Bobby - Confirmation de demande de réservation de matériel";
+        $subject = "[Bobby] Confirmation de demande de réservation de matériel";
         $receiver = $assoRequesting["login"]."@assos.utc.fr";
         if (env('APP_ENV') == 'local') {
             $receiver = env('PERSONAL_ADDRESS');
@@ -60,7 +60,7 @@ class MailSender extends Model
         if ($isAssoReceiverRequested) {
             $assoRequested["login"]."@assos.utc.fr";
         }
-        $subject = "Bobby - Demande de matériel n°".$bookingId;
+        $subject = "[Bobby] Demande de matériel n°".$bookingId;
 
         Mail::send('mail_booking_edit',['content' => $content, 'bookinglines' => $bookinglines, 'canAnnounceCaution' => $canAnnounceCaution, 'caution' => $caution], function($message) use ($subject, $receiver) {
             $message->to($receiver);

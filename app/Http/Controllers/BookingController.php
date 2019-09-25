@@ -406,8 +406,8 @@ class BookingController extends Controller
                 }
             }
 
-            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "L'association a indiqué vous aviez bien rendu le matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
-            MailSender::generic_mail("Bobby - Demande de matériel n°".$booking->id, "Nous vous confirmons que vous avez indiqué avoir reçu votre matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
+            MailSender::generic_mail("[Bobby] Demande de matériel n°".$booking->id, "L'association a indiqué vous aviez bien rendu le matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
+            MailSender::generic_mail("[Bobby] Demande de matériel n°".$booking->id, "Nous vous confirmons que vous avez indiqué avoir reçu votre matériel.", $request->assoRequesting['shortname']."@assos.utc.fr"); 
 
             return response()->json([], 201);
 
