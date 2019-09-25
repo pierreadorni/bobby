@@ -672,6 +672,28 @@ angular.module('bobbyApp')
 
   });
 
+
+    'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MainCtrl', function ($scope, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    
+    $scope.prenom = $rootScope.auth.member.firstname;
+
+  });
+
 app.controller('dataCtrl', function($scope, $rootScope, $location, Data, serviceAjax, FileSaver, $http, $q) {
 
     
@@ -882,28 +904,6 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
   }
 
 });
-
-
-    'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('MainCtrl', function ($scope, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    
-    $scope.prenom = $rootScope.auth.member.firstname;
-
-  });
 
 'use strict';
 
@@ -1171,6 +1171,15 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}
 });
 
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
 'use strict';
 
 /**
@@ -1340,15 +1349,6 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('logoutCtrl', function($scope, PortailAuth) {
-
-
-    $scope.message = "Déconnexion";
-  
-    PortailAuth.goLogout();
-    
-});
-  
 'use strict';
 
 /**
@@ -1386,6 +1386,49 @@ angular.module('bobbyApp')
     $scope.sortBy = function(propertyName) {
       $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
       $scope.propertyName = propertyName;
+    };
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.items = []
+
+
+     //Recherche de la catégorie séléectionné
+    var loadItems = function(){
+      $scope.loading = true;
+      serviceAjax.get("items").then(function(data){
+        $scope.items = data.data;
+      })
+    }
+    loadItems();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
     };
 
   });
@@ -1554,49 +1597,6 @@ angular.module('bobbyApp')
       })
 
     }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.items = []
-
-
-     //Recherche de la catégorie séléectionné
-    var loadItems = function(){
-      $scope.loading = true;
-      serviceAjax.get("items").then(function(data){
-        $scope.items = data.data;
-      })
-    }
-    loadItems();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
 
   });
 
