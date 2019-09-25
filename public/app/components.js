@@ -65,52 +65,58 @@ angular.module('bobbyApp')
       loadAssociationsRequested();
     }
 
-    // Utilisation rootparams pour récupérer l'item et l'asso à qui l'item appartient
-    if ($routeParams.asso_id && $routeParams.item_id) {
-      const asso_id = $routeParams.asso_id;
-      const item_id = $routeParams.item_id;
+    //Fonction pour la sélection de l'association demandant un item
+    $scope.assoRequesting = function($id){
+      $scope.booking.assoRequesting = $scope.assosBooking.filter((r)=>r.id == $id)[0];
+      $scope.search = null
+    }
 
-      serviceAjax.get("associations/" + asso_id).then(function(res){
-      $scope.booking.assoRequested = Data.loadAssociations();
-      serviceAjax.get("booking/items/" + asso_id).then(function(res){
-        $scope.items = res.data;
-        const requested_item = $scope.items.filter((i) => i.id == item_id)[0];
-        if (requested_item) {
-          const booking_item = {
-            'id': requested_item.id,
-            'name': requested_item.name,
-            'quantity': 1
+    
+    //Fonction pour la sélection de l'association possédant les items à emprunter
+    $scope.associationRequested = function($id){
+      $scope.booking.assoRequested = $scope.assosRequested.filter((r)=>r.id == $id)[0];
+      $scope.search = null
+      loadItem($scope.booking.assoRequested.id);
+
+      //Chargement des associations hormis celles sélectionnées
+    }
+
+    var init = function(){
+      // Utilisation rootparams pour récupérer l'item et l'asso à qui l'item appartient
+      if ($routeParams.asso_id && $routeParams.item_id) {
+        loadAssociations();
+        const asso_id = $routeParams.asso_id;
+        const item_id = $routeParams.item_id;
+
+        // serviceAjax.get("associations/" + asso_id).then(function(res){
+        // $scope.booking.assoRequested = Data.loadAssociations();
+        $scope.associationRequested(asso_id);
+        serviceAjax.get("booking/items/" + asso_id).then(function(res){
+          $scope.items = res.data;
+          const requested_item = $scope.items.filter((i) => i.id == item_id)[0];
+          if (requested_item) {
+            const booking_item = {
+              'id': requested_item.id,
+              'name': requested_item.name,
+              'quantity': 1
+            }
+            $scope.bookingline.items.push(booking_item);
           }
-          $scope.bookingline.items.push(booking_item);
-        }
+          loadAssociations();
+        }, function(error){
+          loadAssociations();
+        })
+      // }, function(error){
+      //     loadAssociations();
+      //   })
+      } else {
         loadAssociations();
-      }, function(error){
-        loadAssociations();
-      })
-    }, function(error){
-        loadAssociations();
-      })
-    } else {
-      loadAssociations();
+      }
     }
 
     
 
-  //Fonction pour la sélection de l'association demandant un item
-  $scope.assoRequesting = function($id){
-    $scope.booking.assoRequesting = $scope.assosBooking.filter((r)=>r.id == $id)[0];
-    $scope.search = null
-  }
-
   
-  //Fonction pour la sélection de l'association possédant les items à emprunter
-  $scope.associationRequested = function($id){
-    $scope.booking.assoRequested = $scope.assosRequested.filter((r)=>r.id == $id)[0];
-    $scope.search = null
-    loadItem($scope.booking.assoRequested.id);
-
-    //Chargement des associations hormis celles sélectionnées
-  }
 
   /***  ETAPE 3 ***/
   $scope.dateSave = function(){
@@ -239,6 +245,9 @@ angular.module('bobbyApp')
       }, 20000)
     });
   }
+
+
+  init();
 });
 
 
@@ -1401,49 +1410,6 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.items = []
-
-
-     //Recherche de la catégorie séléectionné
-    var loadItems = function(){
-      $scope.loading = true;
-      serviceAjax.get("items").then(function(data){
-        $scope.items = data.data;
-      })
-    }
-    loadItems();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('categoriesManagementCtrl', function ($scope, serviceAjax, $rootScope, $timeout, Data) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -1597,6 +1563,49 @@ angular.module('bobbyApp')
       })
 
     }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('indexItemsCtrl', function ($scope, serviceAjax, $location, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.items = []
+
+
+     //Recherche de la catégorie séléectionné
+    var loadItems = function(){
+      $scope.loading = true;
+      serviceAjax.get("items").then(function(data){
+        $scope.items = data.data;
+      })
+    }
+    loadItems();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
+    };
 
   });
 
