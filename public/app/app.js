@@ -146,7 +146,8 @@ app.run( function($rootScope, $location, $route, localStorageService) {
       if ( next.templateUrl != "app/components/login/login.html"       // S'il se dirige déjà vers login, on ne le redirige pas
           && next.templateUrl != "app/components/errors/error.html") {  // S'il se dirige vers une page d'erreur, on ne le redirige pas
         // On garde dans le local storage l'url vers laquelle rediriger l'utilisateur une fois connecté
-        localStorageService.set('redirect_url', window.location.href);
+        // localStorageService.set('redirect_url', window.location.href);
+        localStorageService.set('redirect_url', window.location.origin + '/' + window.location.hash);
         $location.path("/login");
       }
 
