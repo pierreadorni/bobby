@@ -249,14 +249,6 @@ class ItemController extends Controller
             # Récupération des données manquantes avant création
             $item['type_id'] = ItemType::where('name', $item['typeName'])->get()->first()->id;
             $item['place_id'] = ItemPlace::where('name', $item['placeName'])->get()->first()->id;
-            if ($item['statusName'] == "Visible") {
-                $item['status'] = 1;
-            }
-            else if ($item['statusName'] == "Visible et non empruntable"){
-                $item['status'] = 2;
-            } else {
-                $item['status'] = 3;
-            }
 
             $item = Item::withTrashed()->updateOrCreate(
                 [
