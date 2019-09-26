@@ -17,11 +17,12 @@ class CreateItemsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
-            $table->string('description')->nullable();
             $table->integer('quantity')->unsigned();
             $table->integer('place_id')->unsigned()->nullable();
             $table->foreign('place_id')->references('id')->on('itemPlaces')->onDelete('set null')->onUpdate('cascade');
             $table->boolean('status');
+            $table->string('date_of_purchase')->nullable();
+            $table->string('price')->nullable();
             $table->integer('caution')->unsigned();
             $table->integer('type_id')->unsigned()->nullable();
             $table->foreign('type_id')->references('id')->on('itemTypes')->onDelete('set null')->onUpdate('cascade');
