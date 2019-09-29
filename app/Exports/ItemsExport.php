@@ -27,7 +27,6 @@ class ItemsExport implements FromCollection, WithHeadings, ShouldAutoSize, WithS
         $data = Item::where('association_id', $this->asso_id)->get();
         foreach ($data as $item) {
             unset($item["id"]);
-            unset($item["description"]);
 
             if ($item->type()->get()->count() > 0) {
                 $item["type"] = $item->type()->get()->first()->name;

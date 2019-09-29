@@ -21,7 +21,7 @@ class Item extends Model
 
 
     protected $fillable = [
-		'name','description', 'quantity','place_id','status','caution','type_id','association_id',
+		'name', 'quantity','place_id','status','caution','type_id','association_id',
 	];
 	
 

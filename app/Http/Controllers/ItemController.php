@@ -184,7 +184,7 @@ class ItemController extends Controller
     {
         $items = Item::where('status', '<', 3)
             ->with('type')        
-            ->select('id', 'name', 'description', 'quantity', 'association_id', 'type_id', 'status')
+            ->select('id', 'name', 'quantity', 'association_id', 'type_id', 'status')
             ->get();
         if($categorie>0){
             $items = $items->where('type_id', $categorie);
