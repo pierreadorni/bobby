@@ -39,7 +39,8 @@ class ItemsExport implements FromCollection, WithHeadings, ShouldAutoSize, WithS
             } else {
                 $item["place"] = "";
             }
-
+            unset($item["date_of_purchase"]);
+            unset($item["price"]);
             unset($item["type_id"]);
             unset($item["place_id"]);
             unset($item["association_id"]);
