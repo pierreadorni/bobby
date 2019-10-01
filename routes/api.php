@@ -58,7 +58,7 @@ Route::prefix('v1')->group(function () {
             return Item::where([
                 ['association_id', $asso_id],
                 ['status', 1]
-            ])->select('id', 'name', 'description', 'quantity', 'association_id')
+            ])->select('id', 'name', 'quantity', 'association_id')
             ->get();
         });
     
