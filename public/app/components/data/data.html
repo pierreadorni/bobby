@@ -1,118 +1,117 @@
 <in-wrapper>
 	<br><br>
-	<div ng-hide="singleAssociation" ng-controller="dataCtrl">
-		<p class="title">Sélectionne une association</p>
-		<select class="col-md-2 offset-md-5 form-control" ng-model="asso_id">
-	        <option ng-repeat="asso in assos" value="{{asso.id}}">
-	        	<a>{{asso.name}}</a>
-	        </option>
-	     </select>
-	     <br>
-	     <hr>
-	</div>
-	<div ng-if="asso_id" class="row">
-		<div class="offset-sm-1 col-sm-10 margin20">
-			<div class="row">
-			  	<h3 class="col-sm-12">Export / Import</h3>
-		    </div>
-            <br>
-		  	<div class="card text-center">
-				<div class="card-header">
-					<ul class="nav nav-tabs card-header-tabs">
-						<li class="nav-item">
-							<a class="nav-link" ng-click="use('export')" ng-class="{ active : isActive('export')}">Export</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" ng-click="use('import')" ng-class="{ active : isActive('import')}">Import</a>
-						</li>
-					</ul>
+	<div ng-controller="dataCtrl">
+		<div ng-hide="singleAssociation">
+			<p class="title">Sélectionne une association</p>
+			<select class="col-md-4 offset-md-4 form-control" ng-options="asso.shortname for asso in assos" ng-model="selected_asso">
+			</select>
+			<br>
+			<hr>
+		</div>
+		<div ng-if="selected_asso.id != null" class="row">
+			<div class="offset-sm-1 col-sm-10 margin20">
+				<div class="row">
+					<h3 class="col-sm-12">Export / Import</h3>
 				</div>
-				<div class="card-body">
-					<div ng-if="export">
-                        <h4>Export</h4>
-                        <br>
-                        <p>
-                            Tu peux télécharger ici l'inventaire des items possédés par ton association
-                        </p>
-                    </div>
-                    <div ng-if="import">
-						<h4>Import</h4>
-						<div style="text-align: left">
+				<br>
+				<div class="card text-center">
+					<div class="card-header">
+						<ul class="nav nav-tabs card-header-tabs">
+							<li class="nav-item">
+								<a class="nav-link" ng-click="use('export')" ng-class="{ active : isActive('export')}">Export</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" ng-click="use('import')" ng-class="{ active : isActive('import')}">Import</a>
+							</li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div ng-if="export">
+							<h4>Export</h4>
+							<br>
 							<p>
-								<strong>Note : </strong>L'import détruira tous les items actuellement associés à votre association pour les remplacer par ceux
-								présents dans vote fichier. Faites donc attention à avoir votre inventaire complet sur ce dernier.
+								Tu peux télécharger ici l'inventaire des items possédés par ton association
 							</p>
-							<p>Pour que l'import se passe dans les meilleures conditions un certain nombre de règles doivt être respecté.</p>
-							<h6 class="underline">Règle générale</h6>
-							<p>Le fichier doit être au format <strong>CSV</strong>.</p>
-							<h6 class="underline">Colonnes</h6>
-							<p>Le fichier ne doit pas contenir le nom des colonnes. Dans l'ordre il faut remplir les champs suivants : <br><strong>Nom / Quantité / Statut / Caution / Catégorie / Localisation</strong></p>
-							<h6 class="underline">Catégorie</h6>
-							<p>Le champ Catégorie doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="type in types">{{type.name}}  / </span></strong><br>
-							Si tu as fait d'une manière différente, Ctrl+H est ton ami ;)</p>
-							<h6 class="underline">Localisation</h6>
-							<p>Le champ Localisation doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="place in places">{{place.name}}  / </span></strong></p>
-							<h6 class="underline">Statut</h6>
-							<p>Le champ Statut doit être rempli par un terme suivant : <br><strong><span>1 / 2 / 3</span></strong>
-								<ul>
-									<li>1 correspond à : Visible</li>
-									<li>2 correspond à : Visible et non empruntable</li>
-									<li>3 correspond à : Invisible</li>
-								</ul>
-							</p>
+						</div>
+						<div ng-if="import">
+							<h4>Import</h4>
+							<div style="text-align: left">
+								<p>
+									<strong>Note : </strong>L'import détruira tous les items actuellement associés à votre association pour les remplacer par ceux
+									présents dans vote fichier. Faites donc attention à avoir votre inventaire complet sur ce dernier.
+								</p>
+								<p>Pour que l'import se passe dans les meilleures conditions un certain nombre de règles doive être respecté.</p>
+								<h6 class="underline">Règle générale</h6>
+								<p>Le fichier doit être au format <strong>CSV</strong>.</p>
+								<h6 class="underline">Colonnes</h6>
+								<p>Le fichier doit contenir le nom des colonnes. Dans l'ordre il faut remplir les champs suivants : <br><strong>Nom / Quantité / Statut / Caution / Catégorie / Localisation</strong></p>
+								<h6 class="underline">Catégorie</h6>
+								<p>Le champ Catégorie doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="type in types">{{type.name}}  / </span></strong><br>
+								Si tu as fait d'une manière différente, Ctrl+H est ton ami ;)</p>
+								<h6 class="underline">Localisation</h6>
+								<p>Le champ Localisation doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="place in places">{{place.name}}  / </span></strong></p>
+								<h6 class="underline">Statut</h6>
+								<p>Le champ Statut doit être rempli par un terme suivant : <br><strong><span>1 / 2 / 3</span></strong>
+									<ul>
+										<li>1 correspond à : Visible</li>
+										<li>2 correspond à : Visible et non empruntable</li>
+										<li>3 correspond à : Invisible</li>
+									</ul>
+								</p>
+							</div>
 						</div>
 					</div>
-                </div>
-                <div class="card-footer">
-                    <div ng-if="export">
-                        <button type="button" class="btn btn-grey" ng-click="download()">Télécharger</button>
-                    </div>
-                    <div ng-if="import">
-						<input type="file" class="input-group form-control-file" files-model="data.file">
-						<div class="alert alert-danger margin20 textleft" role="alert" ng-if="data.errors.length > 0">
-							Les erreurs suivantes ont été relevés dans les données : 
-							<ul>
-								<li ng-repeat="error in data.errors">{{error}}</li>
-							</ul>
+					<div class="card-footer">
+						<div ng-if="export">
+							<button type="button" class="btn btn-grey" ng-click="download()">Télécharger</button>
 						</div>
-						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.checked && data.errors.length == 0">
-							Vérification des données effectuée avec succès 
+						<div ng-if="import">
+							<input type="file" class="input-group form-control-file" files-model="data.file">
+							<div class="alert alert-danger margin20 textleft" role="alert" ng-if="data.errors.length > 0">
+								Les erreurs suivantes ont été relevés dans les données : 
+								<ul>
+									<li ng-repeat="error in data.errors">{{error}}</li>
+								</ul>
+							</div>
+							<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.checked && data.errors.length == 0">
+								Vérification des données effectuée avec succès 
+							</div>
+							<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importSuccessfully">
+								Import effectué avec succès 
+							</div>
+							<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importError">
+								Une erreur est survenue.
+							</div>
+							<button type="button" class="btn btn-grey" ng-click="cancelImport()" ng-if="data.parsed">Annuler</button>
+							<button type="button" class="btn btn-grey" ng-click="csvParse()" ng-hide="data.parsed">Parser CSV</button>
+							<button type="button" class="btn btn-grey" ng-click="csvSave()" ng-if="data.parsed && !data.checked">Vérifier les données</button>
+							<button type="button" class="btn btn-grey" ng-click="csvImport()" ng-if="data.checked && data.errors.length == 0">Importer</button>
+							<table class="table table-hover col-md-12" ng-if="data.items.length > 0">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th ng-repeat="header in data.headers">{{header}}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{ }}</td>
+									</tr>
+									<tr ng-repeat="item in data.items">
+										<td>{{ $index + 1 }}</td>
+										<td>{{item.name}}</td>
+										<td>{{item.quantity}}</td>
+										<td>{{item.status}}</td>
+										<td>{{item.caution}}</td>
+										<td>{{item.typeName}}</td>
+										<td>{{item.placeName}}</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
-						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importSuccessfully">
-							Import effectué avec succès 
-						</div>
-						<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importError">
-							Une erreur est survenue.
-						</div>
-						<button type="button" class="btn btn-grey" ng-click="cancelImport()" ng-if="data.parsed">Annuler</button>
-						<button type="button" class="btn btn-grey" ng-click="csvParse()" ng-hide="data.parsed">Parser CSV</button>
-						<button type="button" class="btn btn-grey" ng-click="csvSave()" ng-if="data.parsed && !data.checked">Vérifier les données</button>
-						<button type="button" class="btn btn-grey" ng-click="csvImport()" ng-if="data.checked && data.errors.length == 0">Importer</button>
-						<table class="table table-hover col-md-12" ng-if="data.items.length > 0">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th ng-repeat="header in data.headers">{{header}}</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>{{ }}</td>
-								</tr>
-								<tr ng-repeat="item in data.items">
-									<td>{{ $index + 1 }}</td>
-									<td>{{item.name}}</td>
-									<td>{{item.quantity}}</td>
-									<td>{{item.status}}</td>
-									<td>{{item.caution}}</td>
-									<td>{{item.typeName}}</td>
-									<td>{{item.placeName}}</td>
-								</tr>
-							</tbody>
-						</table>
-                    </div>
-                </div>
+					</div>
+				</div>
 			</div>
 		</div>
-    </div>
+	</div>
 </in-wrapper>

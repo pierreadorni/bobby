@@ -11,8 +11,10 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Chargement realtifs aux associations de l'utilisateur
 
     $scope.assos = [];
-    $scope.asso_id = null;
     $scope.data = {}
+    $scope.selected_asso = {}
+    $scope.singleAssociation = false;
+    $scope.selected_asso = {}
 
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
@@ -27,11 +29,14 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             $scope.assos.push(assos[index]);
           }
         }
-        /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
-        if($scope.assos.length==1){
-            $scope.asso_id = $scope.assos[0].id
-          //Pour empêcher le select des assos de s'afficher
-          $scope.singleAssociation = true;
+
+        /*S'il y a des associations la première est sélectionnée par défaut*/
+        if($scope.assos.length>=1){
+            $scope.selected_asso = $scope.assos[0];
+            // Dans le cas où il y a une seule association exactement on empêche la sélection
+            if ($scope.assos.length == 1) {
+                $scope.singleAssociation = true;
+            }
         }
         $scope.loading=false;
     }
@@ -68,9 +73,11 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Export
 
     $scope.download = function(){
-        $http.get(__ENV.apiUrl + '/export/items/' + $scope.asso_id, {responseType : "blob"}).then(function(res){
-            FileSaver.saveAs(res.data, 'inventaire.xlsx');
-        });
+        if ($scope.selected_asso.id) {
+            $http.get(__ENV.apiUrl + '/export/items/' + $scope.selected_asso.id, {responseType : "blob"}).then(function(res){
+                FileSaver.saveAs(res.data, 'inventaire.xlsx');
+            });  
+        }
     }
 
     // Import
@@ -168,7 +175,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
 
     $scope.csvImport = function(){
-        serviceAjax.post('import/items/' + $scope.asso_id, {'items': $scope.data.items}).then(function(res){
+        serviceAjax.post('import/items/' + $scope.selected_asso.id, {'items': $scope.data.items}).then(function(res){
             $scope.data.checked = false;
             $scope.data.errors = [];
             $scope.data.parsed = false;
