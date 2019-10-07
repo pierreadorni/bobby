@@ -607,28 +607,6 @@ angular.module('bobbyApp')
   });
 
 
-
-    'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('MainCtrl', function ($scope, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    
-    $scope.prenom = $rootScope.auth.member.firstname;
-
-  });
-
 'use strict';
 
 /**
@@ -703,38 +681,6 @@ angular.module('bobbyApp')
 
   });
 
-app.controller('errorCtrl', function($scope, $routeParams, $location) {
-
-  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
-
-    $scope.errorCode = 401;
-    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
-
-  }
-  else if ($routeParams.code && $routeParams.code == 403) {
-
-    $scope.errorCode = 403;
-    $scope.errorDesc = "Action interdite";
-
-  }
-  else if ($routeParams.code && $routeParams.code == 404) {
-
-    $scope.errorCode = 404;
-    $scope.errorDesc = "Page demandée introuvable";
-
-  }
-  else if ($routeParams.code && $routeParams.code == 500) {
-
-    $scope.errorCode = 500;
-    $scope.errorDesc = "Une erreur est survenue.";
-
-  }
-  else {
-    $location.path("/");
-  }
-
-});
-
 app.controller('dataCtrl', function($scope, $rootScope, $location, Data, serviceAjax, FileSaver, $http, $q) {
 
     
@@ -748,8 +694,10 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Chargement realtifs aux associations de l'utilisateur
 
     $scope.assos = [];
-    $scope.asso_id = null;
     $scope.data = {}
+    $scope.selected_asso = {}
+    $scope.singleAssociation = false;
+    $scope.selected_asso = {}
 
     //Chargement des associations de l'utilisateur
     var loadAssociations = function(){
@@ -764,11 +712,14 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             $scope.assos.push(assos[index]);
           }
         }
-        /*S'il n'y a qu'une seule association elle est chargée dès le départ*/
-        if($scope.assos.length==1){
-            $scope.asso_id = $scope.assos[0].id
-          //Pour empêcher le select des assos de s'afficher
-          $scope.singleAssociation = true;
+
+        /*S'il y a des associations la première est sélectionnée par défaut*/
+        if($scope.assos.length>=1){
+            $scope.selected_asso = $scope.assos[0];
+            // Dans le cas où il y a une seule association exactement on empêche la sélection
+            if ($scope.assos.length == 1) {
+                $scope.singleAssociation = true;
+            }
         }
         $scope.loading=false;
     }
@@ -805,9 +756,11 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
     // Export
 
     $scope.download = function(){
-        $http.get(__ENV.apiUrl + '/export/items/' + $scope.asso_id, {responseType : "blob"}).then(function(res){
-            FileSaver.saveAs(res.data, 'inventaire.xlsx');
-        });
+        if ($scope.selected_asso.id) {
+            $http.get(__ENV.apiUrl + '/export/items/' + $scope.selected_asso.id, {responseType : "blob"}).then(function(res){
+                FileSaver.saveAs(res.data, 'inventaire.xlsx');
+            });  
+        }
     }
 
     // Import
@@ -905,7 +858,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
 
     $scope.csvImport = function(){
-        serviceAjax.post('import/items/' + $scope.asso_id, {'items': $scope.data.items}).then(function(res){
+        serviceAjax.post('import/items/' + $scope.selected_asso.id, {'items': $scope.data.items}).then(function(res){
             $scope.data.checked = false;
             $scope.data.errors = [];
             $scope.data.parsed = false;
@@ -930,63 +883,8 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
 });
   
-app.controller('logoutCtrl', function($scope, PortailAuth) {
 
-
-    $scope.message = "Déconnexion";
-  
-    PortailAuth.goLogout();
-    
-});
-  
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
-
-
-  $scope.message = "Connexion";
-
-	
-	//Url avec token?=
-	if($routeParams.token){
-
-		$rootScope.auth.login($routeParams.token)
-		serviceAjax.get('userassos').then(function(res){
-			Data.setUserAssos(res.data);
-			serviceAjax.get('associations').then(function(res){
-				Data.setAssociations(res.data);
-				serviceAjax.get('itemplaces').then(function(res){
-					Data.setItemPlaces(res.data);
-					serviceAjax.get('itemtypes').then(function(res){
-						Data.setItemTypes(res.data);
-						let redirection_url = "/"
-						// Si une URL de redirection est présente dans le local storage on la récupère
-						const url_in_storage = localStorageService.get('redirect_url')
-						if (url_in_storage) {
-							redirection_url = url_in_storage
-						}	
-						// Redirection de l'utilisateur
-						$window.location.href = redirection_url
-					})
-				})
-			})
-		})
-		
-	}
-	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-	    $scope.message = "Erreur de connexion";
-
-	    // On redirige vers la page d'erreur 401
-	    $location.path("/error/401");
-	    $location.url($location.path());  // Clear des paramètres
-
-	}
-
-	else {
-	  	PortailAuth.goLogin();
-	}
-});
-
-'use strict';
+    'use strict';
 
 /**
  * @ngdoc function
@@ -996,164 +894,48 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
+  .controller('MainCtrl', function ($scope, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    /*Initialisation des boutons de confirmation*/
-    $scope.addConfirmation = false;
-    $scope.updateConfirmation = false;
-    $scope.deleteConfirmation = false;
-    $scope.error = false;
-    $scope.inputErrors = "";
-
-    //Pour afficher le formulaire d'ajout d'une nouvelle catégorie
-    $scope.addNewPlace = false;
-    $scope.newPlaceLoading = false;
     
-    var loadNewPlace = function(){
-      //Pour remplir la nouvelle catégorie
-      $scope.newPlace = {};
-    }
-
-    loadNewPlace();
-
-
-     //Recherche de la catégorie séléectionné
-    var loadPlace = function(){
-      $scope.loading = true;
-      $scope.places = Data.loadItemPlaces();
-    }
-    loadPlace();
-
-    /* Tri des catégories */
-    $scope.reverse = false;
-
-    $scope.sort = function() {
-      $scope.reverse = !$scope.reverse;
-    };
-
-    /* Fonctions de gestions des catégories*/
-
-    $scope.add = function(){
-      $scope.addNewPlace = true;
-      $scope.focusInput = true;
-    }
-
-    $scope.edit = function($place){
-      $place.edit=!$place.edit;
-    }
-
-    $scope.update = function(place){
-      place.loading = true;
-      serviceAjax.put('itemplaces/'+ place.id, place).then(function(){
-        place.edit = !place.edit;
-        place.loading = false;
-        $scope.updateConfirmation = true;
-        $timeout(function() {
-           $scope.updateConfirmation = false;
-        }, 3000);
-        // Mise à jour Data Factory
-        serviceAjax.get('itemplaces').then(function(res){
-          Data.setItemPlaces(res.data);
-        })
-      }, function(error){
-        if (error.status == 422) {
-          $scope.inputErrors = error.data.errors;
-        }
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-        place.loading = false;
-      })
-    }
-
-    $scope.cancel = function(){
-      $scope.addNewPlace = false;
-      loadNewPlace();
-    }
-
-    $scope.cancelPlace = function(place){
-      let index = $scope.places.findIndex((p) => p.id === place.id);
-      place.loading = true;
-      serviceAjax.get('itemplaces/' + place.id).then(function(res){
-        $scope.places[index] = res.data;
-      }, function(error){
-        place.loading = false;
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-      })
-    }
-
-    $scope.save = function(){
-      $scope.newPlaceLoading=true;
-      serviceAjax.post('itemplaces', $scope.newPlace).then(function(res){
-        $scope.places.push(res.data);
-        $scope.addConfirmation = true;
-        $scope.newPlaceLoading=false;
-        $scope.addNewPlace = false;
-        loadNewPlace();
-        $timeout(function() {
-           $scope.addConfirmation = false;
-        }, 3000)
-        // Mise à jour Data Factory
-        serviceAjax.get('itemplaces').then(function(res){
-          Data.setItemPlaces(res.data);
-        })
-      }, function(error){
-        if (error.status == 422) {
-          $scope.inputErrors = error.data.errors;
-        }
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-        $scope.newPlaceLoading = false;
-      })
-      
-    }
-
-
-    $scope.setDeleteAttribute = function(place){
-      $scope.elementToDelete = place;
-    }
-
-    $scope.delete = function(){
-      const place = $scope.elementToDelete
-      place.loading = true;
-      serviceAjax.delete('itemplaces/'+ place.id).then(function(){
-        $scope.places = $scope.places.filter((p) => p.id != place.id);
-        $scope.deleteConfirmation = true;
-        place.loading = false;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-        // Mise à jour Data Factory
-        serviceAjax.get('itemplaces').then(function(res){
-          Data.setItemPlaces(res.data);
-        })
-      }, function(){
-        place.loading = false;
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-      })
-
-    }
+    $scope.prenom = $rootScope.auth.member.firstname;
 
   });
 
+app.controller('errorCtrl', function($scope, $routeParams, $location) {
+
+  if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
+
+    $scope.errorCode = 401;
+    $scope.errorDesc = "Vous n'êtes pas autorisé à accéder à cette webapp.";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 403) {
+
+    $scope.errorCode = 403;
+    $scope.errorDesc = "Action interdite";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 404) {
+
+    $scope.errorCode = 404;
+    $scope.errorDesc = "Page demandée introuvable";
+
+  }
+  else if ($routeParams.code && $routeParams.code == 500) {
+
+    $scope.errorCode = 500;
+    $scope.errorDesc = "Une erreur est survenue.";
+
+  }
+  else {
+    $location.path("/");
+  }
+
+});
 
 'use strict';
 
@@ -1374,6 +1156,231 @@ angular.module('bobbyApp')
   });
 
 
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
+
+
+  $scope.message = "Connexion";
+
+	
+	//Url avec token?=
+	if($routeParams.token){
+
+		$rootScope.auth.login($routeParams.token)
+		serviceAjax.get('userassos').then(function(res){
+			Data.setUserAssos(res.data);
+			serviceAjax.get('associations').then(function(res){
+				Data.setAssociations(res.data);
+				serviceAjax.get('itemplaces').then(function(res){
+					Data.setItemPlaces(res.data);
+					serviceAjax.get('itemtypes').then(function(res){
+						Data.setItemTypes(res.data);
+						let redirection_url = "/"
+						// Si une URL de redirection est présente dans le local storage on la récupère
+						const url_in_storage = localStorageService.get('redirect_url')
+						if (url_in_storage) {
+							redirection_url = url_in_storage
+						}	
+						// Redirection de l'utilisateur
+						$window.location.href = redirection_url
+					})
+				})
+			})
+		})
+		
+	}
+	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
+
+	    $scope.message = "Erreur de connexion";
+
+	    // On redirige vers la page d'erreur 401
+	    $location.path("/error/401");
+	    $location.url($location.path());  // Clear des paramètres
+
+	}
+
+	else {
+	  	PortailAuth.goLogin();
+	}
+});
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('placesManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    /*Initialisation des boutons de confirmation*/
+    $scope.addConfirmation = false;
+    $scope.updateConfirmation = false;
+    $scope.deleteConfirmation = false;
+    $scope.error = false;
+    $scope.inputErrors = "";
+
+    //Pour afficher le formulaire d'ajout d'une nouvelle catégorie
+    $scope.addNewPlace = false;
+    $scope.newPlaceLoading = false;
+    
+    var loadNewPlace = function(){
+      //Pour remplir la nouvelle catégorie
+      $scope.newPlace = {};
+    }
+
+    loadNewPlace();
+
+
+     //Recherche de la catégorie séléectionné
+    var loadPlace = function(){
+      $scope.loading = true;
+      $scope.places = Data.loadItemPlaces();
+    }
+    loadPlace();
+
+    /* Tri des catégories */
+    $scope.reverse = false;
+
+    $scope.sort = function() {
+      $scope.reverse = !$scope.reverse;
+    };
+
+    /* Fonctions de gestions des catégories*/
+
+    $scope.add = function(){
+      $scope.addNewPlace = true;
+      $scope.focusInput = true;
+    }
+
+    $scope.edit = function($place){
+      $place.edit=!$place.edit;
+    }
+
+    $scope.update = function(place){
+      place.loading = true;
+      serviceAjax.put('itemplaces/'+ place.id, place).then(function(){
+        place.edit = !place.edit;
+        place.loading = false;
+        $scope.updateConfirmation = true;
+        $timeout(function() {
+           $scope.updateConfirmation = false;
+        }, 3000);
+        // Mise à jour Data Factory
+        serviceAjax.get('itemplaces').then(function(res){
+          Data.setItemPlaces(res.data);
+        })
+      }, function(error){
+        if (error.status == 422) {
+          $scope.inputErrors = error.data.errors;
+        }
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+        place.loading = false;
+      })
+    }
+
+    $scope.cancel = function(){
+      $scope.addNewPlace = false;
+      loadNewPlace();
+    }
+
+    $scope.cancelPlace = function(place){
+      let index = $scope.places.findIndex((p) => p.id === place.id);
+      place.loading = true;
+      serviceAjax.get('itemplaces/' + place.id).then(function(res){
+        $scope.places[index] = res.data;
+      }, function(error){
+        place.loading = false;
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+      })
+    }
+
+    $scope.save = function(){
+      $scope.newPlaceLoading=true;
+      serviceAjax.post('itemplaces', $scope.newPlace).then(function(res){
+        $scope.places.push(res.data);
+        $scope.addConfirmation = true;
+        $scope.newPlaceLoading=false;
+        $scope.addNewPlace = false;
+        loadNewPlace();
+        $timeout(function() {
+           $scope.addConfirmation = false;
+        }, 3000)
+        // Mise à jour Data Factory
+        serviceAjax.get('itemplaces').then(function(res){
+          Data.setItemPlaces(res.data);
+        })
+      }, function(error){
+        if (error.status == 422) {
+          $scope.inputErrors = error.data.errors;
+        }
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+        $scope.newPlaceLoading = false;
+      })
+      
+    }
+
+
+    $scope.setDeleteAttribute = function(place){
+      $scope.elementToDelete = place;
+    }
+
+    $scope.delete = function(){
+      const place = $scope.elementToDelete
+      place.loading = true;
+      serviceAjax.delete('itemplaces/'+ place.id).then(function(){
+        $scope.places = $scope.places.filter((p) => p.id != place.id);
+        $scope.deleteConfirmation = true;
+        place.loading = false;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+        // Mise à jour Data Factory
+        serviceAjax.get('itemplaces').then(function(res){
+          Data.setItemPlaces(res.data);
+        })
+      }, function(){
+        place.loading = false;
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+      })
+
+    }
+
+  });
+
+
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
 'use strict';
 
 /**

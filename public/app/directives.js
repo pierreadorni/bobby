@@ -57,7 +57,7 @@ app.directive('inWrapper', function() {
         templateUrl: 'app/directives/inWrapper/in_wrapper.html',
     };
 })
-.controller('inWrapperCtrl', function($scope, serviceAjax, Data){
+.controller('inWrapperCtrl', function($scope, serviceAjax, Data, $rootScope){
 	this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -105,7 +105,10 @@ app.directive('inWrapper', function() {
 	loadAssociations();
 
 	$scope.sendBug = function(){
-		serviceAjax.post('bugs', $scope.bug);
+		$scope.bug.comment += "\nEcrit par: " + $rootScope.auth.member.email
+		serviceAjax.post('bugs', $scope.bug).then(function(res){
+			$scope.bug= {};
+		});
 	}
 
 });
