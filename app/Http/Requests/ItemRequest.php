@@ -28,7 +28,7 @@ class ItemRequest extends FormRequest
             'quantity'          =>  'integer|min:0|required',
             'place_id'          =>  'exists:itemPlaces,id|integer|min:0|required',
             'status'            =>  'integer|min:1|max:3|required',
-            'caution'           =>  'integer|min:0|required',
+            'caution'           =>  'min:0|required',
             'type_id'           =>  'exists:itemTypes,id|integer|min:0|required',
             'association_id'    =>  'string|required',
         ];
