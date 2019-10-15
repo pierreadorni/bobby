@@ -36,17 +36,6 @@ angular.module('bobbyApp')
         }
       };
   }]);
-app.directive('outWrapper', function($rootScope) {
-  return {
-    restrict: 'EA',
-    transclude: true,
-    scope: {},
-    controller: function($rootScope, $scope) {
-    },
-    templateUrl: 'app/directives/outWrapper/out_wrapper.html',
-  };
-});
-
 app.directive('inWrapper', function() {
     return {
         restrict: 'EA',
@@ -113,3 +102,14 @@ app.directive('inWrapper', function() {
 
 });
 
+
+app.directive('outWrapper', function($rootScope) {
+  return {
+    restrict: 'EA',
+    transclude: true,
+    scope: {},
+    controller: function($rootScope, $scope) {
+    },
+    templateUrl: 'app/directives/outWrapper/out_wrapper.html',
+  };
+});

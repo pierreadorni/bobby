@@ -681,6 +681,28 @@ angular.module('bobbyApp')
 
   });
 
+
+    'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
+  .controller('MainCtrl', function ($scope, $rootScope) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+    
+    $scope.prenom = $rootScope.auth.member.firstname;
+
+  });
+
 app.controller('dataCtrl', function($scope, $rootScope, $location, Data, serviceAjax, FileSaver, $http, $q) {
 
     
@@ -835,7 +857,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             } else if (!status.find(value => value == element.status)){
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
-            if (!element.caution) {
+            if (element.caution!==null) {
                 errors.push("La propriété caution de l'élément n°" + (index+1) + " est requise.");
             } else if (!angular.isNumber(element.caution)){
                 errors.push("La propriété caution de l'élément n°" + (index+1) + " doit être un entier.");
@@ -883,28 +905,6 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
 
 });
   
-
-    'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
-  .controller('MainCtrl', function ($scope, $rootScope) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-    
-    $scope.prenom = $rootScope.auth.member.firstname;
-
-  });
-
 app.controller('errorCtrl', function($scope, $routeParams, $location) {
 
   if ($routeParams.code && $routeParams.code == 401) { // Si l'utilisateur CAS n'était pas autorisé à accéder
@@ -1203,6 +1203,15 @@ app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams
 	}
 });
 
+app.controller('logoutCtrl', function($scope, PortailAuth) {
+
+
+    $scope.message = "Déconnexion";
+  
+    PortailAuth.goLogout();
+    
+});
+  
 'use strict';
 
 /**
@@ -1372,15 +1381,6 @@ angular.module('bobbyApp')
   });
 
 
-app.controller('logoutCtrl', function($scope, PortailAuth) {
-
-
-    $scope.message = "Déconnexion";
-  
-    PortailAuth.goLogout();
-    
-});
-  
 'use strict';
 
 /**
