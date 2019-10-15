@@ -152,7 +152,7 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             } else if (!status.find(value => value == element.status)){
                 errors.push("La propriété statut de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
-            if (element.caution!==null) {
+            if (element.caution===null) {
                 errors.push("La propriété caution de l'élément n°" + (index+1) + " est requise.");
             } else if (!angular.isNumber(element.caution)){
                 errors.push("La propriété caution de l'élément n°" + (index+1) + " doit être un entier.");
