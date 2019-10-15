@@ -102,7 +102,7 @@ angular.module('bobbyApp')
 
     // Pour vérifier que les données sont correctes
     $scope.checkItem = function(item){
-      if (item.name && item.place && item.type && item.quantity && item.association_id && item.status && item.caution) {
+      if (item.name && item.place && item.type && item.quantity && item.association_id && item.status && item.caution !== null) {
         return true;
       }
       return false;
