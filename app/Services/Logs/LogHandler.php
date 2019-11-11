@@ -2,7 +2,6 @@
 
 namespace App\Services\Logs;
 
-use App\Events\Logs\LogMonologEvent;
 use App\Log;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
