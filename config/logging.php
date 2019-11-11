@@ -65,6 +65,10 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+        'custom' => [
+            'driver' => 'custom',
+            'via' => \App\Services\Logs\LogMonolog::class,
+        ],
     ],
 
 ];
