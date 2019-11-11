@@ -120,6 +120,16 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('itemplaces', 'ItemPlaceController');
 
 
+
+        /**
+        *   LOGS
+        *
+        */
+
+        Route::post('logs', 'LogController@index');
+
+
+
         /**
         *   ITEMTYPE
         *
