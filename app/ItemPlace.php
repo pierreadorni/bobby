@@ -27,5 +27,11 @@ class ItemPlace extends Model
 	{
 		return $this->hasMany('App\Item', 'place_id');
 	}
+
+	public static function normalize_place($str)
+	{
+		$str =strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+		return strtolower($str);
+	}
 }
 

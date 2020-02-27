@@ -26,4 +26,10 @@ class ItemType extends Model
 	{
 		return $this->hasMany('App\Item', 'type_id');
 	}
+
+	public static function normalize_type($str)
+	{
+		$str =strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+		return strtolower($str);
+	}
 }
