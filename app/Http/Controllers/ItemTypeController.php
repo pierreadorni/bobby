@@ -18,6 +18,9 @@ class ItemTypeController extends Controller
     public function index()
     {
         $item_types = ItemType::get();
+        foreach ($item_types as $item_type) {
+            $item_type->normalized_name = ItemType::normalize_type($item_type->name);
+        }
         return response()->json($item_types, 200);
     }
 

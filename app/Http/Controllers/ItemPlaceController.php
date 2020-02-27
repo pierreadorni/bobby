@@ -10,14 +10,20 @@ use App\ItemPlace;
 
 class ItemPlaceController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $item_places = ItemPlace::get();
+
+        foreach ($item_places as $item_place) {
+            $item_place->normalized_name = ItemPlace::normalize_place($item_place->name);
+        }
+        
         return response()->json($item_places, 200);
     }
 
