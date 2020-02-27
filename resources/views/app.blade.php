@@ -24,7 +24,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.2.0/js/v4-shims.js"></script>
     
   </head>
-  <body ng-app="bobbyApp" style="background-color:#bdbdbd">
+  <body ng-app="bobbyApp" style="background-color:white">
     <div ng-view></div>
 
 

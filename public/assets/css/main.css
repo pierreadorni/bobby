@@ -1,5 +1,14 @@
-.title{
-	text-align: center;
+body, p, h3{
+	color: #212934;
+}
+
+
+table{
+	border: 3px solid #6272B6;
+}
+
+.underline-purple{
+	text-decoration: underline #6272B6;
 }
 
 .margin20{margin: 20px;}
@@ -13,6 +22,20 @@
 	text-decoration-color: none;
 	color:none;
 }
+
+.card-round{
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border: 3px solid #6272B6;
+	border-top: none;
+}
+
+.purple-500-bg-color{background-color: #6272B6;}
+.purple-100-bg-color{background-color: #F1F4FA;}
+.purple-900-color{color: #282F6C;}
+.grey-900-color{color: #212934;}
+.grey-700-color{color: #6E7A8A;}
+.grey-500-color{color: #AEBECD;}
 
 .pointer{cursor: pointer;}
 
@@ -42,7 +65,7 @@
 /*  VIOLET  */
 
 .purple-text{
-	color: #414361;
+	color: #6272B6;
 }
 
 /* CARD */
@@ -51,23 +74,23 @@
 	border-width: 0px !important;
 }
 .card-purple{
-	background-color: #414361 !important;
+	background-color: #6272B6 !important;
 	border-width: 0px;
 	color: white;
+	border-bottom: none;
 }
 
 /* Boutton */
 
 .btn-grey{
-	background-color: #bdbdbd;
+	background-color: #6272B6;
+	color: white;
 	margin: 8px;
-	/* margin-bottom: 8px; */
 }
 
 .btn-grey:hover{
-	background-color: #414361;
+	background-color: #282F6C;
 	color: white;
-	/* margin-top: 8px; */
 }
 
 /* Pour icône Fontawesome */
@@ -87,12 +110,12 @@
 }
 
 thead{
-	background-color: #414361;
+	background-color: #6272B6;
 	color: white;
 }
 
 tbody{
-	background-color: #F7F9FA;
+	background-color: #F1F4FA;
 }
 
 /* VALIDATION */
@@ -103,8 +126,9 @@ tbody{
 
 /* MODAL */
 .modal-header{
-	background-color:#bdbdbd !important;
-	border-color: #bdbdbd !important;
+	background-color:#6272B6 !important;
+	border-color: #6272B6 !important;
+	color: white
 }
 
 /* Alignement pour OutWrapper*/
@@ -113,7 +137,7 @@ tbody{
   margin:auto;
   text-align: center;
   margin-top: 100px;
-  color : #414361;
+  color : #6272B6;
 }
 
 /* width */
