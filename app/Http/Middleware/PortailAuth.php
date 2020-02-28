@@ -30,7 +30,7 @@ class PortailAuth
             if (Portail::isAuthenticated($request)) {
         
                 $user = Portail::getUser();
-                \Log::warning("Action effectuée par user ".$user->id." sur route ".$request->method()."::".$request->path());
+                \Log::info("Action effectuée par user ".$user->id." sur route ".$request->method()."::".$request->path());
                 return $next($request);
             
             } else {
