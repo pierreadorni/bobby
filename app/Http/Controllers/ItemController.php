@@ -243,12 +243,24 @@ class ItemController extends Controller
             $item->delete();
         }
 
+        # Récupération des localisation et des catégories
+        $item_places = ItemPlace::all();
+        $item_types = ItemType::all();
+
+        # Normalisation des localisations et ds catégories
+        foreach ($item_places as $item_place) {
+            $item_place->normalized_name = ItemPlace::normalize_place($item_place->name);
+        }
+        foreach ($item_types as $item_type) {
+            $item_type->normalized_name = ItemType::normalize_type($item_type->name);
+        }
+
         # Ajout des nouveaux items ou update avec restore si le nom existe déjà
         foreach ($request->items as $item) {
 
             # Récupération des données manquantes avant création
-            $item['type_id'] = ItemType::where('name', $item['typeName'])->get()->first()->id;
-            $item['place_id'] = ItemPlace::where('name', $item['placeName'])->get()->first()->id;
+            $item['type_id'] = $item_types->where('normalized_name', $item['typeName'])->first()->id;
+            $item['place_id'] = $item_places->where('normalized_name', $item['placeName'])->first()->id;
 
             $item = Item::withTrashed()->updateOrCreate(
                 [
