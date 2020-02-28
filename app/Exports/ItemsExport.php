@@ -3,6 +3,8 @@
 namespace App\Exports;
 
 use App\Item;
+use App\ItemPlace;
+use App\ItemType;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -29,13 +31,13 @@ class ItemsExport implements FromCollection, WithHeadings, ShouldAutoSize, WithS
             unset($item["id"]);
 
             if ($item->type()->get()->count() > 0) {
-                $item["type"] = $item->type()->get()->first()->name;
+                $item["type"] = ItemType::normalize_type($item->type()->get()->first()->name);
             } else {
                 $item["type"] = "";
             }
 
             if ($item->place()->get()->count() > 0) {
-                $item["place"] = $item->place()->get()->first()->name;
+                $item["place"] = ItemPlace::normalize_place($item->place()->get()->first()->name);
             } else {
                 $item["place"] = "";
             }
