@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Log;
 use Illuminate\Http\Request;
+use Portail;
 
 class LogController extends Controller
 {
