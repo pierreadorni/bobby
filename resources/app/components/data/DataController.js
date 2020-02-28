@@ -159,12 +159,12 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             }
             if (!element.typeName) {
                 errors.push("La propriété catégorie de l'élément n°" + (index+1) + " est requise.");
-            } else if (!$scope.types.find(type => type.name == element.typeName)){
+            } else if (!$scope.types.find(type => type.normalized_name == element.typeName)){
                 errors.push("La propriété catégorie de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             if (!element.placeName) {
                 errors.push("La propriété localisation de l'élément n°" + (index+1) + " est requise");
-            } else if (!$scope.places.find(place => place.name == element.placeName)){
+            } else if (!$scope.places.find(place => place.normalized_name == element.placeName)){
                 errors.push("La propriété localisation de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             

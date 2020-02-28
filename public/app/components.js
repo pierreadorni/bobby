@@ -8,65 +8,6 @@
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
-  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
-    if(!$rootScope.isAdmin()){
-      $location.path('/error/403');
-    }
-
-    $scope.error = false;
-    $scope.deleteConfirmation = false;
-
-
-    // Chargement des bugs
-    var loadBugs = function(){
-      $scope.loading = true;
-      serviceAjax.get('bugs').then(function(res){
-        $scope.bugs = res.data;
-        for (let index = 0; index < $scope.bugs.length; index++) {
-          $scope.bugs[index].loading = false;
-        }
-      })
-    }
-    loadBugs();
-
-    
-    $scope.delete = function(bug){
-      $scope.loading = true;
-      serviceAjax.delete('bugs/'+ bug.id).then(function(){
-        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
-        $scope.loading = false;
-        $scope.deleteConfirmation = true;
-        $timeout(function() {
-           $scope.deleteConfirmation = false;
-        }, 3000)
-      }, function(){
-        $scope.loading = false;
-        $scope.error = true;
-        $timeout(function() {
-          $scope.error = false;
-        }, 20000)
-      })
-    }
-
-  });
-
-
-'use strict';
-
-/**
- * @ngdoc function
- * @name bobbyApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the bobbyApp
- */
-angular.module('bobbyApp')
   .controller('createBookingCtrl', function ($scope, serviceAjax, $routeParams, $location, Data, $filter, $rootScope, $timeout) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -617,6 +558,65 @@ angular.module('bobbyApp')
  * Controller of the bobbyApp
  */
 angular.module('bobbyApp')
+  .controller('bugsManagementCtrl', function ($scope, serviceAjax, $location, $rootScope, $timeout, Data) {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+
+    if(!$rootScope.isAdmin()){
+      $location.path('/error/403');
+    }
+
+    $scope.error = false;
+    $scope.deleteConfirmation = false;
+
+
+    // Chargement des bugs
+    var loadBugs = function(){
+      $scope.loading = true;
+      serviceAjax.get('bugs').then(function(res){
+        $scope.bugs = res.data;
+        for (let index = 0; index < $scope.bugs.length; index++) {
+          $scope.bugs[index].loading = false;
+        }
+      })
+    }
+    loadBugs();
+
+    
+    $scope.delete = function(bug){
+      $scope.loading = true;
+      serviceAjax.delete('bugs/'+ bug.id).then(function(){
+        $scope.bugs = $scope.bugs.filter((b) => b.id != bug.id);
+        $scope.loading = false;
+        $scope.deleteConfirmation = true;
+        $timeout(function() {
+           $scope.deleteConfirmation = false;
+        }, 3000)
+      }, function(){
+        $scope.loading = false;
+        $scope.error = true;
+        $timeout(function() {
+          $scope.error = false;
+        }, 20000)
+      })
+    }
+
+  });
+
+
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name bobbyApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the bobbyApp
+ */
+angular.module('bobbyApp')
   .controller('categorieCtrl', function ($scope, serviceAjax, $routeParams, $location, $http, $rootScope) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
@@ -864,12 +864,12 @@ app.controller('dataCtrl', function($scope, $rootScope, $location, Data, service
             }
             if (!element.typeName) {
                 errors.push("La propriété catégorie de l'élément n°" + (index+1) + " est requise.");
-            } else if (!$scope.types.find(type => type.name == element.typeName)){
+            } else if (!$scope.types.find(type => type.normalized_name == element.typeName)){
                 errors.push("La propriété catégorie de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             if (!element.placeName) {
                 errors.push("La propriété localisation de l'élément n°" + (index+1) + " est requise");
-            } else if (!$scope.places.find(place => place.name == element.placeName)){
+            } else if (!$scope.places.find(place => place.normalized_name == element.placeName)){
                 errors.push("La propriété localisation de l'élément n°" + (index+1) + " ne respecte pas les règles définies au dessus.");
             }
             
@@ -935,53 +935,6 @@ app.controller('errorCtrl', function($scope, $routeParams, $location) {
     $location.path("/");
   }
 
-});
-
-app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
-
-
-  $scope.message = "Connexion";
-
-	
-	//Url avec token?=
-	if($routeParams.token){
-
-		$rootScope.auth.login($routeParams.token)
-		serviceAjax.get('userassos').then(function(res){
-			Data.setUserAssos(res.data);
-			serviceAjax.get('associations').then(function(res){
-				Data.setAssociations(res.data);
-				serviceAjax.get('itemplaces').then(function(res){
-					Data.setItemPlaces(res.data);
-					serviceAjax.get('itemtypes').then(function(res){
-						Data.setItemTypes(res.data);
-						let redirection_url = "/"
-						// Si une URL de redirection est présente dans le local storage on la récupère
-						const url_in_storage = localStorageService.get('redirect_url')
-						if (url_in_storage) {
-							redirection_url = url_in_storage
-						}	
-						// Redirection de l'utilisateur
-						$window.location.href = redirection_url
-					})
-				})
-			})
-		})
-		
-	}
-	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
-
-	    $scope.message = "Erreur de connexion";
-
-	    // On redirige vers la page d'erreur 401
-	    $location.path("/error/401");
-	    $location.url($location.path());  // Clear des paramètres
-
-	}
-
-	else {
-	  	PortailAuth.goLogin();
-	}
 });
 
 'use strict';
@@ -1202,6 +1155,53 @@ angular.module('bobbyApp')
 
   });
 
+
+app.controller('loginCtrl', function($scope, $location, $rootScope, $routeParams, Data, PortailAuth, serviceAjax, localStorageService, $window) {
+
+
+  $scope.message = "Connexion";
+
+	
+	//Url avec token?=
+	if($routeParams.token){
+
+		$rootScope.auth.login($routeParams.token)
+		serviceAjax.get('userassos').then(function(res){
+			Data.setUserAssos(res.data);
+			serviceAjax.get('associations').then(function(res){
+				Data.setAssociations(res.data);
+				serviceAjax.get('itemplaces').then(function(res){
+					Data.setItemPlaces(res.data);
+					serviceAjax.get('itemtypes').then(function(res){
+						Data.setItemTypes(res.data);
+						let redirection_url = "/"
+						// Si une URL de redirection est présente dans le local storage on la récupère
+						const url_in_storage = localStorageService.get('redirect_url')
+						if (url_in_storage) {
+							redirection_url = url_in_storage
+						}	
+						// Redirection de l'utilisateur
+						$window.location.href = redirection_url
+					})
+				})
+			})
+		})
+		
+	}
+	else if ($routeParams.error && $routeParams.error == 401) { // Si l'utilisateur CAS n'est pas autorisé à accéder
+
+	    $scope.message = "Erreur de connexion";
+
+	    // On redirige vers la page d'erreur 401
+	    $location.path("/error/401");
+	    $location.url($location.path());  // Clear des paramètres
+
+	}
+
+	else {
+	  	PortailAuth.goLogin();
+	}
+});
 
 app.controller('logoutCtrl', function($scope, PortailAuth) {
 

@@ -46,10 +46,10 @@
 								<h6 class="underline">Colonnes</h6>
 								<p>Le fichier doit contenir le nom des colonnes. Dans l'ordre il faut remplir les champs suivants : <br><strong>Nom / Quantité / Statut / Caution / Catégorie / Localisation</strong></p>
 								<h6 class="underline">Catégorie</h6>
-								<p>Le champ Catégorie doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="type in types">{{type.name}}  / </span></strong><br>
+								<p>Le champ Catégorie doit être rempli par un des termes suivants (à la lettre près !) : <br><strong><span ng-repeat="type in types">{{type.normalized_name}}  / </span></strong><br>
 								Si tu as fait d'une manière différente, Ctrl+H est ton ami ;)</p>
 								<h6 class="underline">Localisation</h6>
-								<p>Le champ Localisation doit être rempli par un des termes suivants (à la majuscule près !) : <br><strong><span ng-repeat="place in places">{{place.name}}  / </span></strong></p>
+								<p>Le champ Localisation doit être rempli par un des termes suivants (à la lettre près !) : <br><strong><span ng-repeat="place in places">{{place.normalized_name}}  / </span></strong></p>
 								<h6 class="underline">Statut</h6>
 								<p>Le champ Statut doit être rempli par un terme suivant : <br><strong><span>1 / 2 / 3</span></strong>
 									<ul>
@@ -79,7 +79,7 @@
 							<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importSuccessfully">
 								Import effectué avec succès 
 							</div>
-							<div class="alert alert-success margin20 textleft" role="alert" ng-if="data.importError">
+							<div class="alert alert-danger margin20 textleft" role="alert" ng-if="data.importError">
 								Une erreur est survenue.
 							</div>
 							<button type="button" class="btn btn-grey" ng-click="cancelImport()" ng-if="data.parsed">Annuler</button>
@@ -94,9 +94,6 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>{{ }}</td>
-									</tr>
 									<tr ng-repeat="item in data.items">
 										<td>{{ $index + 1 }}</td>
 										<td>{{item.name}}</td>
