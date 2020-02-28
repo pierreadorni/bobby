@@ -1,0 +1,74 @@
+<in-wrapper>
+    <br><br>
+    <div class = "row">
+      <div class="col-md-10 offset-md-1 margin20">
+        
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-12">
+                  <h3 class="underline-purple">Gestion des logs</h3>                  
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px; margin-top: 20px;">
+              <label class="form-label col-md-3 col-sm-6" style="margin: 0; padding: 5px; margin-left: 10px;">Date sélectionnée</label>
+              <input class="form-control col-md-3 col-sm-5" type="date" style="margin: 0px; padding: 5px;" name="selectedDate" max="{{dates.currentDate | date:'yyyy-MM-dd'}}" ng-model="dates.selectedDate" required>
+            </div>
+          </div>
+          <div class="row" ng-if="error">
+            <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1 alert alert-danger" role="alert">
+              Une erreur est survenue.<br>
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a class="nav-link pointer" ng-click="changeLogLevel('info')" ng-class="{ active : isActive('info')}">Info</a>
+                </li>
+                <li class="nav-item pointer">
+                  <a class="nav-link" ng-click="changeLogLevel('warning')" ng-class="{ active : isActive('warning')}">Warning</a>
+                </li>
+                <li class="nav-item pointer">
+                  <a class="nav-link" ng-click="changeLogLevel('error')" ng-class="{ active : isActive('error')}">Erreur</a>
+                </li>
+                <li class="nav-item pointer">
+                  <a class="nav-link" ng-click="changeLogLevel('all')" ng-class="{ active : isActive('all')}">Tous</a>
+                </li>
+              </ul>
+            </div>
+          <div class="card-body">
+            <table class="table table-hover col-md-12" ng-if="!loading">
+              <thead>
+                <tr>
+                    <th>
+                      Type  
+                    </th>
+                    <th>
+                      Description  
+                    </th>
+                    <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="log in logs | toArray:false | orderBy:'date':reverse" ng-if="showLog(log)">
+                  <td>
+                    <span ng-if="log.level == 'warning'" class="badge badge-warning">{{log.level}}</span>
+                    <span ng-if="log.level == 'error'" class="badge badge-danger">{{log.level}}</span>
+                    <span ng-if="log.level == 'info'" class="badge badge-info">{{log.level}}</span>
+                  </td>
+                  <td>
+                    <span>{{ log.description }}</span>
+                  </td>
+                  <td>
+                    <span>{{ log.created_at.toString().replace(' ', 'T') | date :  "dd/MM/yyyy HH:mm" }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div ng-if="loading">
+              <p><i class="fa fa-spinner fa-pulse fa-fw"></i></p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </in-wrapper>
