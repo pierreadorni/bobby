@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
-            \Barryvdh\Cors\HandleCors::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
         ],
     ];
 
@@ -61,7 +61,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'cors' => \Barryvdh\Cors\HandleCors::class, // add this line to enable cors to your routes
+        'cors' => \Illuminate\Http\Middleware\HandleCors::class, // add this line to enable cors to your routes
         'PortailAuth' => \App\Http\Middleware\PortailAuth::class,
     ];
 }
