@@ -339,7 +339,7 @@ class Portail
             return $assos_cached;
         }
         $assos = $this->request('assos');
-        \Cache::add('assos', $assos, 259200);
+        \Cache::add('assos', $assos, 15552000);
         return $assos;
     }
 
