@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+
 
 class Handler extends ExceptionHandler
 {
@@ -36,7 +38,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        \Log::channel('daily')->error(
+        Log::channel('daily')->error(
             $exception->getMessage(),
             array_merge($this->context(), ['exception' => $exception])
         );
